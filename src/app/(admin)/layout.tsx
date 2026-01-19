@@ -30,10 +30,7 @@ export default function RootLayout({
       }
     >
       <AppSidebar />
-      <SidebarInset>
-        <AppHeader />
-        <main>{children}</main>
-      </SidebarInset>
+      <SidebarInset>{children}</SidebarInset>
     </SidebarProvider>
   );
 }

@@ -1,5 +1,19 @@
+"use client";
+
 import * as React from "react";
-import { GalleryVerticalEnd } from "lucide-react";
+
+import {
+  LayoutDashboard,
+  CalendarPlus,
+  PlayCircle,
+  CheckCircle2,
+  Users,
+  Factory,
+  Layers,
+  Package,
+  Settings,
+  GalleryVerticalEnd,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -13,142 +27,66 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { usePathname } from "next/navigation";
+import { CompanyLogo } from "../common/company-logo";
 
 // This is sample data.
 const data = {
   navMain: [
     {
-      title: "Getting Started",
+      title: "MAIN MENU",
       url: "#",
       items: [
         {
-          title: "Installation",
-          url: "#",
+          title: "Dashboard",
+          url: "/dashboard",
+          icon: LayoutDashboard,
         },
         {
-          title: "Project Structure",
+          title: "New Request Schedule",
           url: "#",
+          icon: CalendarPlus,
+        },
+        {
+          title: "Running Schedules",
+          url: "#",
+          icon: PlayCircle,
+        },
+        {
+          title: "Completed Schedules",
+          url: "#",
+          icon: CheckCircle2,
         },
       ],
     },
     {
-      title: "Building Your Application",
+      title: "ADMINISTRATOR",
       url: "#",
       items: [
         {
-          title: "Routing",
+          title: "Users",
           url: "#",
+          icon: Users,
         },
         {
-          title: "Data Fetching",
+          title: "Machines",
           url: "#",
-          isActive: true,
+          icon: Factory,
         },
         {
-          title: "Rendering",
+          title: "Materials",
           url: "#",
+          icon: Layers,
         },
         {
-          title: "Caching",
+          title: "Parts",
           url: "#",
+          icon: Package,
         },
         {
-          title: "Styling",
+          title: "Settings",
           url: "#",
-        },
-        {
-          title: "Optimizing",
-          url: "#",
-        },
-        {
-          title: "Configuring",
-          url: "#",
-        },
-        {
-          title: "Testing",
-          url: "#",
-        },
-        {
-          title: "Authentication",
-          url: "#",
-        },
-        {
-          title: "Deploying",
-          url: "#",
-        },
-        {
-          title: "Upgrading",
-          url: "#",
-        },
-        {
-          title: "Examples",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "API Reference",
-      url: "#",
-      items: [
-        {
-          title: "Components",
-          url: "#",
-        },
-        {
-          title: "File Conventions",
-          url: "#",
-        },
-        {
-          title: "Functions",
-          url: "#",
-        },
-        {
-          title: "next.config.js Options",
-          url: "#",
-        },
-        {
-          title: "CLI",
-          url: "#",
-        },
-        {
-          title: "Edge Runtime",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Architecture",
-      url: "#",
-      items: [
-        {
-          title: "Accessibility",
-          url: "#",
-        },
-        {
-          title: "Fast Refresh",
-          url: "#",
-        },
-        {
-          title: "Next.js Compiler",
-          url: "#",
-        },
-        {
-          title: "Supported Browsers",
-          url: "#",
-        },
-        {
-          title: "Turbopack",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Community",
-      url: "#",
-      items: [
-        {
-          title: "Contribution Guide",
-          url: "#",
+          icon: Settings,
         },
       ],
     },
@@ -156,10 +94,12 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <SidebarMenu>
+        {/* <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <a href="#">
@@ -173,7 +113,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
-        </SidebarMenu>
+        </SidebarMenu> */}
+        <CompanyLogo />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -189,8 +130,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
                     {item.items.map((item) => (
                       <SidebarMenuSubItem key={item.title}>
-                        <SidebarMenuSubButton asChild isActive={item.isActive}>
-                          <a href={item.url}>{item.title}</a>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={pathname === item.url}
+                        >
+                          <a href={item.url}>
+                            <item.icon />
+                            <span>{item.title}</span>
+                          </a>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}
