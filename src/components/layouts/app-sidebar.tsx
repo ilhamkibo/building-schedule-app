@@ -18,6 +18,7 @@ import {
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarHeader,
   SidebarMenu,
@@ -29,6 +30,7 @@ import {
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 import { CompanyLogo } from "../common/company-logo";
+import { NavUser } from "./nav-user";
 
 // This is sample data.
 const data = {
@@ -148,6 +150,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <NavUser />
+      </SidebarFooter>
     </Sidebar>
   );
 }

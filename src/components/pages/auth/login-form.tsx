@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,57 +11,86 @@ import {
 } from "@/components/ui/card";
 import {
   Field,
-  FieldDescription,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect } from "react";
+import { login } from "@/actions/use-auth";
+import { toast } from "sonner";
+import { useAuth } from "@/context/auth-context";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter();
+  const { setUser } = useAuth();
+  const [state, action, pending] = useActionState(login, undefined);
+
+  useEffect(() => {
+    if (!state) return;
+
+    if (state.success) {
+      if (!state.user) return;
+      setUser(state.user);
+      toast.success("Login berhasil");
+      router.replace("/dashboard");
+    }
+
+    if (state.success === false) {
+      toast.error(state.message);
+    }
+  }, [state, router])
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your username below to login
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form action={action}>
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="username">Username</FieldLabel>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
+                  id="username"
+                  name="username"
+                  type="text"
+                  placeholder="Username"
+                  autoFocus
                   required
                 />
               </Field>
+
               <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input id="password" type="password" required />
+                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                  required
+                />
               </Field>
+
+              {/* {state?.success === false && (
+                <Field>
+                  <FieldDescription className="text-center text-red-500">
+                    {state.message}asd
+                  </FieldDescription>
+                </Field>
+              )} */}
+
               <Field>
-                <Button type="submit">Login</Button>
-                <Button variant="outline" type="button">
-                  Login with Google
+                <Button type="submit" disabled={pending}>
+                  {pending ? "Logging in..." : "Login"}
                 </Button>
-                <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="#">Sign up</a>
-                </FieldDescription>
               </Field>
             </FieldGroup>
           </form>
