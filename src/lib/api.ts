@@ -1,8 +1,13 @@
+import { ApiError } from "@/types/api-response";
 import axios from "axios";
+import { cookies } from "next/headers";
 
 export const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
     withCredentials: true, // cookie auth
+    headers: {
+        Accept: "application/json",
+    },
 });
 
 // request interceptor
@@ -18,11 +23,15 @@ api.interceptors.request.use(
 // response interceptor
 api.interceptors.response.use(
     (response) => response,
-    (error) => {
+    async (error) => {
         if (error.response?.status === 401) {
             // optional: global logout
-            window.location.href = "/";
+            const cookieStore = await cookies();
+            cookieStore.delete("access_token");
+            if (typeof window !== "undefined") {
+                window.location.href = "/";
+            }
         }
-        return Promise.reject(error);
+        return Promise.reject(error.response?.data as ApiError);
     }
 );

@@ -4,6 +4,7 @@ import ThemeToggleButton from "../common/ThemeToggle";
 import { useEffect, useState } from "react";
 import { SidebarTrigger } from "../ui/sidebar";
 import { Separator } from "../ui/separator";
+import { useAuth } from "@/context/auth-context";
 
 function formatTime(date: Date) {
   const hh = String(date.getHours()).padStart(2, "0");
@@ -40,6 +41,7 @@ export default function AppHeader({ title = "Dashboard" }: { title: string }) {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+  const { user } = useAuth();
 
   return (
     <header className="bg-background sticky top-0 z-50 flex h-16 shrink-0 items-center gap-3 border-b px-4">
