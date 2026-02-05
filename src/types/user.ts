@@ -14,3 +14,19 @@ export type AuthUser = {
     username: string;
     role: string;
 };
+
+export interface CreateUserRequest {
+    name: string;
+    username: string;
+    password: string;
+    passwordConfirmation: string;
+    roleId: number;
+}
+
+export interface UpdateUserRequest {
+    name?: string;
+    username?: string;
+    password?: string;
+    passwordConfirmation?: string;
+    roleId?: number;
+}

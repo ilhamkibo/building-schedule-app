@@ -13,6 +13,7 @@ import {
   Package,
   Settings,
   GalleryVerticalEnd,
+  ShieldUser,
 } from "lucide-react";
 
 import {
@@ -45,19 +46,29 @@ const data = {
           icon: LayoutDashboard,
         },
         {
-          title: "New Request Schedule",
-          url: "#",
+          title: "New Schedule",
+          url: "/new-schedule",
           icon: CalendarPlus,
         },
         {
-          title: "Running Schedules",
-          url: "#",
-          icon: PlayCircle,
+          title: "Schedule List",
+          url: "/schedules",
+          icon: LayoutDashboard,
         },
+        // {
+        //   title: "Running Schedules",
+        //   url: "/schedules",
+        //   icon: PlayCircle,
+        // },
+        // {
+        //   title: "Completed Schedules",
+        //   url: "/schedules",
+        //   icon: CheckCircle2,
+        // },
         {
-          title: "Completed Schedules",
-          url: "#",
-          icon: CheckCircle2,
+          title: "PPL List",
+          url: "/ppl",
+          icon: PlayCircle,
         },
       ],
     },
@@ -67,29 +78,44 @@ const data = {
       items: [
         {
           title: "Users",
-          url: "#",
+          url: "/admin/users",
           icon: Users,
         },
         {
+          title: "Roles",
+          url: "/admin/roles",
+          icon: ShieldUser,
+        },
+        {
           title: "Machines",
-          url: "#",
+          url: "/admin/machines",
           icon: Factory,
         },
         {
-          title: "Materials",
-          url: "#",
+          title: "Lines",
+          url: "/admin/lines",
           icon: Layers,
         },
         {
-          title: "Parts",
-          url: "#",
+          title: "Products",
+          url: "/admin/products",
           icon: Package,
         },
-        {
-          title: "Settings",
-          url: "#",
-          icon: Settings,
-        },
+        // {
+        //   title: "Materials",
+        //   url: "#",
+        //   icon: Layers,
+        // },
+        // {
+        //   title: "Parts",
+        //   url: "#",
+        //   icon: Package,
+        // },
+        // {
+        //   title: "Settings",
+        //   url: "#",
+        //   icon: Settings,
+        // },
       ],
     },
   ],

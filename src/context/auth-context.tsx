@@ -1,11 +1,13 @@
 "use client";
 
+import { getValidatedUser } from "@/lib/auth-validator";
 import { AuthUser } from "@/types/user";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 type AuthContextType = {
     user: AuthUser | null;
     setUser: (user: AuthUser | null) => void;
+    logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,14 +21,22 @@ export function AuthProvider({
 }) {
     const [user, setUser] = useState<AuthUser | null>(initialUser);
 
+    const logout = () => {
+        import("js-cookie").then(({ default: Cookies }) => {
+            Cookies.remove("access_token");
+            setUser(null);
+            window.location.href = "/";
+        });
+    };
+
     return (
-        <AuthContext.Provider value={{ user, setUser }}>
+        <AuthContext.Provider value={{ user, setUser, logout }}>
             {children}
         </AuthContext.Provider>
     );
 }
 
-export function useAuth() {
+export function useAuthContext() {
     const ctx = useContext(AuthContext);
     if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
     return ctx;

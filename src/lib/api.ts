@@ -1,6 +1,6 @@
 import { ApiError } from "@/types/api-response";
 import axios from "axios";
-import { cookies } from "next/headers";
+import Cookies from "js-cookie";
 
 export const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -13,6 +13,11 @@ export const api = axios.create({
 // request interceptor
 api.interceptors.request.use(
     (config) => {
+        const token = Cookies.get("access_token");
+
+        if (token) {
+            config.headers["Authorization"] = `Bearer ${token}`;
+        }
         // contoh: inject header tambahan
         config.headers["Accept"] = "application/json";
         return config;
@@ -26,8 +31,7 @@ api.interceptors.response.use(
     async (error) => {
         if (error.response?.status === 401) {
             // optional: global logout
-            const cookieStore = await cookies();
-            cookieStore.delete("access_token");
+            Cookies.remove("access_token");
             if (typeof window !== "undefined") {
                 window.location.href = "/";
             }

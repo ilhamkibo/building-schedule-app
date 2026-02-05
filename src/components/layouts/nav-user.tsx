@@ -30,23 +30,18 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 import { useRouter } from "next/navigation"
-import { logout } from "@/actions/use-auth"
 import { toast } from "sonner";
-import { useAuth } from "@/context/auth-context"
+import { useAuthContext } from "@/context/auth-context"
 export function NavUser() {
     const { isMobile } = useSidebar()
     const router = useRouter()
-    const { user } = useAuth();
+    const { user, logout } = useAuthContext();
+    console.log("🚀 ~ NavUser ~ user:", user)
 
-    const handleLogout = async () => {
-        const res = await logout();
-
-        if (res?.success) {
-            toast.success("Logout berhasil");
-            router.replace("/");
-        } else {
-            toast.error(res?.message ?? "Logout gagal");
-        }
+    const handleLogout = () => {
+        logout();
+        toast.success("Logout berhasil");
+        router.replace("/");
     };
 
     return (
