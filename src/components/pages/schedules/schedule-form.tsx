@@ -11,12 +11,27 @@ import { CreateScheduleRequest, CreateScheduleItemRequest } from "@/types/schedu
 import { useState, useEffect } from "react";
 import { Trash2, Plus, Search } from "lucide-react";
 import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Combobox, ComboboxCollection, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger, ComboboxValue } from "@/components/ui/combobox";
+import { FormCombobox } from "@/components/ui/form-combobox";
+
+type Line = {
+    name: string
+    id: number
+}
+
+const LINES: Line[] = [
+    { name: "Line 1", id: 1 },
+    { name: "Line 2", id: 2 },
+    { name: "Line 3", id: 3 },
+]
 
 export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => void, onSuccess: () => void }) {
     const { user } = useAuth();
     const { data: products = [] } = useProducts({ limit: 100 });
     const { data: machines = [] } = useMachines({ limit: 100 });
 
+    const [selectedLineId, setSelectedLineId] = useState<number | undefined>(undefined);
     const [code, setCode] = useState(`SCH-${new Date().toISOString().slice(0, 10)}`);
     const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
     const [items, setItems] = useState<CreateScheduleItemRequest[]>([
@@ -61,10 +76,31 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
 
     return (
         <div className="space-y-6">
-            <div className="grid grid-cols-2 gap-4 bg-muted/30 p-4 rounded-lg">
+            <div className="grid grid-cols-3 gap-4 bg-muted/30 p-4 rounded-lg">
                 <div className="space-y-2">
                     <Label htmlFor="code">Schedule Code</Label>
                     <Input id="code" value={code} onChange={(e) => setCode(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="line">Production Line</Label>
+                    {/* <Select value={selectedLineId} onValueChange={setSelectedLineId}>
+                        <SelectTrigger className="w-full h-9 font-semibold bg-white">
+                            <SelectValue placeholder="Select Line" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="line1">Line 1</SelectItem>
+                            <SelectItem value="line2">Line 2</SelectItem>
+                            <SelectItem value="line3">Line 3</SelectItem>
+                        </SelectContent>
+                    </Select> */}
+                    <FormCombobox
+                        value={selectedLineId}
+                        onChange={setSelectedLineId}
+                        options={LINES}
+                        placeholder="Select Line"
+                        searchPlaceholder="Search Line"
+                        emptyText="No lines found."
+                    />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="date">Date</Label>

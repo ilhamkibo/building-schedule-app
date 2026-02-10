@@ -1,17 +1,29 @@
 "use client";
 
-import { DndContext, closestCenter } from "@dnd-kit/core";
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import {
     SortableContext,
     verticalListSortingStrategy,
     arrayMove,
 } from "@dnd-kit/sortable";
-import { useState } from "react";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import { useState, useEffect } from "react";
 import { ScheduleBlock } from "./ScheduleTable";
-import { scheduleBlocks } from "./dummy";
 
-export default function ScheduleBoard() {
-    const [items, setItems] = useState(scheduleBlocks);
+export default function ScheduleBoard({ data }: { data: any[] }) {
+    const [items, setItems] = useState(data);
+
+    useEffect(() => {
+        setItems(data);
+    }, [data]);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8,
+            },
+        })
+    );
 
     const onDragEnd = (e: any) => {
         const { active, over } = e;
@@ -25,7 +37,12 @@ export default function ScheduleBoard() {
     };
 
     return (
-        <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+        <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={onDragEnd}
+            modifiers={[restrictToVerticalAxis]}
+        >
             <SortableContext
                 items={items.map((i) => i.id)}
                 strategy={verticalListSortingStrategy}

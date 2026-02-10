@@ -1,11 +1,59 @@
+"use client";
+
+import { useState } from "react";
 import ScheduleBoard from "@/components/pages/dashboard/ScheduleBoard";
+import { PRODUCTION_LINES } from "@/components/pages/dashboard/dummy";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useEffect } from "react";
+
+const STORAGE_KEY = "selected-production-line";
 
 export default function Page() {
+  const [selectedLineId, setSelectedLineId] = useState<string>("");
+
+  useEffect(() => {
+    const savedLineId = localStorage.getItem(STORAGE_KEY);
+    if (savedLineId) {
+      setSelectedLineId(savedLineId);
+    } else {
+      setSelectedLineId(PRODUCTION_LINES[0].id);
+    }
+  }, []);
+
+  // simpan ke localStorage setiap berubah
+  useEffect(() => {
+    if (selectedLineId) {
+      localStorage.setItem(STORAGE_KEY, selectedLineId);
+    }
+  }, [selectedLineId]);
+
+  const selectedLine =
+    PRODUCTION_LINES.find((l) => l.id === selectedLineId) ||
+    PRODUCTION_LINES[0];
+
   return (
     <div className="p-4">
-      {/* HEADER */}
       <div className="px-4 mb-4 rounded-md py-2 font-semibold bg-slate-100 border-b flex items-center justify-between">
-        <div>PCR | Shift 1</div>
+        <div className="flex items-center gap-3">
+          <Select value={selectedLineId} onValueChange={setSelectedLineId}>
+            <SelectTrigger className="w-[180px] h-8 font-semibold bg-white">
+              <SelectValue placeholder="Select Line" />
+            </SelectTrigger>
+            <SelectContent>
+              {PRODUCTION_LINES.map((line) => (
+                <SelectItem key={line.id} value={line.id}>
+                  {line.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <div className="flex items-center gap-4 text-xs font-normal">
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm bg-blue-500"></div>
@@ -27,7 +75,7 @@ export default function Page() {
       </div>
 
       {/* CONTENT */}
-      <ScheduleBoard />
+      <ScheduleBoard data={selectedLine.data} />
     </div>
   );
 }

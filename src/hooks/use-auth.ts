@@ -39,9 +39,7 @@ export function useAuth() {
             toast.success("Login berhasil");
             router.replace("/dashboard");
         },
-
         onError: (err) => {
-            console.log("🚀 ~ useAuth ~ err:", err)
             toast.error(
                 err.message ?? "Login gagal"
             );

@@ -6,14 +6,12 @@ import {
   LayoutDashboard,
   CalendarPlus,
   PlayCircle,
-  CheckCircle2,
   Users,
   Factory,
   Layers,
   Package,
-  Settings,
-  GalleryVerticalEnd,
   ShieldUser,
+  ChevronRight,
 } from "lucide-react";
 
 import {
@@ -21,6 +19,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -32,94 +31,95 @@ import {
 import { usePathname } from "next/navigation";
 import { CompanyLogo } from "../common/company-logo";
 import { NavUser } from "./nav-user";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
+
+type NavItem = {
+  subtitle: string;
+  url: string;
+  icon: React.ElementType;
+  items?: { // The '?' makes this optional
+    name: string;
+    url: string;
+    icon?: React.ElementType;
+  }[];
+};
+
+type NavGroup = {
+  title: string;
+  data: NavItem[];
+};
 
 // This is sample data.
-const data = {
-  navMain: [
-    {
-      title: "MAIN MENU",
-      url: "#",
-      items: [
-        {
-          title: "Dashboard",
-          url: "/dashboard",
-          icon: LayoutDashboard,
-        },
-        {
-          title: "New Schedule",
-          url: "/new-schedule",
-          icon: CalendarPlus,
-        },
-        {
-          title: "Schedule List",
-          url: "/schedules",
-          icon: LayoutDashboard,
-        },
-        // {
-        //   title: "Running Schedules",
-        //   url: "/schedules",
-        //   icon: PlayCircle,
-        // },
-        // {
-        //   title: "Completed Schedules",
-        //   url: "/schedules",
-        //   icon: CheckCircle2,
-        // },
-        {
-          title: "PPL List",
-          url: "/ppl",
-          icon: PlayCircle,
-        },
-      ],
-    },
-    {
-      title: "ADMINISTRATOR",
-      url: "#",
-      items: [
-        {
-          title: "Users",
-          url: "/admin/users",
-          icon: Users,
-        },
-        {
-          title: "Roles",
-          url: "/admin/roles",
-          icon: ShieldUser,
-        },
-        {
-          title: "Machines",
-          url: "/admin/machines",
-          icon: Factory,
-        },
-        {
-          title: "Lines",
-          url: "/admin/lines",
-          icon: Layers,
-        },
-        {
-          title: "Products",
-          url: "/admin/products",
-          icon: Package,
-        },
-        // {
-        //   title: "Materials",
-        //   url: "#",
-        //   icon: Layers,
-        // },
-        // {
-        //   title: "Parts",
-        //   url: "#",
-        //   icon: Package,
-        // },
-        // {
-        //   title: "Settings",
-        //   url: "#",
-        //   icon: Settings,
-        // },
-      ],
-    },
-  ],
-};
+const navMain: NavGroup[] = [
+  {
+    title: "MAIN MENU",
+    data: [
+      {
+        subtitle: "Main Dashboard",
+        url: "/dashboard",
+        icon: LayoutDashboard,
+        // items: [
+        //   {
+        //     name: "Dashboard",
+        //     url: "/dashboard",
+        //     icon: LayoutDashboard,
+        //   },
+        //   {
+        //     name: "PCR 1",
+        //     url: "/pcr-1",
+        //     icon: LayoutDashboard,
+        //   },
+        // ],
+      },
+      {
+        subtitle: "New Schedule",
+        url: "/new-schedule",
+        icon: CalendarPlus,
+      },
+      {
+        subtitle: "Schedule List",
+        url: "/schedules",
+        icon: LayoutDashboard,
+      },
+      {
+        subtitle: "PPL List",
+        url: "/ppl",
+        icon: PlayCircle,
+      },
+    ]
+  },
+  {
+    title: "ADMINISTRATOR",
+    data: [
+      {
+        subtitle: "Users",
+        url: "/admin/users",
+        icon: Users,
+      },
+      {
+        subtitle: "Roles",
+        url: "/admin/roles",
+        icon: ShieldUser,
+      },
+      {
+        subtitle: "Machines",
+        url: "/admin/machines",
+        icon: Factory,
+      },
+      {
+        subtitle: "Lines",
+        url: "/admin/lines",
+        icon: Layers,
+      },
+      {
+        subtitle: "Products",
+        url: "/admin/products",
+        icon: Package,
+      },
+    ]
+  }
+]
+
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
@@ -127,53 +127,73 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        {/* <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <GalleryVerticalEnd className="size-4" />
-                </div>
-                <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-medium">Documentation</span>
-                  <span className="">v1.0.0</span>
-                </div>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu> */}
         <CompanyLogo />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarMenu className="gap-2">
-            {data.navMain.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
-                  <a href={item.url} className="font-medium">
-                    {item.title}
-                  </a>
-                </SidebarMenuButton>
-                {item.items?.length ? (
-                  <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
-                    {item.items.map((item) => (
-                      <SidebarMenuSubItem key={item.title}>
-                        <SidebarMenuSubButton
-                          asChild
-                          isActive={pathname === item.url}
-                        >
-                          <a href={item.url}>
-                            <item.icon />
-                            <span>{item.title}</span>
-                          </a>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
-                  </SidebarMenuSub>
-                ) : null}
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
+          {navMain.map((item, index) => (
+            <div key={item.title} className={index === 0 ? "" : "mt-4"}>
+              <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+              <SidebarMenu>
+                {item.data.map((menu) => {
+                  const hasChildren = menu.items && menu.items.length > 0;
+
+                  if (hasChildren) {
+                    return (
+                      <Collapsible
+                        key={menu.subtitle}
+                        asChild
+                        defaultOpen={menu.items?.some(i => pathname === i.url)}
+                        className="group/collapsible"
+                      >
+                        <SidebarMenuItem>
+                          <CollapsibleTrigger asChild>
+                            <SidebarMenuButton tooltip={menu.subtitle}>
+                              {menu.icon && <menu.icon />}
+                              <span>{menu.subtitle}</span>
+                              <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                            </SidebarMenuButton>
+                          </CollapsibleTrigger>
+
+                          <CollapsibleContent>
+                            <SidebarMenuSub>
+                              {menu.items?.map((sub) => (
+                                <SidebarMenuSubItem key={sub.name}>
+                                  <SidebarMenuSubButton
+                                    asChild
+                                    isActive={pathname === sub.url}
+                                  >
+                                    <a href={sub.url}>
+                                      {/* {sub.icon && <sub.icon />} */}
+                                      <span>{sub.name}</span>
+                                    </a>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              ))}
+                            </SidebarMenuSub>
+                          </CollapsibleContent>
+                        </SidebarMenuItem>
+                      </Collapsible>
+                    );
+                  }
+
+                  // =====================
+                  // WITHOUT COLLAPSIBLE
+                  // =====================
+                  return (
+                    <SidebarMenuItem key={menu.subtitle}>
+                      <SidebarMenuButton asChild isActive={pathname === menu.url}>
+                        <a href={menu.url}>
+                          {menu.icon && <menu.icon />}
+                          <span>{menu.subtitle}</span>
+                        </a>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </div>
+          ))}
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>

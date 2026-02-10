@@ -1,29 +1,49 @@
 // dummy-schedule.ts
-export const scheduleBlocks = [
+export const scheduleBlocksLine1 = [
     {
         id: "line-1",
-        title: "PC-RADIAL LINE 1",
+        machine: "MC 1",
         shift: "08:00 - 16:00",
         rows: [
             {
-                mc: 10,
                 code: "4345",
-                qty: 750,
+                qty: 450,
+                stock: 120,
+                totalQty: 750,
+                startTime: "08:00",
+                endTime: "14:00",
                 start: 8,
-                end: 19,
+                end: 14,
                 remark: "",
                 phases: [
-                    { type: "building", start: 8, end: 10 },
-                    { type: "curing", start: 10, end: 13 },
-                    { type: "idle", start: 13, end: 14 },
+                    { type: "building", start: 8.25, end: 10 },
+                    { type: "buffer", start: 10, end: 10.20 },
+                    { type: "curing", start: 10.20, end: 13.25 },
+                    { type: "idle", start: 13.25, end: 14.25 },
+                ],
+            },
+            {
+                code: "4399",
+                qty: 300,
+                stock: 50,
+                totalQty: 750,
+                startTime: "14:00",
+                endTime: "19:00",
+                start: 14,
+                end: 19,
+                remark: "URGENT",
+                phases: [
                     { type: "curing", start: 14, end: 18 },
                     { type: "buffer", start: 18, end: 19 },
                 ],
             },
             {
-                mc: 20,
                 code: "4346",
                 qty: 750,
+                stock: 200,
+                totalQty: 1500,
+                startTime: "09:00",
+                endTime: "18:00",
                 start: 9,
                 end: 18,
                 remark: "",
@@ -40,28 +60,47 @@ export const scheduleBlocks = [
 
     {
         id: "line-2",
-        title: "PC-RADIAL LINE 2",
+        machine: "MC 2",
         shift: "08:00 - 16:00",
         rows: [
             {
-                mc: 11,
                 code: "4345",
-                qty: 750,
+                qty: 350,
+                stock: 80,
+                totalQty: 1000,
+                startTime: "08:00",
+                endTime: "12:00",
                 start: 8,
-                end: 17,
+                end: 12,
                 remark: "",
                 phases: [
                     { type: "building", start: 8, end: 10 },
                     { type: "curing", start: 10, end: 12 },
+                ],
+            },
+            {
+                code: "4617",
+                qty: 400,
+                stock: 150,
+                totalQty: 1000,
+                startTime: "12:00",
+                endTime: "17:00",
+                start: 12,
+                end: 17,
+                remark: "",
+                phases: [
                     { type: "idle", start: 12, end: 13 },
                     { type: "curing", start: 13, end: 16 },
                     { type: "buffer", start: 16, end: 17 },
                 ],
             },
             {
-                mc: 21,
                 code: "4617",
                 qty: 750,
+                stock: 300,
+                totalQty: 1500,
+                startTime: "09:00",
+                endTime: "19:00",
                 start: 9,
                 end: 19,
                 remark: "",
@@ -73,33 +112,21 @@ export const scheduleBlocks = [
                     { type: "buffer", start: 18, end: 19 },
                 ],
             },
-            {
-                mc: 48,
-                code: "4742",
-                qty: 750,
-                start: 8,
-                end: 16,
-                remark: "",
-                phases: [
-                    { type: "building", start: 8, end: 9.5 },
-                    { type: "curing", start: 9.5, end: 12 },
-                    { type: "idle", start: 12, end: 13 },
-                    { type: "curing", start: 13, end: 15 },
-                    { type: "buffer", start: 15, end: 16 },
-                ],
-            },
         ],
     },
 
     {
         id: "line-3",
-        title: "PC-RADIAL LINE 3",
+        machine: "MC 3",
         shift: "08:00 - 16:00",
         rows: [
             {
-                mc: 12,
                 code: "4392",
                 qty: 750,
+                stock: 40,
+                totalQty: 800,
+                startTime: "09:00",
+                endTime: "18:00",
                 start: 9,
                 end: 18,
                 remark: "",
@@ -116,13 +143,16 @@ export const scheduleBlocks = [
 
     {
         id: "line-4",
-        title: "PC-RADIAL LINE 4",
+        machine: "MC 4",
         shift: "08:00 - 16:00",
         rows: [
             {
-                mc: 13,
                 code: "4667",
                 qty: 750,
+                stock: 90,
+                totalQty: 1200,
+                startTime: "08:00",
+                endTime: "17:00",
                 start: 8,
                 end: 17,
                 remark: "",
@@ -139,13 +169,16 @@ export const scheduleBlocks = [
 
     {
         id: "line-5",
-        title: "PC-RADIAL LINE 5",
+        machine: "MC 5",
         shift: "08:00 - 16:00",
         rows: [
             {
-                mc: 14,
                 code: "4528",
                 qty: 750,
+                stock: 0,
+                totalQty: 750,
+                startTime: "09:00",
+                endTime: "15:00",
                 start: 9,
                 end: 15,
                 remark: "BESOK SHUTDOWN",
@@ -158,73 +191,57 @@ export const scheduleBlocks = [
             },
         ],
     },
-
+];
+export const scheduleBlocksLine2 = [
     {
-        id: "line-6",
-        title: "PC-RADIAL LINE 6",
+        id: "line-2-mc-11",
+        machine: "MC 11",
         shift: "08:00 - 16:00",
         rows: [
             {
-                mc: 15,
-                code: "4345",
-                qty: 750,
-                start: 8,
-                end: 18,
-                remark: "",
-                phases: [
-                    { type: "building", start: 8, end: 11 },
-                    { type: "curing", start: 11, end: 14 },
-                    { type: "idle", start: 14, end: 15 },
-                    { type: "curing", start: 15, end: 17 },
-                    { type: "buffer", start: 17, end: 18 },
-                ],
-            },
-        ],
-    },
-
-    {
-        id: "line-7",
-        title: "PC-RADIAL LINE 7",
-        shift: "08:00 - 16:00",
-        rows: [
-            {
-                mc: 16,
-                code: "4322",
-                qty: 750,
-                start: 9,
-                end: 19,
-                remark: "",
-                phases: [
-                    { type: "building", start: 9, end: 11 },
-                    { type: "curing", start: 11, end: 15 },
-                    { type: "idle", start: 15, end: 16 },
-                    { type: "curing", start: 16, end: 18 },
-                    { type: "buffer", start: 18, end: 19 },
-                ],
-            },
-        ],
-    },
-
-    {
-        id: "line-8",
-        title: "PC-RADIAL LINE 8",
-        shift: "08:00 - 16:00",
-        rows: [
-            {
-                mc: 17,
-                code: "4466",
-                qty: 750,
+                code: "4617",
+                qty: 600,
+                stock: 250,
+                totalQty: 1000,
+                startTime: "08:00",
+                endTime: "16:00",
                 start: 8,
                 end: 16,
                 remark: "",
                 phases: [
-                    { type: "building", start: 8, end: 9.5 },
-                    { type: "curing", start: 9.5, end: 12 },
-                    { type: "idle", start: 12, end: 13 },
-                    { type: "curing", start: 13, end: 15 },
-                    { type: "buffer", start: 15, end: 16 },
+                    { type: "building", start: 8, end: 11 },
+                    { type: "curing", start: 11, end: 15 },
+                    { type: "idle", start: 15, end: 16 },
                 ],
             },
         ],
     },
+    {
+        id: "line-2-mc-12",
+        machine: "MC 12",
+        shift: "08:00 - 16:00",
+        rows: [
+            {
+                code: "4742",
+                qty: 500,
+                stock: 100,
+                totalQty: 800,
+                startTime: "09:00",
+                endTime: "15:00",
+                start: 9,
+                end: 15,
+                remark: "",
+                phases: [
+                    { type: "building", start: 9, end: 11 },
+                    { type: "curing", start: 11, end: 14 },
+                    { type: "buffer", start: 14, end: 15 },
+                ],
+            },
+        ],
+    },
+];
+
+export const PRODUCTION_LINES = [
+    { id: "pcr-1", name: "PCR Line 1", data: scheduleBlocksLine1 },
+    { id: "pcr-2", name: "PCR Line 2", data: scheduleBlocksLine2 },
 ];
