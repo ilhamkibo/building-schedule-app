@@ -169,14 +169,21 @@ export default function ScheduleList() {
 
             {/* Creation Form Dialog */}
             <Dialog open={formOpen} onOpenChange={setFormOpen}>
-                <DialogContent className="sm:max-w-[800px]">
+                {/* <DialogContent className="sm:max-w-[800px]"> */}
+                {/* <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col"> */}
+                <DialogContent className="sm:max-w-[800px] h-[90vh] flex flex-col overflow-hidden">
                     <DialogHeader>
                         <DialogTitle>Create New Schedule</DialogTitle>
                         <DialogDescription>
                             Define the production schedule and its items.
                         </DialogDescription>
                     </DialogHeader>
-                    <ScheduleForm onCancel={() => setFormOpen(false)} onSuccess={() => setFormOpen(false)} />
+                    <div className="flex-1 overflow-y-auto pr-2">
+                        <ScheduleForm
+                            onCancel={() => setFormOpen(false)}
+                            onSuccess={() => setFormOpen(false)}
+                        />
+                    </div>
                 </DialogContent>
             </Dialog>
 

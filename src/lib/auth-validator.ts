@@ -15,7 +15,13 @@ export function getValidatedUser(): AuthUser | null {
             return null;
         }
 
-        return decoded as AuthUser;
+        const user: AuthUser = {
+            username: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] as string,
+            name: decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] as string,
+            role: decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] as string,
+        }
+
+        return user;
 
     } catch {
         Cookies.remove("access_token");

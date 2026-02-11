@@ -3,6 +3,7 @@ export interface Line {
     code: string;
     name: string | null;
     description: string | null;
+    machines: { code: string }[];
     createdAt: string;
     updatedAt: string;
 }

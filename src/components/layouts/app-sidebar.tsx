@@ -126,6 +126,7 @@ const navMain: NavGroup[] = [
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const { user, logout } = useAuthContext();
+  console.log("🚀 ~ AppSidebar ~ user:", user)
 
   return (
     <Sidebar {...props}>
