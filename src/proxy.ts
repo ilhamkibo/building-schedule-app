@@ -36,9 +36,9 @@ export function proxy(req: NextRequest) {
      * PUBLIC ROOT (/)
      * - kalau sudah login → redirect ke dashboard
      */
-    if (pathname === "/") {
+    if (pathname === "/login") {
         if (isAuthenticated) {
-            return NextResponse.redirect(new URL("/dashboard", req.url));
+            return NextResponse.redirect(new URL("/", req.url));
         }
         return response;
     }

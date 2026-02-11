@@ -20,6 +20,8 @@ import { toast } from "sonner";
 import { LoginSchema, loginSchema } from "@/validators/login-validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { CompanyLogo } from "@/components/common/company-logo";
+import Image from "next/image";
 
 export function LoginForm({
   className,
@@ -50,6 +52,19 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <div className="flex items-center gap-2">
+        <Image
+          src="/images/dunlop-logo.jpg"
+          alt="Sumi Rubber Indonesia Logo"
+          width={70}
+          height={70}
+          className="rounded-lg"
+        />
+        <div className="">
+          <h1 className="text-2xl font-bold">Building Schedule App</h1>
+          <h1 className="text-xl font-bold text-muted-foreground">PT. Sumi Rubber Indonesia</h1>
+        </div>
+      </div>
       <Card>
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>

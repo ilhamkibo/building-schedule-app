@@ -1,8 +1,7 @@
 "use client";
 
-import { getValidatedUser } from "@/lib/auth-validator";
 import { AuthUser } from "@/types/user";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 type AuthContextType = {
     user: AuthUser | null;

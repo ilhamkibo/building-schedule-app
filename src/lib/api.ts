@@ -33,7 +33,7 @@ api.interceptors.response.use(
             // optional: global logout
             Cookies.remove("access_token");
             if (typeof window !== "undefined") {
-                window.location.href = "/";
+                window.location.href = "/login";
             }
         }
         return Promise.reject(error.response?.data as ApiError);

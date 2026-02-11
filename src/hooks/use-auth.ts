@@ -37,7 +37,7 @@ export function useAuth() {
             setUser(res.data.user);
 
             toast.success("Login berhasil");
-            router.replace("/dashboard");
+            router.replace("/");
         },
         onError: (err) => {
             toast.error(

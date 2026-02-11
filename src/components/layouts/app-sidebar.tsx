@@ -32,6 +32,8 @@ import { usePathname } from "next/navigation";
 import { CompanyLogo } from "../common/company-logo";
 import { NavUser } from "./nav-user";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
+import { useAuthContext } from "@/context/auth-context";
+import { NavLogin } from "./nav-login";
 
 type NavItem = {
   subtitle: string;
@@ -56,7 +58,7 @@ const navMain: NavGroup[] = [
     data: [
       {
         subtitle: "Main Dashboard",
-        url: "/dashboard",
+        url: "/",
         icon: LayoutDashboard,
         // items: [
         //   {
@@ -123,6 +125,7 @@ const navMain: NavGroup[] = [
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
+  const { user, logout } = useAuthContext();
 
   return (
     <Sidebar {...props}>
@@ -197,7 +200,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser />
+        {user && <NavUser user={user} logout={logout} />}
+        {!user && <NavLogin />}
       </SidebarFooter>
     </Sidebar>
   );
