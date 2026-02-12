@@ -34,6 +34,7 @@ import { NavUser } from "./nav-user";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
 import { useAuthContext } from "@/context/auth-context";
 import { NavLogin } from "./nav-login";
+import Link from "next/link";
 
 type NavItem = {
   subtitle: string;
@@ -167,10 +168,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     asChild
                                     isActive={pathname === sub.url}
                                   >
-                                    <a href={sub.url}>
+                                    <Link href={sub.url}>
                                       {/* {sub.icon && <sub.icon />} */}
                                       <span>{sub.name}</span>
-                                    </a>
+                                    </Link>
                                   </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
                               ))}
@@ -187,10 +188,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   return (
                     <SidebarMenuItem key={menu.subtitle}>
                       <SidebarMenuButton asChild isActive={pathname === menu.url}>
-                        <a href={menu.url}>
+                        <Link href={menu.url}>
                           {menu.icon && <menu.icon />}
                           <span>{menu.subtitle}</span>
-                        </a>
+                        </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   );

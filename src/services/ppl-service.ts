@@ -1,9 +1,9 @@
 import { api } from "@/lib/api";
-import { PPL, CreatePPLRequest, UpdatePPLRequest } from "@/types/ppl";
-import { PaginatedResponse, PaginationParams } from "@/types/pagination";
+import { PPL, CreatePPLRequest, UpdatePPLRequest, PPLParams } from "@/types/ppl";
+import { PaginatedResponse } from "@/types/pagination";
 
 class PPLService {
-    async getAll(params?: PaginationParams): Promise<PaginatedResponse<PPL>> {
+    async getAll(params?: PPLParams): Promise<PaginatedResponse<PPL>> {
         const response = await api.get<PaginatedResponse<PPL>>("/PPLs", {
             params,
         });

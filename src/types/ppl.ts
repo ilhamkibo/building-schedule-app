@@ -1,3 +1,11 @@
+import { PaginationParams } from "./pagination";
+
+export interface PPLParams extends PaginationParams {
+    paginate?: boolean;
+    month?: number | string;
+    year?: number | string;
+}
+
 export interface PPL {
     id: number;
     createDateTime: string;

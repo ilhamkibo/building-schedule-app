@@ -78,13 +78,13 @@ export function LoginForm({
             <FieldGroup>
               <Field>
                 <FieldLabel>Username</FieldLabel>
-                <Input placeholder="Username" {...register("username")} />
+                <Input placeholder="Username" {...register("username")} value={"admin"} />
               </Field>
 
 
               <Field>
                 <FieldLabel>Password</FieldLabel>
-                <Input type="password" placeholder="Password" {...register("password")} />
+                <Input type="password" placeholder="Password" {...register("password")} value={"password"} />
               </Field>
 
               <Field>

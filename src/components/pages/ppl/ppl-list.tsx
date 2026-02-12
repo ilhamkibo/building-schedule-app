@@ -33,6 +33,15 @@ import { usePPLs, useDeletePPL, useCreatePPL, useUpdatePPL } from "@/hooks/use-p
 import { PPL } from "@/types/ppl";
 import PPLForm from "./ppl-form";
 import DataTablePagination from "@/components/common/data-table-pagination";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 export default function PPLList() {
     const [page, setPage] = useState(1);
@@ -43,6 +52,26 @@ export default function PPLList() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedPPL, setSelectedPPL] = useState<PPL | null>(null);
     const [deletePPL, setDeletePPL] = useState<PPL | null>(null);
+
+    const [month, setMonth] = useState<string | undefined>(undefined);
+    const [year, setYear] = useState<string | undefined>(new Date().getFullYear().toString());
+    const [paginate, setPaginate] = useState(true);
+
+    const years = Array.from({ length: 5 }, (_, i) => (new Date().getFullYear() - 2 + i).toString());
+    const months = [
+        { value: "1", label: "January" },
+        { value: "2", label: "February" },
+        { value: "3", label: "March" },
+        { value: "4", label: "April" },
+        { value: "5", label: "May" },
+        { value: "6", label: "June" },
+        { value: "7", label: "July" },
+        { value: "8", label: "August" },
+        { value: "9", label: "September" },
+        { value: "10", label: "October" },
+        { value: "11", label: "November" },
+        { value: "12", label: "December" },
+    ];
 
     /* debounce search */
     useEffect(() => {
@@ -57,6 +86,9 @@ export default function PPLList() {
         page,
         limit,
         search: debouncedSearch,
+        month: month ? parseInt(month) : undefined,
+        year: year ? parseInt(year) : undefined,
+        paginate
     });
 
     const createMutation = useCreatePPL({
@@ -105,14 +137,54 @@ export default function PPLList() {
         <div className="space-y-4 mx-auto max-w-5xl">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <div className="relative w-72">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        placeholder="Search PPL..."
-                        className="pl-9"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
+                <div className="flex flex-wrap items-center gap-3">
+                    <div className="relative w-64">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            placeholder="Search PPL..."
+                            className="pl-9"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
+
+                    <Select value={month} onValueChange={setMonth}>
+                        <SelectTrigger className="w-[140px]">
+                            <SelectValue placeholder="All Months" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="0">All Months</SelectItem>
+                            {months.map((m) => (
+                                <SelectItem key={m.value} value={m.value}>
+                                    {m.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                    <Select value={year} onValueChange={setYear}>
+                        <SelectTrigger className="w-[100px]">
+                            <SelectValue placeholder="Year" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {years.map((y) => (
+                                <SelectItem key={y} value={y}>
+                                    {y}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                    <div className="flex items-center space-x-2 bg-muted/50 px-3 py-1.5 rounded-md border">
+                        <Switch
+                            id="paginate-mode"
+                            checked={paginate}
+                            onCheckedChange={setPaginate}
+                        />
+                        <Label htmlFor="paginate-mode" className="text-xs font-medium cursor-pointer">
+                            Paginate
+                        </Label>
+                    </div>
                 </div>
 
                 <Button onClick={openCreate}>

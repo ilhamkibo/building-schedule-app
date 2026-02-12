@@ -9,15 +9,15 @@ import {
 import { AxiosError } from "axios";
 import { ApiError } from "../types/api-response";
 import { toast } from "sonner";
-import { PaginatedResponse, PaginationParams } from "../types/pagination";
+import { PaginatedResponse } from "../types/pagination";
 import { pplService } from "@/services/ppl-service";
-import { PPL, CreatePPLRequest, UpdatePPLRequest } from "@/types/ppl";
+import { PPL, CreatePPLRequest, UpdatePPLRequest, PPLParams } from "@/types/ppl";
 
 /**
  * Hook to fetch all PPLs with pagination
  */
 export function usePPLs(
-    params?: PaginationParams,
+    params?: PPLParams,
     options?: Omit<
         UseQueryOptions<PaginatedResponse<PPL>, AxiosError<ApiError>>,
         "queryKey" | "queryFn"

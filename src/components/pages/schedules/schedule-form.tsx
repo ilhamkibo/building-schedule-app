@@ -3,23 +3,20 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useSchedules, useCreateSchedule } from "@/hooks/use-schedule";
+import { useCreateSchedule } from "@/hooks/use-schedule";
 import { useProducts } from "@/hooks/use-product";
-import { useMachines } from "@/hooks/use-machine";
 import { useAuth } from "@/hooks/use-auth";
 import { CreateScheduleRequest, CreateScheduleItemRequest } from "@/types/schedule";
 import { useState, useEffect } from "react";
 import { Trash2, Plus, Search } from "lucide-react";
 import { toast } from "sonner";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Combobox, ComboboxCollection, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger, ComboboxValue } from "@/components/ui/combobox";
 import { FormCombobox } from "@/components/ui/form-combobox";
 import { useLines } from "@/hooks/use-line";
 
 export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => void, onSuccess: () => void }) {
     const { user } = useAuth();
-    const { data: lines = [] } = useLines({ limit: 100 });
-    const { data: products = [] } = useProducts({ limit: 100 });
+    const { data: lines } = useLines();
+    const { data: products = [] } = useProducts();
 
     const [selectedLineId, setSelectedLineId] = useState<number | undefined>(undefined);
     const [code, setCode] = useState(`SCH-${new Date().toISOString().slice(0, 10)}`);
@@ -28,7 +25,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
 
     useEffect(() => {
         if (selectedLineId) {
-            const selectedLine = lines.find(l => l.id === selectedLineId);
+            const selectedLine = lines?.find(l => l.id === selectedLineId);
             if (selectedLine && selectedLine.machines) {
                 const initialItems: CreateScheduleItemRequest[] = selectedLine.machines.map(m => ({
                     codeNo: "",
@@ -92,7 +89,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                         <FormCombobox
                             value={selectedLineId}
                             onChange={setSelectedLineId}
-                            options={lines.map(l => ({ ...l, name: l.name || l.code }))}
+                            options={lines?.map(l => ({ ...l, name: l.name || l.code }))}
                             placeholder="Select Line"
                             searchPlaceholder="Search Line"
                             emptyText="No lines found."

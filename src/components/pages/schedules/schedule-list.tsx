@@ -33,7 +33,9 @@ import { Plus, Search, Trash2, Eye, LayoutGrid } from "lucide-react";
 import { useSchedules, useDeleteSchedule } from "@/hooks/use-schedule";
 import { Schedule } from "@/types/schedule";
 import ScheduleForm from "./schedule-form";
+import PPLReferenceSidebar from "./ppl-reference-sidebar";
 import DataTablePagination from "@/components/common/data-table-pagination";
+import { usePPLs } from "@/hooks/use-ppl";
 
 export default function ScheduleList() {
     const router = useRouter();
@@ -45,6 +47,7 @@ export default function ScheduleList() {
     const [formOpen, setFormOpen] = useState(false);
     const [detailSchedule, setDetailSchedule] = useState<Schedule | null>(null);
     const [deleteSchedule, setDeleteSchedule] = useState<Schedule | null>(null);
+    const { data: ppls } = usePPLs({ limit: 1000 });
 
     /* debounce search */
     useEffect(() => {
@@ -72,6 +75,7 @@ export default function ScheduleList() {
             deleteMutation.mutate(deleteSchedule.id);
         }
     };
+
 
     return (
         <div className="space-y-4 mx-auto max-w-5xl">
@@ -171,18 +175,24 @@ export default function ScheduleList() {
             <Dialog open={formOpen} onOpenChange={setFormOpen}>
                 {/* <DialogContent className="sm:max-w-[800px]"> */}
                 {/* <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col"> */}
-                <DialogContent className="sm:max-w-[800px] h-[90vh] flex flex-col overflow-hidden">
+                <DialogContent className="sm:max-w-7xl h-[90vh] flex flex-col overflow-hidden">
                     <DialogHeader>
                         <DialogTitle>Create New Schedule</DialogTitle>
                         <DialogDescription>
                             Define the production schedule and its items.
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="flex-1 overflow-y-auto pr-2">
-                        <ScheduleForm
-                            onCancel={() => setFormOpen(false)}
-                            onSuccess={() => setFormOpen(false)}
-                        />
+                    <div className="flex overflow-hidden">
+                        <div className="w-[450px] border-r bg-muted/10 flex flex-col">
+                            <PPLReferenceSidebar ppls={ppls} />
+                        </div>
+
+                        <div className="flex-1 overflow-hidden px-4">
+                            <ScheduleForm
+                                onCancel={() => setFormOpen(false)}
+                                onSuccess={() => setFormOpen(false)}
+                            />
+                        </div>
                     </div>
                 </DialogContent>
             </Dialog>
