@@ -85,20 +85,20 @@ export default function ScheduleList() {
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search schedules..."
-                        className="pl-9"
+                        className="pl-9 dark:bg-sidebar"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
 
-                <Button onClick={() => setFormOpen(true)}>
+                <Button onClick={() => setFormOpen(true)} className="cursor-pointer">
                     <Plus className="mr-2 h-4 w-4" />
                     New Schedule
                 </Button>
             </div>
 
             {/* Table */}
-            <div className="rounded-md border">
+            <div className="rounded-md border bg-sidebar">
                 <Table>
                     <TableHeader>
                         <TableRow>

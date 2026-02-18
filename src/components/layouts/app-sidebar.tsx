@@ -75,11 +75,6 @@ const navMain: NavGroup[] = [
         // ],
       },
       {
-        subtitle: "New Schedule",
-        url: "/new-schedule",
-        icon: CalendarPlus,
-      },
-      {
         subtitle: "Schedule List",
         url: "/schedules",
         icon: LayoutDashboard,
@@ -127,7 +122,70 @@ const navMain: NavGroup[] = [
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const { user, logout } = useAuthContext();
-  console.log("🚀 ~ AppSidebar ~ user:", user)
+
+  // const filteredNavMain = React.useMemo(() => {
+  //   if (!user) return [];
+
+  //   const role = user.role.toLowerCase();
+
+  //   return navMain.map(group => {
+  //     const filteredData = group.data.filter(item => {
+  //       // Admin can see everything
+  //       if (role === "admin") return true;
+
+  //       // Viewer only sees Dashboard
+  //       if (role === "viewer") {
+  //         return item.url === "/";
+  //       }
+
+  //       // Creator sees Dashboard, PPL, and Schedules
+  //       if (role === "creator") {
+  //         const allowedPaths = ["/", "/ppl", "/schedules"];
+  //         return allowedPaths.includes(item.url);
+  //       }
+
+  //       return false;
+  //     });
+
+  //     return {
+  //       ...group,
+  //       data: filteredData
+  //     };
+  //   }).filter(group => group.data.length > 0);
+  // }, [user]);
+
+  const filteredNavMain = React.useMemo(() => {
+    // kalau belum login → treat sebagai viewer
+    const role = user?.role?.toLowerCase() ?? "viewer";
+
+    return navMain
+      .map((group) => {
+        const filteredData = group.data.filter((item) => {
+          // Admin bisa lihat semua
+          if (role === "admin") return true;
+
+          // Creator
+          if (role === "creator") {
+            const allowedPaths = ["/", "/ppl", "/schedules"];
+            return allowedPaths.includes(item.url);
+          }
+
+          // Viewer (default termasuk belum login)
+          if (role === "viewer") {
+            return item.url === "/";
+          }
+
+          return false;
+        });
+
+        return {
+          ...group,
+          data: filteredData,
+        };
+      })
+      .filter((group) => group.data.length > 0);
+  }, [user]);
+
 
   return (
     <Sidebar {...props}>
@@ -136,7 +194,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          {navMain.map((item, index) => (
+          {filteredNavMain.map((item, index) => (
             <div key={item.title} className={index === 0 ? "" : "mt-4"}>
               <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
               <SidebarMenu>
@@ -181,10 +239,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       </Collapsible>
                     );
                   }
-
-                  // =====================
-                  // WITHOUT COLLAPSIBLE
-                  // =====================
                   return (
                     <SidebarMenuItem key={menu.subtitle}>
                       <SidebarMenuButton asChild isActive={pathname === menu.url}>

@@ -85,7 +85,7 @@ export default function DataTablePagination({
             <div className="flex items-center gap-2">
                 <Button
                     variant="outline"
-                    className="hidden h-8 w-8 p-0 lg:flex"
+                    className="hidden h-8 w-8 p-0 lg:flex dark:bg-sidebar"
                     onClick={() => setPage(1)}
                     disabled={!pagination.hasPreviousPage}
                 >
@@ -94,7 +94,7 @@ export default function DataTablePagination({
                 </Button>
                 <Button
                     variant="outline"
-                    className="h-8 w-8 p-0"
+                    className="h-8 w-8 p-0 dark:bg-sidebar"
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={!pagination.hasPreviousPage}
                 >
@@ -109,7 +109,7 @@ export default function DataTablePagination({
                             variant={
                                 pagination.page === pageNumber ? "default" : "outline"
                             }
-                            className="h-8 w-8 p-0"
+                            className={`${pagination.page === pageNumber ? "bg-primary" : "dark:bg-sidebar"} h-8 w-8 p-0`}
                             onClick={() => setPage(pageNumber)}
                         >
                             {pageNumber}
@@ -119,7 +119,7 @@ export default function DataTablePagination({
 
                 <Button
                     variant="outline"
-                    className="h-8 w-8 p-0"
+                    className="h-8 w-8 p-0 dark:bg-sidebar"
                     onClick={() => setPage((p) => p + 1)}
                     disabled={!pagination.hasNextPage}
                 >
@@ -128,7 +128,7 @@ export default function DataTablePagination({
                 </Button>
                 <Button
                     variant="outline"
-                    className="hidden h-8 w-8 p-0 lg:flex"
+                    className="hidden h-8 w-8 p-0 lg:flex dark:bg-sidebar"
                     onClick={() => setPage(pagination.totalPages)}
                     disabled={!pagination.hasNextPage}
                 >

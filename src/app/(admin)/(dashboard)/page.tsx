@@ -39,10 +39,10 @@ export default function Page() {
 
   return (
     <div className="p-4">
-      <div className="px-4 mb-4 rounded-md py-2 font-semibold bg-slate-100 border-b flex items-center justify-between">
+      <div className="px-4 mb-4 rounded-md py-2 font-semibold bg-sidebar border-b dark:border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Select value={selectedLineId} onValueChange={setSelectedLineId}>
-            <SelectTrigger className="w-[180px] h-8 font-semibold bg-white">
+            <SelectTrigger className="w-[180px] h-8 font-semibold bg-background dark:border-slate-700">
               <SelectValue placeholder="Select Line" />
             </SelectTrigger>
             <SelectContent>
@@ -57,19 +57,19 @@ export default function Page() {
         <div className="flex items-center gap-4 text-xs font-normal">
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm bg-blue-500"></div>
-            <span>Building</span>
+            <span className="dark:text-slate-300">Building</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm bg-orange-400"></div>
-            <span>Curing</span>
+            <span className="dark:text-slate-300">Curing</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm bg-yellow-300"></div>
-            <span>Idle</span>
+            <span className="dark:text-slate-300">Idle</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm bg-pink-400"></div>
-            <span>Buffer</span>
+            <span className="dark:text-slate-300">Buffer</span>
           </div>
         </div>
       </div>

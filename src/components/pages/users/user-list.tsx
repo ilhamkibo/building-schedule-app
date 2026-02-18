@@ -93,20 +93,20 @@ export default function UserList() {
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search users..."
-                        className="pl-9"
+                        className="pl-9 dark:bg-sidebar"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
 
-                <Button onClick={openCreate}>
-                    <Plus className="mr-2 h-4 w-4" />
+                <Button onClick={openCreate} className="cursor-pointer">
+                    <Plus className="mr-2 h-4 w-4 " />
                     Add User
                 </Button>
             </div>
 
             {/* Table */}
-            <div className="rounded-md border">
+            <div className="rounded-md border dark:bg-sidebar">
                 <Table>
                     <TableHeader>
                         <TableRow>

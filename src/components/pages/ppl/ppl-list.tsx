@@ -139,16 +139,16 @@ export default function PPLList() {
             <div className="flex items-center justify-between">
                 <div className="flex flex-wrap items-center gap-3">
                     <div className="relative w-64">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground " />
                         <Input
                             placeholder="Search PPL..."
-                            className="pl-9"
+                            className="pl-9 dark:bg-sidebar"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
                     </div>
 
-                    <Select value={month} onValueChange={setMonth}>
+                    <Select value={month} onValueChange={setMonth} >
                         <SelectTrigger className="w-[140px]">
                             <SelectValue placeholder="All Months" />
                         </SelectTrigger>
@@ -194,7 +194,7 @@ export default function PPLList() {
             </div>
 
             {/* Table */}
-            <div className="rounded-md border overflow-x-auto">
+            <div className="rounded-md border overflow-x-auto dark:bg-sidebar">
                 <Table>
                     <TableHeader>
                         <TableRow>
