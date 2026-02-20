@@ -28,7 +28,7 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
-import { Plus, Search, Trash2, Pencil, Info } from "lucide-react";
+import { Plus, Search, Trash2, Pencil, Info, Eye } from "lucide-react";
 import {
     useProductRestrictions,
     useDeleteProductRestriction,
@@ -48,6 +48,7 @@ export default function ProductRestrictionList() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedRestriction, setSelectedRestriction] = useState<ProductRestriction | null>(null);
     const [deleteRestriction, setDeleteRestriction] = useState<ProductRestriction | null>(null);
+    const [detailRestriction, setDetailRestriction] = useState<ProductRestriction | null>(null);
 
     /* debounce search */
     useEffect(() => {
@@ -177,6 +178,13 @@ export default function ProductRestrictionList() {
                                     <Button
                                         size="icon"
                                         variant="ghost"
+                                        onClick={() => setDetailRestriction(item)}
+                                    >
+                                        <Eye className="h-4 w-4 text-blue-500" />
+                                    </Button>
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
                                         onClick={() => openEdit(item)}
                                     >
                                         <Pencil className="h-4 w-4" />
@@ -201,6 +209,47 @@ export default function ProductRestrictionList() {
                 setLimit={setLimit}
                 isLoading={isLoading}
             />
+
+            {/* Detail Dialog */}
+            <Dialog open={!!detailRestriction} onOpenChange={() => setDetailRestriction(null)}>
+                <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
+                        <DialogTitle>Restriction Details</DialogTitle>
+                        <DialogDescription>
+                            Complete information about product restriction
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    {detailRestriction && (
+                        <div className="space-y-4">
+                            <div>
+                                <p className="text-sm text-muted-foreground">Product Code</p>
+                                <p className="font-bold text-lg">{detailRestriction.codeNo}</p>
+                            </div>
+
+                            <div>
+                                <p className="text-sm text-muted-foreground mb-3">Restricted Machines</p>
+                                <div className="space-y-2">
+                                    {detailRestriction.details.length > 0 ? (
+                                        detailRestriction.details.map((d) => (
+                                            <div
+                                                key={d.id}
+                                                className="flex flex-col p-3 border rounded bg-red-50/50 border-red-100"
+                                            >
+                                                <span className="font-semibold text-red-700 text-sm">{d.machineCode} | {d.reason}</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-sm text-muted-foreground italic">
+                                            No machines restricted for this product.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
 
             {/* Dialog Create / Update */}
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
