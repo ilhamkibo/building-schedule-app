@@ -28,22 +28,26 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
-import { Plus, Search, Trash2, Pencil } from "lucide-react";
-import { useMachines, useDeleteMachine, useCreateMachine, useUpdateMachine } from "@/hooks/use-machine";
-import { toast } from "sonner";
-import { Machine } from "@/types/machine";
-import MachineForm from "./machine-form";
+import { Plus, Search, Trash2, Pencil, Info } from "lucide-react";
+import {
+    useProductRestrictions,
+    useDeleteProductRestriction,
+    useCreateProductRestriction,
+    useUpdateProductRestriction
+} from "@/hooks/use-product-restriction";
+import { ProductRestriction } from "@/types/product-restriction";
+import ProductRestrictionForm from "./product-restriction-form";
 import DataTablePagination from "@/components/common/data-table-pagination";
 
-export default function MachineList() {
+export default function ProductRestrictionList() {
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
 
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null);
-    const [deleteMachine, setDeleteMachine] = useState<Machine | null>(null);
+    const [selectedRestriction, setSelectedRestriction] = useState<ProductRestriction | null>(null);
+    const [deleteRestriction, setDeleteRestriction] = useState<ProductRestriction | null>(null);
 
     /* debounce search */
     useEffect(() => {
@@ -54,49 +58,49 @@ export default function MachineList() {
         return () => clearTimeout(t);
     }, [search]);
 
-    const { data: machines = [], pagination, isLoading } = useMachines({
+    const { data: restrictions = [], pagination, isLoading } = useProductRestrictions({
         page,
         limit,
         search: debouncedSearch,
     });
 
-    const createMutation = useCreateMachine({
+    const createMutation = useCreateProductRestriction({
         onSuccess: () => {
             setDialogOpen(false);
         },
     });
 
-    const updateMutation = useUpdateMachine({
+    const updateMutation = useUpdateProductRestriction({
         onSuccess: () => {
             setDialogOpen(false);
         },
     });
 
-    const deleteMutation = useDeleteMachine({
+    const deleteMutation = useDeleteProductRestriction({
         onSuccess: () => {
-            setDeleteMachine(null);
+            setDeleteRestriction(null);
         },
     });
 
     const openCreate = () => {
-        setSelectedMachine(null);
+        setSelectedRestriction(null);
         setDialogOpen(true);
     };
 
-    const openEdit = (machine: Machine) => {
-        setSelectedMachine(machine);
+    const openEdit = (restriction: ProductRestriction) => {
+        setSelectedRestriction(restriction);
         setDialogOpen(true);
     };
 
     const handleDelete = async () => {
-        if (deleteMachine) {
-            deleteMutation.mutate(deleteMachine.id);
+        if (deleteRestriction) {
+            deleteMutation.mutate(deleteRestriction.id);
         }
     };
 
     const handleSubmit = (payload: any) => {
-        if (selectedMachine) {
-            updateMutation.mutate({ id: selectedMachine.id, data: payload });
+        if (selectedRestriction) {
+            updateMutation.mutate({ id: selectedRestriction.id, data: payload });
         } else {
             createMutation.mutate(payload);
         }
@@ -109,7 +113,7 @@ export default function MachineList() {
                 <div className="relative w-72">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
-                        placeholder="Search machines..."
+                        placeholder="Search by product code..."
                         className="pl-9 dark:bg-sidebar"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
@@ -118,7 +122,7 @@ export default function MachineList() {
 
                 <Button onClick={openCreate} className="cursor-pointer">
                     <Plus className="mr-2 h-4 w-4" />
-                    Add Machine
+                    Add Restriction
                 </Button>
             </div>
 
@@ -127,10 +131,9 @@ export default function MachineList() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Code</TableHead>
-                            <TableHead>Machine Name</TableHead>
-                            <TableHead>Line</TableHead>
-                            <TableHead>Description</TableHead>
+                            <TableHead className="w-[60px]">No</TableHead>
+                            <TableHead>Product Code</TableHead>
+                            <TableHead>Restricted Machines</TableHead>
                             <TableHead className="w-[120px]">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -142,30 +145,46 @@ export default function MachineList() {
                             </TableRow>
                         )}
 
-                        {!isLoading && machines.length === 0 && (
+                        {!isLoading && restrictions.length === 0 && (
                             <TableRow>
-                                <TableCell className="text-center" colSpan={4}>No machines found</TableCell>
+                                <TableCell className="text-center" colSpan={4}>No restrictions found</TableCell>
                             </TableRow>
                         )}
 
-                        {machines.map((machine) => (
-                            <TableRow key={machine.id}>
-                                <TableCell className="font-medium">{machine.code}</TableCell>
-                                <TableCell>{machine.name ?? "-"}</TableCell>
-                                <TableCell>{machine.line?.name ?? "-"}</TableCell>
-                                <TableCell>{machine.description ?? "-"}</TableCell>
+                        {restrictions.map((item, index) => (
+                            <TableRow key={item.id}>
+                                <TableCell className="font-medium">{(page - 1) * limit + index + 1}</TableCell>
+                                <TableCell className="font-bold">{item.codeNo}</TableCell>
+                                <TableCell>
+                                    <div className="flex flex-wrap gap-1.5">
+                                        {item.details.map((d) => (
+                                            <div
+                                                key={d.id}
+                                                className="group relative flex items-center px-2 py-0.5 bg-red-50 text-red-700 border border-red-100 rounded text-xs"
+                                            >
+                                                <span className="font-semibold">{d.machineCode}</span>
+                                                {d.reason && (
+                                                    <span className="ml-1 opacity-60 italic">({d.reason})</span>
+                                                )}
+                                            </div>
+                                        ))}
+                                        {item.details.length === 0 && (
+                                            <span className="text-xs text-muted-foreground">-</span>
+                                        )}
+                                    </div>
+                                </TableCell>
                                 <TableCell className="flex gap-1">
                                     <Button
                                         size="icon"
                                         variant="ghost"
-                                        onClick={() => openEdit(machine)}
+                                        onClick={() => openEdit(item)}
                                     >
                                         <Pencil className="h-4 w-4" />
                                     </Button>
                                     <Button
                                         size="icon"
                                         variant="ghost"
-                                        onClick={() => setDeleteMachine(machine)}
+                                        onClick={() => setDeleteRestriction(item)}
                                     >
                                         <Trash2 className="h-4 w-4 text-red-500" />
                                     </Button>
@@ -185,20 +204,20 @@ export default function MachineList() {
 
             {/* Dialog Create / Update */}
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="sm:max-w-[500px]">
                     <DialogHeader>
                         <DialogTitle>
-                            {selectedMachine ? "Edit Machine" : "Create Machine"}
+                            {selectedRestriction ? "Edit Restriction" : "Add Restriction"}
                         </DialogTitle>
                         <DialogDescription>
-                            {selectedMachine
-                                ? "Update machine information"
-                                : "Create a new machine"}
+                            {selectedRestriction
+                                ? `Update restrictions for product ${selectedRestriction.codeNo}`
+                                : "Set machines that cannot process this product code"}
                         </DialogDescription>
                     </DialogHeader>
 
-                    <MachineForm
-                        machine={selectedMachine}
+                    <ProductRestrictionForm
+                        restriction={selectedRestriction}
                         onCancel={() => setDialogOpen(false)}
                         onSubmit={handleSubmit}
                         isLoading={createMutation.isPending || updateMutation.isPending}
@@ -207,13 +226,13 @@ export default function MachineList() {
             </Dialog>
 
             {/* Delete Confirmation */}
-            <AlertDialog open={!!deleteMachine} onOpenChange={() => setDeleteMachine(null)}>
+            <AlertDialog open={!!deleteRestriction} onOpenChange={() => setDeleteRestriction(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Delete machine?</AlertDialogTitle>
+                        <AlertDialogTitle>Delete restriction?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This action cannot be undone. Machine{" "}
-                            <b>{deleteMachine?.code}</b> will be permanently deleted.
+                            This action cannot be undone. All machine restrictions for product{" "}
+                            <b>{deleteRestriction?.codeNo}</b> will be removed.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

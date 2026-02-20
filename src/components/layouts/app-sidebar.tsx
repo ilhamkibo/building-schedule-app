@@ -11,6 +11,7 @@ import {
   Layers,
   Package,
   ShieldUser,
+  ShieldAlert,
   ChevronRight,
 } from "lucide-react";
 
@@ -113,6 +114,11 @@ const navMain: NavGroup[] = [
         subtitle: "Products",
         url: "/admin/products",
         icon: Package,
+      },
+      {
+        subtitle: "Product Restrictions",
+        url: "/admin/product-restrictions",
+        icon: ShieldAlert,
       },
     ]
   }

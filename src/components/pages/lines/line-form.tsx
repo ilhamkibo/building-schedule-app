@@ -10,7 +10,6 @@ interface LineFormProps {
     line: Line | null;
     onCancel: () => void;
     onSubmit: (payload: {
-        code: string;
         name: string | null;
         description: string | null;
     }) => void;
@@ -23,21 +22,11 @@ export default function LineForm({
     onSubmit,
     isLoading,
 }: LineFormProps) {
-    const [code, setCode] = useState(line?.code ?? "");
     const [name, setName] = useState(line?.name ?? "");
     const [description, setDescription] = useState(line?.description ?? "");
 
     return (
         <div className="space-y-4">
-            <div className="flex flex-col gap-2">
-                <Label>Line Code</Label>
-                <Input
-                    placeholder="e.g. L01"
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                />
-            </div>
-
             <div className="flex flex-col gap-2">
                 <Label>Line Name</Label>
                 <Input
@@ -66,8 +55,8 @@ export default function LineForm({
                     Cancel
                 </Button>
                 <Button
-                    onClick={() => onSubmit({ code, name, description })}
-                    disabled={isLoading || !code}
+                    onClick={() => onSubmit({ name, description })}
+                    disabled={isLoading || !name}
                 >
                     {isLoading ? "Saving..." : line ? "Update" : "Create"}
                 </Button>

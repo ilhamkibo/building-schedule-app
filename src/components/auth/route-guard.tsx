@@ -85,7 +85,7 @@ export default function RouteGuard({ children }: { children: React.ReactNode }) 
         });
 
         if (!isAuthorized) {
-            router.replace("/"); // lebih aman pakai replace
+            router.replace("/login"); // lebih aman pakai replace
         } else {
             setAuthorized(true);
         }

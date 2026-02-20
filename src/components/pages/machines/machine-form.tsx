@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Machine } from "@/types/machine";
+import { useLines } from "@/hooks/use-line";
+import { FormCombobox } from "@/components/ui/form-combobox";
 
 interface MachineFormProps {
     machine: Machine | null;
@@ -13,6 +15,7 @@ interface MachineFormProps {
         code: string;
         name: string | null;
         description: string | null;
+        lineId: number;
     }) => void;
     isLoading?: boolean;
 }
@@ -26,6 +29,10 @@ export default function MachineForm({
     const [code, setCode] = useState(machine?.code ?? "");
     const [name, setName] = useState(machine?.name ?? "");
     const [description, setDescription] = useState(machine?.description ?? "");
+    const [lineId, setLineId] = useState<number | "">(machine?.line?.id ?? "");
+
+    const { data: lines = [], isLoading: isLoadingLines } = useLines();
+    console.log("🚀 ~ MachineForm ~ lines:", lines)
 
     return (
         <div className="space-y-4">
@@ -48,6 +55,18 @@ export default function MachineForm({
             </div>
 
             <div className="flex flex-col gap-2">
+                <Label>Line</Label>
+                <FormCombobox
+                    options={lines.map((line) => ({
+                        id: line.id,
+                        name: line.name || line.code,
+                    }))}
+                    value={lineId || undefined}
+                    onChange={(val) => setLineId(val)}
+                />
+            </div>
+
+            <div className="flex flex-col gap-2">
                 <Label>Description</Label>
                 <textarea
                     placeholder="Enter machine description"
@@ -66,8 +85,15 @@ export default function MachineForm({
                     Cancel
                 </Button>
                 <Button
-                    onClick={() => onSubmit({ code, name, description })}
-                    disabled={isLoading || !code}
+                    onClick={() =>
+                        onSubmit({
+                            code,
+                            name,
+                            description,
+                            lineId: Number(lineId),
+                        })
+                    }
+                    disabled={isLoading || !code || !lineId}
                 >
                     {isLoading ? "Saving..." : machine ? "Update" : "Create"}
                 </Button>

@@ -33,6 +33,7 @@ import { useLines, useDeleteLine, useCreateLine, useUpdateLine } from "@/hooks/u
 import { Line } from "@/types/line";
 import LineForm from "./line-form";
 import DataTablePagination from "@/components/common/data-table-pagination";
+import { Eye } from "lucide-react";
 
 export default function LineList() {
     const [page, setPage] = useState(1);
@@ -43,6 +44,7 @@ export default function LineList() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedLine, setSelectedLine] = useState<Line | null>(null);
     const [deleteLine, setDeleteLine] = useState<Line | null>(null);
+    const [detailLine, setDetailLine] = useState<Line | null>(null);
 
     /* debounce search */
     useEffect(() => {
@@ -126,8 +128,9 @@ export default function LineList() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Code</TableHead>
+                            <TableHead>No</TableHead>
                             <TableHead>Line Name</TableHead>
+                            <TableHead>Machines</TableHead>
                             <TableHead>Description</TableHead>
                             <TableHead className="w-[120px]">Actions</TableHead>
                         </TableRow>
@@ -146,12 +149,55 @@ export default function LineList() {
                             </TableRow>
                         )}
 
-                        {lines.map((line) => (
+                        {lines.map((line, index) => (
                             <TableRow key={line.id}>
-                                <TableCell className="font-medium">{line.code}</TableCell>
+                                <TableCell className="font-medium">{index + 1}</TableCell>
                                 <TableCell>{line.name ?? "-"}</TableCell>
+                                <TableCell>
+                                    <div className="flex flex-wrap gap-1">
+                                        {line.machines.length <= 3 ? (
+                                            line.machines.map((m) => (
+                                                <span
+                                                    key={m.id}
+                                                    className="px-2 py-0.5 bg-muted rounded text-xs"
+                                                >
+                                                    {m.name}
+                                                </span>
+                                            ))
+                                        ) : (
+                                            <>
+                                                {/* 2 mesin pertama */}
+                                                {line.machines.slice(0, 3).map((m) => (
+                                                    <span
+                                                        key={m.id}
+                                                        className="px-2 py-0.5 bg-muted rounded text-xs"
+                                                    >
+                                                        {m.name}
+                                                    </span>
+                                                ))}
+
+
+
+                                                {/* mesin terakhir */}
+                                                <span
+                                                    key={line.machines[line.machines.length - 1].id}
+                                                    className="px-2 py-0.5 bg-muted rounded text-xs"
+                                                >
+                                                    +{line.machines.length - 3} more
+                                                </span>
+                                            </>
+                                        )}
+                                    </div>
+                                </TableCell>
                                 <TableCell>{line.description ?? "-"}</TableCell>
                                 <TableCell className="flex gap-1">
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() => setDetailLine(line)}
+                                    >
+                                        <Eye className="h-4 w-4 text-blue-500" />
+                                    </Button>
                                     <Button
                                         size="icon"
                                         variant="ghost"
@@ -179,6 +225,52 @@ export default function LineList() {
                 setLimit={setLimit}
                 isLoading={isLoading}
             />
+
+            {/* Detail Dialog */}
+            <Dialog open={!!detailLine} onOpenChange={() => setDetailLine(null)}>
+                <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
+                        <DialogTitle>Line Details</DialogTitle>
+                        <DialogDescription>
+                            Complete information about selected line
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    {detailLine && (
+                        <div className="space-y-4">
+                            <div>
+                                <p className="text-sm text-muted-foreground">Line Name</p>
+                                <p className="font-medium">{detailLine.name ?? "-"}</p>
+                            </div>
+
+                            <div>
+                                <p className="text-sm text-muted-foreground">Description</p>
+                                <p className="font-medium">{detailLine.description ?? "-"}</p>
+                            </div>
+
+                            <div>
+                                <p className="text-sm text-muted-foreground mb-2">Machines</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {detailLine.machines.length > 0 ? (
+                                        detailLine.machines.map((m) => (
+                                            <span
+                                                key={m.id}
+                                                className="px-2 py-1 bg-muted rounded text-xs"
+                                            >
+                                                {m.name}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <p className="text-sm text-muted-foreground">
+                                            No machines assigned
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
 
             {/* Dialog Create / Update */}
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -210,7 +302,7 @@ export default function LineList() {
                         <AlertDialogTitle>Delete line?</AlertDialogTitle>
                         <AlertDialogDescription>
                             This action cannot be undone. Line{" "}
-                            <b>{deleteLine?.code}</b> will be permanently deleted.
+                            <b>{deleteLine?.name}</b> will be permanently deleted.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
