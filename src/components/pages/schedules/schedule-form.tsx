@@ -89,7 +89,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                         <FormCombobox
                             value={selectedLineId}
                             onChange={setSelectedLineId}
-                            options={lines?.map(l => ({ ...l, name: l.name || l.code }))}
+                            options={lines?.map(l => ({ ...l, name: l.name || `Line ${l.id}` }))}
                             placeholder="Select Line"
                             searchPlaceholder="Search Line"
                             emptyText="No lines found."

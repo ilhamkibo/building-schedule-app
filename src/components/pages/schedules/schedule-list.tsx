@@ -47,7 +47,7 @@ export default function ScheduleList() {
     const [formOpen, setFormOpen] = useState(false);
     const [detailSchedule, setDetailSchedule] = useState<Schedule | null>(null);
     const [deleteSchedule, setDeleteSchedule] = useState<Schedule | null>(null);
-    const { data: ppls } = usePPLs({ limit: 1000 });
+    const { data: ppls } = usePPLs({ limit: 1000, isActive: true });
 
     /* debounce search */
     useEffect(() => {

@@ -4,6 +4,7 @@ export interface PPLParams extends PaginationParams {
     paginate?: boolean;
     month?: number | string;
     year?: number | string;
+    isActive?: boolean;
 }
 
 export interface PPL {

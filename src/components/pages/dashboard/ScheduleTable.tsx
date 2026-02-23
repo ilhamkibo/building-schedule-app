@@ -78,18 +78,19 @@ export function ScheduleBlock({ block }: { block: any }) {
                     <tbody className="bg-sidebar text-slate-700 dark:text-slate-300">
                         {block.rows.map((r: any, i: number) => (
                             <tr key={i} className="text-center h-8 hover:bg-slate-50 dark:hover:bg-slate-800/30">
-                                <td className="border dark:border-slate-800 p-1">14</td>
+                                <td className="border dark:border-slate-800 p-1">{r.rim || "-"}</td>
                                 <td className="border dark:border-slate-800 p-1 font-semibold">{r.code}</td>
-                                <td className="border dark:border-slate-800 p-1">39</td>
-                                <td className="border dark:border-slate-800 p-1">10</td>
-                                <td className="border dark:border-slate-800 p-1">08:10</td>
-                                <td className="border dark:border-slate-800 p-1">09:00 - 10:00</td>
-                                <td className="border dark:border-slate-800 p-1">-</td>
-                                <td className="border dark:border-slate-800 p-1">-</td>
-                                <td className="border dark:border-slate-800 p-1">{r.qty}</td>
+                                <td className="border dark:border-slate-800 p-1">{r.cureShift || "-"}</td>
+                                <td className="border dark:border-slate-800 p-1">{r.rcStock || "-"}</td>
+                                <td className="border dark:border-slate-800 p-1">{r.cureEst || "-"}</td>
+                                <td className="border dark:border-slate-800 p-1">{r.buildTime || "-"}</td>
+                                <td className="border dark:border-slate-800 p-1">{r.shiftNum === 1 ? r.qty : "-"}</td>
+                                <td className="border dark:border-slate-800 p-1">{r.shiftNum === 2 ? r.qty : "-"}</td>
+                                <td className="border dark:border-slate-800 p-1">{r.shiftNum === 3 ? r.qty : "-"}</td>
                                 <td className="border dark:border-slate-800 p-1 text-red-600 dark:text-red-400">{r.remark}</td>
                             </tr>
                         ))}
+
                     </tbody>
                 </table>
                 <ProductionGantt rows={block.rows} />

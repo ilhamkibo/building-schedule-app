@@ -56,6 +56,8 @@ export default function PPLList() {
     const [month, setMonth] = useState<string | undefined>(undefined);
     const [year, setYear] = useState<string | undefined>(new Date().getFullYear().toString());
     const [paginate, setPaginate] = useState(true);
+    const [isActive, setIsActive] = useState(true);
+
 
     const years = Array.from({ length: 5 }, (_, i) => (new Date().getFullYear() - 2 + i).toString());
     const months = [
@@ -86,10 +88,12 @@ export default function PPLList() {
         page,
         limit,
         search: debouncedSearch,
-        month: month ? parseInt(month) : undefined,
-        year: year ? parseInt(year) : undefined,
-        paginate
+        month: month && month !== "0" ? parseInt(month) : undefined,
+        year: year && year !== "0" ? parseInt(year) : undefined,
+        paginate,
+        isActive
     });
+
 
     const createMutation = useCreatePPL({
         onSuccess: () => {
@@ -148,7 +152,30 @@ export default function PPLList() {
                         />
                     </div>
 
-                    <Select value={month} onValueChange={setMonth} >
+                    <div className="flex items-center space-x-2 bg-muted/50 px-3 py-1.5 rounded-md border">
+                        <Switch
+                            id="active-mode"
+                            checked={isActive}
+                            onCheckedChange={(checked) => {
+                                setIsActive(checked);
+                                if (checked) {
+                                    setMonth("0");
+                                    setYear(undefined);
+                                }
+                            }}
+                        />
+                        <Label htmlFor="active-mode" className="text-xs font-medium cursor-pointer">
+                            Active Only
+                        </Label>
+                    </div>
+
+                    <Select
+                        value={month}
+                        onValueChange={(val) => {
+                            setMonth(val);
+                            if (val !== "0") setIsActive(false);
+                        }}
+                    >
                         <SelectTrigger className="w-[140px]">
                             <SelectValue placeholder="All Months" />
                         </SelectTrigger>
@@ -162,11 +189,18 @@ export default function PPLList() {
                         </SelectContent>
                     </Select>
 
-                    <Select value={year} onValueChange={setYear}>
+                    <Select
+                        value={year}
+                        onValueChange={(val) => {
+                            setYear(val);
+                            if (val) setIsActive(false);
+                        }}
+                    >
                         <SelectTrigger className="w-[100px]">
                             <SelectValue placeholder="Year" />
                         </SelectTrigger>
                         <SelectContent>
+                            <SelectItem value="0">All Years</SelectItem>
                             {years.map((y) => (
                                 <SelectItem key={y} value={y}>
                                     {y}
@@ -185,6 +219,7 @@ export default function PPLList() {
                             Paginate
                         </Label>
                     </div>
+
                 </div>
 
                 <Button onClick={openCreate}>
