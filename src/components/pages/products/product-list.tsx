@@ -28,10 +28,11 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
-import { Plus, Search, Trash2, Pencil } from "lucide-react";
+import { Plus, Search, Trash2, Pencil, Eye } from "lucide-react";
 import { useProducts, useDeleteProduct, useCreateProduct, useUpdateProduct } from "@/hooks/use-product";
 import { Product } from "@/types/product";
 import ProductForm from "./product-form";
+import ProductDetails from "./product-details";
 import DataTablePagination from "@/components/common/data-table-pagination";
 
 export default function ProductList() {
@@ -41,6 +42,7 @@ export default function ProductList() {
     const [debouncedSearch, setDebouncedSearch] = useState("");
 
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [detailsOpen, setDetailsOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [deleteProduct, setDeleteProduct] = useState<Product | null>(null);
 
@@ -87,6 +89,11 @@ export default function ProductList() {
         setDialogOpen(true);
     };
 
+    const openDetails = (product: Product) => {
+        setSelectedProduct(product);
+        setDetailsOpen(true);
+    };
+
     const handleDelete = async () => {
         if (deleteProduct) {
             deleteMutation.mutate(deleteProduct.id);
@@ -131,7 +138,7 @@ export default function ProductList() {
                             <TableHead>Source</TableHead>
                             <TableHead>Machines</TableHead>
                             <TableHead>Cycle Time</TableHead>
-                            <TableHead className="w-[120px]">Actions</TableHead>
+                            <TableHead className="w-[140px]">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
 
@@ -167,7 +174,16 @@ export default function ProductList() {
                                     <Button
                                         size="icon"
                                         variant="ghost"
+                                        onClick={() => openDetails(product)}
+                                        title="View Details"
+                                    >
+                                        <Eye className="h-4 w-4 text-blue-500" />
+                                    </Button>
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
                                         onClick={() => openEdit(product)}
+                                        title="Edit Product"
                                     >
                                         <Pencil className="h-4 w-4" />
                                     </Button>
@@ -175,6 +191,7 @@ export default function ProductList() {
                                         size="icon"
                                         variant="ghost"
                                         onClick={() => setDeleteProduct(product)}
+                                        title="Delete Product"
                                     >
                                         <Trash2 className="h-4 w-4 text-red-500" />
                                     </Button>
@@ -214,6 +231,27 @@ export default function ProductList() {
                     />
                 </DialogContent>
             </Dialog>
+
+            {/* Dialog Details */}
+            <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+                <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
+                        <DialogTitle>Product Details</DialogTitle>
+                        <DialogDescription>
+                            Full information for {selectedProduct?.codeNo}
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    {selectedProduct && <ProductDetails product={selectedProduct} />}
+
+                    <div className="flex justify-end pt-4">
+                        <Button variant="outline" onClick={() => setDetailsOpen(false)}>
+                            Close
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
 
             {/* Delete Confirmation */}
             <AlertDialog open={!!deleteProduct} onOpenChange={() => setDeleteProduct(null)}>

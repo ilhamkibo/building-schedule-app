@@ -56,7 +56,7 @@ export function ScheduleBlock({ block }: { block: any }) {
                 <span className="text-xs font-normal bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-500 dark:text-slate-400">{block.shift}</span>
             </div>
 
-            <div className="grid grid-cols-[1fr_500px]">
+            <div className="grid grid-cols-[1fr_900px]">
                 <table className="w-full text-xs border-r dark:border-slate-800">
                     <thead className="bg-background/50 dark:bg-background/10 text-slate-600 dark:text-slate-300">
                         <tr>
@@ -65,6 +65,7 @@ export function ScheduleBlock({ block }: { block: any }) {
                             <th className="border dark:border-slate-800 p-1" rowSpan={2}>Cure /shift</th>
                             <th className="border dark:border-slate-800 p-1" rowSpan={2}>R/C Stock</th>
                             <th className="border dark:border-slate-800 p-1" rowSpan={2}>Cure est.</th>
+                            <th className="border dark:border-slate-800 p-1" rowSpan={2}>B.O</th>
                             <th className="border dark:border-slate-800 p-1" rowSpan={2}>Building Start - Finish</th>
                             <th className="border dark:border-slate-800 p-1" colSpan={3}>Qty</th>
                             <th className="border dark:border-slate-800 p-1" rowSpan={2}>Remark</th>
@@ -83,6 +84,7 @@ export function ScheduleBlock({ block }: { block: any }) {
                                 <td className="border dark:border-slate-800 p-1">{r.cureShift || "-"}</td>
                                 <td className="border dark:border-slate-800 p-1">{r.rcStock || "-"}</td>
                                 <td className="border dark:border-slate-800 p-1">{r.cureEst || "-"}</td>
+                                <td className="border dark:border-slate-800 p-1">{r.balanceOut || "-"}</td>
                                 <td className="border dark:border-slate-800 p-1">{r.buildTime || "-"}</td>
                                 <td className="border dark:border-slate-800 p-1">{r.shiftNum === 1 ? r.qty : "-"}</td>
                                 <td className="border dark:border-slate-800 p-1">{r.shiftNum === 2 ? r.qty : "-"}</td>

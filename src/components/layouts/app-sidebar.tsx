@@ -13,7 +13,9 @@ import {
   ShieldUser,
   ShieldAlert,
   ChevronRight,
+  Clock,
 } from "lucide-react";
+
 
 import {
   Sidebar,
@@ -120,9 +122,15 @@ const navMain: NavGroup[] = [
         url: "/admin/product-restrictions",
         icon: ShieldAlert,
       },
+      {
+        subtitle: "Shift Time",
+        url: "/admin/shifts",
+        icon: Clock,
+      },
     ]
   }
 ]
+
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

@@ -8,6 +8,7 @@ export const scheduleBlocksLine1 = [
             // Shift 1 (08:00 - 16:00) - Multi Code
             {
                 code: "4345",
+                balanceOut: 100,
                 qty: 200,
                 stock: 120,
                 totalQty: 750,
@@ -29,6 +30,7 @@ export const scheduleBlocksLine1 = [
             },
             {
                 code: "4392",
+                balanceOut: 100,
                 qty: 250,
                 stock: 40,
                 totalQty: 800,
@@ -52,6 +54,7 @@ export const scheduleBlocksLine1 = [
             // Shift 2 (16:00 - 24:00)
             {
                 code: "4346",
+                balanceOut: 100,
                 qty: 750,
                 stock: 200,
                 totalQty: 1500,
@@ -75,6 +78,7 @@ export const scheduleBlocksLine1 = [
             // Shift 3 (24:00 - 08:00) - Multi Code
             {
                 code: "4399",
+                balanceOut: 100,
                 qty: 150,
                 stock: 50,
                 totalQty: 750,
@@ -96,6 +100,7 @@ export const scheduleBlocksLine1 = [
             },
             {
                 code: "4528",
+                balanceOut: 100,
                 qty: 150,
                 stock: 0,
                 totalQty: 750,
@@ -127,6 +132,7 @@ export const scheduleBlocksLine1 = [
             // Shift 1
             {
                 code: "4345",
+                balanceOut: 100,
                 qty: 350,
                 stock: 80,
                 totalQty: 1000,
@@ -150,6 +156,7 @@ export const scheduleBlocksLine1 = [
             // Shift 2 - Multi Code
             {
                 code: "4667",
+                balanceOut: 100,
                 qty: 300,
                 stock: 90,
                 totalQty: 1200,
@@ -172,6 +179,7 @@ export const scheduleBlocksLine1 = [
             },
             {
                 code: "4617",
+                balanceOut: 100,
                 qty: 450,
                 stock: 300,
                 totalQty: 1500,
@@ -194,6 +202,7 @@ export const scheduleBlocksLine1 = [
             // Shift 3
             {
                 code: "4617",
+                balanceOut: 100,
                 qty: 400,
                 stock: 150,
                 totalQty: 1000,
@@ -224,6 +233,7 @@ export const scheduleBlocksLine1 = [
         rows: [
             {
                 code: "4392",
+                balanceOut: 100,
                 qty: 250,
                 stock: 40,
                 totalQty: 800,
@@ -245,6 +255,7 @@ export const scheduleBlocksLine1 = [
             },
             {
                 code: "4617",
+                balanceOut: 100,
                 qty: 500,
                 stock: 40,
                 totalQty: 800,
@@ -267,6 +278,7 @@ export const scheduleBlocksLine1 = [
             },
             {
                 code: "4392",
+                balanceOut: 100,
                 qty: 750,
                 stock: 40,
                 totalQty: 800,
@@ -297,6 +309,7 @@ export const scheduleBlocksLine1 = [
         rows: [
             {
                 code: "4667",
+                balanceOut: 100,
                 qty: 750,
                 stock: 90,
                 totalQty: 1200,
@@ -320,6 +333,7 @@ export const scheduleBlocksLine1 = [
             },
             {
                 code: "4345",
+                balanceOut: 100,
                 qty: 750,
                 stock: 90,
                 totalQty: 1200,
@@ -342,6 +356,7 @@ export const scheduleBlocksLine1 = [
             },
             {
                 code: "4667",
+                balanceOut: 100,
                 qty: 750,
                 stock: 90,
                 totalQty: 1200,
@@ -372,6 +387,7 @@ export const scheduleBlocksLine1 = [
         rows: [
             {
                 code: "4528",
+                balanceOut: 100,
                 qty: 750,
                 stock: 0,
                 totalQty: 750,
@@ -395,6 +411,7 @@ export const scheduleBlocksLine1 = [
             },
             {
                 code: "4528",
+                balanceOut: 100,
                 qty: 750,
                 stock: 0,
                 totalQty: 750,
@@ -417,6 +434,7 @@ export const scheduleBlocksLine1 = [
             },
             {
                 code: "4528",
+                balanceOut: 100,
                 qty: 750,
                 stock: 0,
                 totalQty: 750,
@@ -449,6 +467,7 @@ export const scheduleBlocksLine2 = [
         rows: [
             {
                 code: "4617",
+                balanceOut: 100,
                 qty: 200,
                 stock: 250,
                 totalQty: 1000,
@@ -470,6 +489,7 @@ export const scheduleBlocksLine2 = [
             },
             {
                 code: "4345",
+                balanceOut: 100,
                 qty: 400,
                 stock: 250,
                 totalQty: 1000,
@@ -492,6 +512,7 @@ export const scheduleBlocksLine2 = [
             },
             {
                 code: "4617",
+                balanceOut: 100,
                 qty: 600,
                 stock: 250,
                 totalQty: 1000,
@@ -514,6 +535,7 @@ export const scheduleBlocksLine2 = [
             },
             {
                 code: "4617",
+                balanceOut: 100,
                 qty: 600,
                 stock: 250,
                 totalQty: 1000,
@@ -543,6 +565,7 @@ export const scheduleBlocksLine2 = [
         rows: [
             {
                 code: "4742",
+                balanceOut: 100,
                 qty: 500,
                 stock: 100,
                 totalQty: 800,
@@ -565,6 +588,7 @@ export const scheduleBlocksLine2 = [
             },
             {
                 code: "4742",
+                balanceOut: 100,
                 qty: 250,
                 stock: 100,
                 totalQty: 800,
@@ -586,6 +610,7 @@ export const scheduleBlocksLine2 = [
             },
             {
                 code: "4346",
+                balanceOut: 100,
                 qty: 250,
                 stock: 100,
                 totalQty: 800,
@@ -607,6 +632,7 @@ export const scheduleBlocksLine2 = [
             },
             {
                 code: "4742",
+                balanceOut: 100,
                 qty: 500,
                 stock: 100,
                 totalQty: 800,
