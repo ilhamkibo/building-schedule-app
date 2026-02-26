@@ -11,16 +11,16 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+// import {
+//     AlertDialog,
+//     AlertDialogAction,
+//     AlertDialogCancel,
+//     AlertDialogContent,
+//     AlertDialogDescription,
+//     AlertDialogFooter,
+//     AlertDialogHeader,
+//     AlertDialogTitle,
+// } from "@/components/ui/alert-dialog";
 import {
     Dialog,
     DialogContent,
@@ -28,10 +28,9 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
-import { Plus, Search, Trash2, Pencil, Eye } from "lucide-react";
+import { Search, Trash2, Pencil, Eye } from "lucide-react";
 import { useProducts, useDeleteProduct, useCreateProduct, useUpdateProduct } from "@/hooks/use-product";
 import { Product } from "@/types/product";
-import ProductForm from "./product-form";
 import ProductDetails from "./product-details";
 import DataTablePagination from "@/components/common/data-table-pagination";
 
@@ -41,10 +40,10 @@ export default function ProductList() {
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
 
-    const [dialogOpen, setDialogOpen] = useState(false);
+    // const [deleteProduct, setDeleteProduct] = useState<Product | null>(null);
+    // const [dialogOpen, setDialogOpen] = useState(false);
     const [detailsOpen, setDetailsOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-    const [deleteProduct, setDeleteProduct] = useState<Product | null>(null);
 
     /* debounce search */
     useEffect(() => {
@@ -61,52 +60,52 @@ export default function ProductList() {
         search: debouncedSearch,
     });
 
-    const createMutation = useCreateProduct({
-        onSuccess: () => {
-            setDialogOpen(false);
-        },
-    });
+    // const createMutation = useCreateProduct({
+    //     onSuccess: () => {
+    //         setDialogOpen(false);
+    //     },
+    // });
 
-    const updateMutation = useUpdateProduct({
-        onSuccess: () => {
-            setDialogOpen(false);
-        },
-    });
+    // const updateMutation = useUpdateProduct({
+    //     onSuccess: () => {
+    //         setDialogOpen(false);
+    //     },
+    // });
 
-    const deleteMutation = useDeleteProduct({
-        onSuccess: () => {
-            setDeleteProduct(null);
-        },
-    });
+    // const deleteMutation = useDeleteProduct({
+    //     onSuccess: () => {
+    //         setDeleteProduct(null);
+    //     },
+    // });
 
-    const openCreate = () => {
-        setSelectedProduct(null);
-        setDialogOpen(true);
-    };
+    // const openCreate = () => {
+    //     setSelectedProduct(null);
+    //     setDialogOpen(true);
+    // };
 
-    const openEdit = (product: Product) => {
-        setSelectedProduct(product);
-        setDialogOpen(true);
-    };
+    // const openEdit = (product: Product) => {
+    //     setSelectedProduct(product);
+    //     setDialogOpen(true);
+    // };
 
     const openDetails = (product: Product) => {
         setSelectedProduct(product);
         setDetailsOpen(true);
     };
 
-    const handleDelete = async () => {
-        if (deleteProduct) {
-            deleteMutation.mutate(deleteProduct.id);
-        }
-    };
+    // const handleDelete = async () => {
+    //     if (deleteProduct) {
+    //         deleteMutation.mutate(deleteProduct.id);
+    //     }
+    // };
 
-    const handleSubmit = (payload: any) => {
-        if (selectedProduct) {
-            updateMutation.mutate({ id: selectedProduct.id, data: payload });
-        } else {
-            createMutation.mutate(payload);
-        }
-    };
+    // const handleSubmit = (payload: any) => {
+    //     if (selectedProduct) {
+    //         updateMutation.mutate({ id: selectedProduct.id, data: payload });
+    //     } else {
+    //         createMutation.mutate(payload);
+    //     }
+    // };
 
     return (
         <div className="space-y-4 max-w-5xl mx-auto">
@@ -122,10 +121,10 @@ export default function ProductList() {
                     />
                 </div>
 
-                <Button onClick={openCreate} className="cursor-pointer">
+                {/* <Button onClick={openCreate} className="cursor-pointer">
                     <Plus className="mr-2 h-4 w-4" />
                     Add Product
-                </Button>
+                </Button> */}
             </div>
 
             {/* Table */}
@@ -156,7 +155,7 @@ export default function ProductList() {
                         )}
 
                         {products.map((product) => (
-                            <TableRow key={product.id}>
+                            <TableRow key={product.codeNo}>
                                 <TableCell className="font-medium">{product.codeNo}</TableCell>
                                 <TableCell>{product.sizeName}</TableCell>
                                 <TableCell>{product.source}</TableCell>
@@ -179,22 +178,22 @@ export default function ProductList() {
                                     >
                                         <Eye className="h-4 w-4 text-blue-500" />
                                     </Button>
-                                    <Button
+                                    {/* <Button
                                         size="icon"
                                         variant="ghost"
                                         onClick={() => openEdit(product)}
                                         title="Edit Product"
                                     >
                                         <Pencil className="h-4 w-4" />
-                                    </Button>
-                                    <Button
+                                    </Button> */}
+                                    {/* <Button
                                         size="icon"
                                         variant="ghost"
                                         onClick={() => setDeleteProduct(product)}
                                         title="Delete Product"
                                     >
                                         <Trash2 className="h-4 w-4 text-red-500" />
-                                    </Button>
+                                    </Button> */}
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -210,7 +209,7 @@ export default function ProductList() {
             />
 
             {/* Dialog Create / Update */}
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            {/* <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
                         <DialogTitle>
@@ -230,7 +229,7 @@ export default function ProductList() {
                         isLoading={createMutation.isPending || updateMutation.isPending}
                     />
                 </DialogContent>
-            </Dialog>
+            </Dialog> */}
 
             {/* Dialog Details */}
             <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
@@ -254,7 +253,7 @@ export default function ProductList() {
 
 
             {/* Delete Confirmation */}
-            <AlertDialog open={!!deleteProduct} onOpenChange={() => setDeleteProduct(null)}>
+            {/* <AlertDialog open={!!deleteProduct} onOpenChange={() => setDeleteProduct(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete product?</AlertDialogTitle>
@@ -274,7 +273,7 @@ export default function ProductList() {
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
-            </AlertDialog>
+            </AlertDialog> */}
         </div>
     );
 }

@@ -14,6 +14,8 @@ import {
   ShieldAlert,
   ChevronRight,
   Clock,
+  Tags,
+  CalendarCheck,
 } from "lucide-react";
 
 
@@ -64,28 +66,33 @@ const navMain: NavGroup[] = [
         subtitle: "Main Dashboard",
         url: "/",
         icon: LayoutDashboard,
-        // items: [
-        //   {
-        //     name: "Dashboard",
-        //     url: "/dashboard",
-        //     icon: LayoutDashboard,
-        //   },
-        //   {
-        //     name: "PCR 1",
-        //     url: "/pcr-1",
-        //     icon: LayoutDashboard,
-        //   },
-        // ],
       },
       {
-        subtitle: "Schedule List",
+        subtitle: "Schedules",
         url: "/schedules",
-        icon: LayoutDashboard,
+        icon: CalendarCheck,
+        items: [
+          {
+            name: "Schedule List",
+            url: "/schedules",
+            icon: CalendarCheck,
+          },
+          {
+            name: "Create Schedule",
+            url: "/schedules/create",
+            icon: CalendarCheck,
+          },
+        ],
       },
       {
         subtitle: "PPL List",
         url: "/ppl",
         icon: PlayCircle,
+      },
+      {
+        subtitle: "PPC List",
+        url: "/ppc",
+        icon: Package,
       },
     ]
   },
@@ -111,6 +118,11 @@ const navMain: NavGroup[] = [
         subtitle: "Lines",
         url: "/admin/lines",
         icon: Layers,
+      },
+      {
+        subtitle: "Categories",
+        url: "/admin/categories",
+        icon: Tags,
       },
       {
         subtitle: "Products",
@@ -269,7 +281,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           ))}
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="mb-3">
         {user && <NavUser user={user} logout={logout} />}
         {!user && <NavLogin />}
       </SidebarFooter>

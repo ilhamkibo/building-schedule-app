@@ -52,50 +52,52 @@ export function ScheduleBlock({ block }: { block: any }) {
             className="border dark:border-slate-800 rounded bg-sidebar shadow-sm cursor-grab overflow-hidden"
         >
             <div className="px-4 py-2 font-bold bg-background/30 dark:bg-background/10 border-b dark:border-slate-800 flex justify-between items-center text-slate-600 dark:text-slate-300">
-                <span>{block.machine}</span>
+                <span>MC {block.machine}</span>
                 <span className="text-xs font-normal bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-500 dark:text-slate-400">{block.shift}</span>
             </div>
 
-            <div className="grid grid-cols-[1fr_900px]">
-                <table className="w-full text-xs border-r dark:border-slate-800">
-                    <thead className="bg-background/50 dark:bg-background/10 text-slate-600 dark:text-slate-300">
-                        <tr>
-                            <th className="border dark:border-slate-800 p-1" rowSpan={2}>RIM</th>
-                            <th className="border dark:border-slate-800 p-1" rowSpan={2}>Code</th>
-                            <th className="border dark:border-slate-800 p-1" rowSpan={2}>Cure /shift</th>
-                            <th className="border dark:border-slate-800 p-1" rowSpan={2}>R/C Stock</th>
-                            <th className="border dark:border-slate-800 p-1" rowSpan={2}>Cure est.</th>
-                            <th className="border dark:border-slate-800 p-1" rowSpan={2}>B.O</th>
-                            <th className="border dark:border-slate-800 p-1" rowSpan={2}>Building Start - Finish</th>
-                            <th className="border dark:border-slate-800 p-1" colSpan={3}>Qty</th>
-                            <th className="border dark:border-slate-800 p-1" rowSpan={2}>Remark</th>
-                        </tr>
-                        <tr>
-                            <th className="border dark:border-slate-800 p-1">Shift 1</th>
-                            <th className="border dark:border-slate-800 p-1">Shift 2</th>
-                            <th className="border dark:border-slate-800 p-1">Shift 3</th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-sidebar text-slate-700 dark:text-slate-300">
-                        {block.rows.map((r: any, i: number) => (
-                            <tr key={i} className="text-center h-8 hover:bg-slate-50 dark:hover:bg-slate-800/30">
-                                <td className="border dark:border-slate-800 p-1">{r.rim || "-"}</td>
-                                <td className="border dark:border-slate-800 p-1 font-semibold">{r.code}</td>
-                                <td className="border dark:border-slate-800 p-1">{r.cureShift || "-"}</td>
-                                <td className="border dark:border-slate-800 p-1">{r.rcStock || "-"}</td>
-                                <td className="border dark:border-slate-800 p-1">{r.cureEst || "-"}</td>
-                                <td className="border dark:border-slate-800 p-1">{r.balanceOut || "-"}</td>
-                                <td className="border dark:border-slate-800 p-1">{r.buildTime || "-"}</td>
-                                <td className="border dark:border-slate-800 p-1">{r.shiftNum === 1 ? r.qty : "-"}</td>
-                                <td className="border dark:border-slate-800 p-1">{r.shiftNum === 2 ? r.qty : "-"}</td>
-                                <td className="border dark:border-slate-800 p-1">{r.shiftNum === 3 ? r.qty : "-"}</td>
-                                <td className="border dark:border-slate-800 p-1 text-red-600 dark:text-red-400">{r.remark}</td>
+            <div className="w-full max-w-full overflow-x-auto">
+                <div className="grid grid-cols-[1fr_700px] min-w-[1350px]">
+                    <table className="w-full text-xs border-r dark:border-slate-800">
+                        <thead className="bg-background/50 dark:bg-background/10 text-slate-600 dark:text-slate-300">
+                            <tr>
+                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>RIM</th>
+                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>Code</th>
+                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>Cure /shift</th>
+                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>R/C Stock</th>
+                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>Cure est.</th>
+                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>B.O</th>
+                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>Building Start - Finish</th>
+                                <th className="border dark:border-slate-800 p-1" colSpan={3}>Qty</th>
+                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>Remark</th>
                             </tr>
-                        ))}
+                            <tr>
+                                <th className="border dark:border-slate-800 p-1">Shift 1</th>
+                                <th className="border dark:border-slate-800 p-1">Shift 2</th>
+                                <th className="border dark:border-slate-800 p-1">Shift 3</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-sidebar text-slate-700 dark:text-slate-300">
+                            {block.rows.map((r: any, i: number) => (
+                                <tr key={i} className="text-center h-8 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                                    <td className="border dark:border-slate-800 p-1">{r.rim || "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1 font-semibold">{r.code}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.cureShift || "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.rcStock || "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.cureEst || "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.balanceOut || "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.buildTime || "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.shift1Qty ?? "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.shift2Qty ?? "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.shift3Qty ?? "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1 text-red-600 dark:text-red-400">{r.remark}</td>
+                                </tr>
+                            ))}
 
-                    </tbody>
-                </table>
-                <ProductionGantt rows={block.rows} />
+                        </tbody>
+                    </table>
+                    <ProductionGantt rows={block.rows} />
+                </div>
             </div>
         </div>
     );
@@ -110,7 +112,7 @@ const PHASE_COLOR: Record<string, string> = {
 
 
 function GanttRow({ phases }: { phases: any[] }) {
-    const hours = Array.from({ length: 24 }, (_, i) => i + 8);
+    const hours = Array.from({ length: 24 }, (_, i) => i + 7);
     return (
         <div className="relative h-8 border-b dark:border-slate-800">
             <div className="absolute inset-0 grid grid-cols-24">
@@ -123,7 +125,7 @@ function GanttRow({ phases }: { phases: any[] }) {
                     key={i}
                     className={`absolute h-5 top-1 rounded opacity-90 ${PHASE_COLOR[p.type as string] || "bg-slate-300 dark:bg-slate-600"}`}
                     style={{
-                        left: `${((p.start - 8) / 24) * 100}%`,
+                        left: `${((p.start - 7) / 24) * 100}%`,
                         width: `${((p.end - p.start) / 24) * 100}%`,
                     }}
                 />
@@ -133,9 +135,9 @@ function GanttRow({ phases }: { phases: any[] }) {
 }
 
 function TimelineHeader() {
-    const hours = Array.from({ length: 24 }, (_, i) => i + 8);
+    const hours = Array.from({ length: 24 }, (_, i) => i + 7);
     return (
-        <div className="grid grid-cols-24 text-[12px] text-center border-b dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400">
+        <div className="grid grid-cols-24 text-sm h-12.75 text-center border-b dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400">
             {hours.map((h) => (
                 <div key={h} className="border-r dark:border-slate-800 py-3.75">
                     {h > 24 ? h - 24 : h}

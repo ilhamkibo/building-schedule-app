@@ -222,10 +222,10 @@ export default function PPLList() {
 
                 </div>
 
-                <Button onClick={openCreate}>
+                {/* <Button onClick={openCreate}>
                     <Plus className="mr-2 h-4 w-4" />
                     Add PPL Entry
-                </Button>
+                </Button> */}
             </div>
 
             {/* Table */}

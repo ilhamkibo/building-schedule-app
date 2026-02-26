@@ -1,5 +1,4 @@
 export interface Product {
-    id: number;
     codeNo: string;
     sizeName: string;
     source: string;
@@ -13,8 +12,10 @@ export interface Product {
     qtyScrap: number;
     faStock: number;
     curingTimeSeconds: number;
-    createdAt: string;
-    updatedAt: string;
+    tireInch: number;
+    beadRingDiameter: number;
+    formerWidth: number;
+    rim: number;
 }
 
 export interface CreateProductRequest {

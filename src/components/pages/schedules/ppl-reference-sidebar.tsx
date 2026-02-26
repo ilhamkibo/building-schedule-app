@@ -146,9 +146,9 @@ export default function PPLReferenceSidebar({ ppls }: PPLReferenceSidebarProps) 
                             </tr>
                         </thead>
                         <tbody className="divide-y bg-background/30">
-                            {filteredPPLs.map((ppl) => (
+                            {filteredPPLs.map((ppl, index) => (
                                 <tr
-                                    key={ppl.id}
+                                    key={`${ppl.id}-${ppl.tireCode}-${ppl.build}-${index}`}
                                     className="hover:bg-primary/5 transition-colors cursor-default"
                                 >
                                     <td className="px-2 py-2">

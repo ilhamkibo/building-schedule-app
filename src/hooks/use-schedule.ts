@@ -11,7 +11,7 @@ import { ApiError, ApiResponse } from "../types/api-response";
 import { toast } from "sonner";
 import { PaginatedResponse, PaginationParams } from "../types/pagination";
 import { scheduleService } from "@/services/schedule-service";
-import { Schedule, CreateScheduleRequest, UpdateScheduleRequest, ScheduleBoard } from "@/types/schedule";
+import { Schedule, CreateScheduleRequest, UpdateScheduleRequest, ScheduleBoard, TodayCategorySchedule } from "@/types/schedule";
 
 /**
  * Hook to fetch all Schedules with pagination
@@ -69,8 +69,9 @@ export function useCreateSchedule(options?: {
             options?.onSuccess?.(data);
         },
         onError: (error) => {
+            console.log("🚀 ~ useCreateSchedule ~ error:", error)
             const errorMessage =
-                error.response?.data?.message || "Failed to create schedule.";
+                error.message || "Failed to create schedule.";
             toast.error(errorMessage);
             options?.onError?.(error);
         },
@@ -132,5 +133,20 @@ export function useDeleteSchedule(options?: {
             toast.error(errorMessage);
             options?.onError?.(error);
         },
+    });
+}
+
+/**
+ * Hook to fetch today's category schedule
+ */
+export function useTodayCategorySchedule(
+    categoryNo: number,
+    options?: Omit<UseQueryOptions<ApiResponse<TodayCategorySchedule>, AxiosError<ApiError>>, "queryKey" | "queryFn">
+) {
+    return useQuery<ApiResponse<TodayCategorySchedule>, AxiosError<ApiError>>({
+        queryKey: ["schedules", "today-category", categoryNo],
+        queryFn: () => scheduleService.getTodayCategorySchedule(categoryNo),
+        enabled: !!categoryNo,
+        ...options,
     });
 }

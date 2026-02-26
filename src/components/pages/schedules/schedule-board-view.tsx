@@ -1,6 +1,10 @@
-"use client";
+import {
+    ScheduleBoard,
+    MachineBoardDetail,
+    ScheduleBoardDetailItem,
+    BoardTimelineItem,
+} from "@/types/schedule";
 
-import { ScheduleBoard, Shift, MachineSchedule, ScheduleBoardItem } from "@/types/schedule";
 import {
     Table,
     TableBody,
@@ -9,178 +13,215 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 interface ScheduleBoardViewProps {
     board: ScheduleBoard;
 }
 
-export default function ScheduleBoardView({ board }: ScheduleBoardViewProps) {
-    if (!board || !board.shifts) {
-        return <div className="text-center py-10 text-muted-foreground">No board data available.</div>;
+export default function ScheduleBoardView({
+    board,
+}: ScheduleBoardViewProps) {
+    if (!board) {
+        return (
+            <div className="text-center py-20 text-muted-foreground">
+                No board data available.
+            </div>
+        );
     }
 
-    const shiftsByDate = board.shifts.reduce<Record<string, Shift[]>>(
-        (acc, shift) => {
-            if (!acc[shift.shiftDate]) {
-                acc[shift.shiftDate] = [];
-            }
-            acc[shift.shiftDate].push(shift);
-            return acc;
-        },
-        {}
-    );
-
-    const orderedDates = Object.keys(shiftsByDate).sort(
-        (a, b) => new Date(a).getTime() - new Date(b).getTime()
-    );
-
-    orderedDates.forEach((date) => {
-        shiftsByDate[date].sort((a, b) => a.shiftNo - b.shiftNo);
-    });
-
-
     return (
-        <div className="space-y-8">
-            <div className="flex items-center justify-between border-b pb-4">
-                <div>
-                    <h2 className="text-2xl font-bold">{board.scheduleCode}</h2>
-                    <p className="text-sm text-muted-foreground">
-                        Date: {new Date(board.date).toLocaleDateString()}
-                    </p>
+        <div className="space-y-10 pb-16">
+            {/* ================= HEADER ================= */}
+            <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                    <Badge variant="outline" className="font-mono text-xs">
+                        ID {board.id}
+                    </Badge>
+                    <h1 className="text-3xl font-semibold tracking-tight">
+                        {board.code}
+                    </h1>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
+                    <div>
+                        <span className="text-foreground font-medium mr-2">Date</span>
+                        {new Date(board.date).toLocaleDateString(undefined, {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        })}
+                    </div>
+
+                    <Separator orientation="vertical" className="h-4" />
+
+                    <div>
+                        <span className="text-foreground font-medium mr-2">Category</span>
+                        {board.categoryNo}
+                    </div>
                 </div>
             </div>
 
-            <div className="flex flex-col gap-6">
-                {/* {board.shifts.map((shift) => (
-                    <Card key={`${shift.shiftNo}-${shift.shiftDate}`} className="border-2">
-                        <CardHeader className="bg-muted/50 pb-3">
-                            <CardTitle className="flex items-center justify-between">
-                                <span>{shift.shiftName}</span>
-                                <Badge variant="outline">{shift.shiftDate}</Badge>
+            {/* ================= MACHINES ================= */}
+            <div className="space-y-4">
+                {board.details.map((machine: MachineBoardDetail) => (
+                    <Card key={machine.machineNo} className="shadow-sm">
+                        <CardHeader >
+                            <CardTitle className="text-lg font-semibold">
+                                Machine {machine.machineNo}
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="pt-4 space-y-6">
-                            {shift.machines.map((machine) => (
-                                <div key={machine.machineCode} className="space-y-2">
-                                    <div className="flex items-center gap-2">
-                                        <div className="h-2 w-2 rounded-full bg-primary" />
-                                        <h3 className="font-semibold text-lg">{machine.machineCode}</h3>
-                                    </div>
 
-                                    <div className="rounded-md border overflow-hidden">
-                                        <Table>
-                                            <TableHeader className="bg-muted/30">
-                                                <TableRow>
-                                                    <TableHead className="h-8 py-1">Code No</TableHead>
-                                                    <TableHead className="h-8 py-1 text-right">Assign</TableHead>
-                                                    <TableHead className="h-8 py-1 text-right">Rem</TableHead>
-                                                    <TableHead className="h-8 py-1 text-right">Time</TableHead>
-                                                    <TableHead className="h-8 py-1 text-right">Total</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {machine.items.map((item, idx) => (
-                                                    <TableRow key={`${item.codeNo}-${idx}`}>
-                                                        <TableCell className="py-2 font-medium">{item.codeNo}</TableCell>
-                                                        <TableCell className="py-2 text-right">{item.qtyAssign}</TableCell>
-                                                        <TableCell className="py-2 text-right">
-                                                            <span className={item.remaining > 0 ? "text-amber-600 font-medium" : "text-muted-foreground"}>
-                                                                {item.remaining}
-                                                            </span>
-                                                        </TableCell>
-                                                        <TableCell className="py-2 text-right">{item.cycleTimeSeconds}s</TableCell>
-                                                        <TableCell className="py-2 text-right font-mono text-xs">
-                                                            {item.totalSeconds}s
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
-                                                {machine.items.length === 0 && (
-                                                    <TableRow>
-                                                        <TableCell colSpan={5} className="text-center py-4 text-muted-foreground italic">
-                                                            No items assigned
-                                                        </TableCell>
-                                                    </TableRow>
-                                                )}
-                                            </TableBody>
-                                        </Table>
-                                    </div>
-                                </div>
-                            ))}
+                        <CardContent className="p-0">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[80px]">Priority</TableHead>
+                                        <TableHead>Product</TableHead>
+                                        <TableHead className="w-[70px] text-center">
+                                            Rim
+                                        </TableHead>
+                                        <TableHead className="w-[200px] text-center">
+                                            Qty (S1/S2/S3)
+                                        </TableHead>
+                                        <TableHead>Timeline</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+
+                                <TableBody>
+                                    {machine.details.map(
+                                        (item: ScheduleBoardDetailItem) => (
+                                            <TableRow key={item.detailId}>
+                                                {/* PRIORITY */}
+                                                <TableCell>
+                                                    <Badge
+                                                        variant={
+                                                            item.prioritas ? "default" : "secondary"
+                                                        }
+                                                        className="font-mono"
+                                                    >
+                                                        {item.prioritas || "-"}
+                                                    </Badge>
+                                                </TableCell>
+
+                                                {/* PRODUCT */}
+                                                <TableCell>
+                                                    <div className="flex flex-col gap-1">
+                                                        <span className="font-medium">
+                                                            {item.codeNo}
+                                                        </span>
+
+                                                        <div className="flex gap-2 text-xs">
+                                                            {item.bo && item.bo > 0 && (
+                                                                <Badge variant="destructive">
+                                                                    BO {item.bo}
+                                                                </Badge>
+                                                            )}
+
+                                                            {item.stockRc !== null && (
+                                                                <Badge variant="outline">
+                                                                    Stock {item.stockRc}
+                                                                </Badge>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+
+                                                {/* RIM */}
+                                                <TableCell className="text-center">
+                                                    {item.rim || "-"}
+                                                </TableCell>
+
+                                                {/* QUANTITY */}
+                                                <TableCell>
+                                                    <div className="flex justify-center gap-4 font-mono text-sm">
+                                                        {/* <span>S1 {item.shift1Qty}</span>
+                                                        <span>S2 {item.shift2Qty}</span>
+                                                        <span>S3 {item.shift3Qty}</span> */}
+                                                        <span>{item.shift1Qty}/{item.shift2Qty}/{item.shift3Qty}</span>
+                                                    </div>
+                                                </TableCell>
+
+                                                {/* TIMELINE */}
+                                                <TableCell>
+                                                    {item.timelines.length > 0 ? (
+                                                        <div className="space-y-2">
+                                                            {item.timelines.map(
+                                                                (tl: BoardTimelineItem, idx) => (
+                                                                    <div
+                                                                        key={idx}
+                                                                        className="flex items-center gap-3 text-xs"
+                                                                    >
+                                                                        <Badge
+                                                                            variant="outline"
+                                                                            className="font-mono"
+                                                                        >
+                                                                            {tl.processType}
+                                                                        </Badge>
+
+                                                                        <span className="text-muted-foreground">
+                                                                            Shift{" "}
+                                                                            {tl.shift?.shiftNo ?? "-"}
+                                                                        </span>
+
+                                                                        <span className="font-mono">
+                                                                            {tl.startTime
+                                                                                ? new Date(
+                                                                                    tl.startTime
+                                                                                ).toLocaleTimeString([], {
+                                                                                    hour: "2-digit",
+                                                                                    minute: "2-digit",
+                                                                                })
+                                                                                : "-"}
+                                                                            {" — "}
+                                                                            {tl.endTime
+                                                                                ? new Date(
+                                                                                    tl.endTime
+                                                                                ).toLocaleTimeString([], {
+                                                                                    hour: "2-digit",
+                                                                                    minute: "2-digit",
+                                                                                })
+                                                                                : "-"}
+                                                                        </span>
+                                                                    </div>
+                                                                )
+                                                            )}
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-xs text-muted-foreground italic">
+                                                            No timeline
+                                                        </span>
+                                                    )}
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    )}
+
+                                    {machine.details.length === 0 && (
+                                        <TableRow>
+                                            <TableCell
+                                                colSpan={5}
+                                                className="text-center py-10 text-muted-foreground italic"
+                                            >
+                                                No products assigned.
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
                         </CardContent>
                     </Card>
-                ))} */}
-
-                {orderedDates.map((date) => (
-                    <div key={date} className="space-y-4">
-                        <h3 className="text-xl font-semibold">{date}</h3>
-                        <div className="flex flex-col gap-4">
-                            {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"> */}
-                            {shiftsByDate[date].map((shift) => (
-                                <Card key={`${shift.shiftNo}-${shift.shiftDate}`} className="border-2">
-                                    <CardHeader className="bg-muted/50 flex items-center justify-between leading-none py-2">
-                                        <CardTitle>
-                                            <span>{shift.shiftName}</span>
-                                        </CardTitle>
-                                        <CardTitle>
-                                            <Badge variant="outline">{shift.shiftNo}</Badge>
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="pt-4 space-y-6">
-                                        {shift.machines.map((machine) => (
-                                            <div key={machine.machineCode} className="space-y-2">
-                                                <div className="flex items-center gap-2">
-                                                    <div className="h-2 w-2 rounded-full bg-primary" />
-                                                    <h3 className="font-semibold text-lg">{machine.machineCode}</h3>
-                                                </div>
-
-                                                <div className="rounded-md border overflow-hidden">
-                                                    <Table>
-                                                        <TableHeader className="bg-muted/30">
-                                                            <TableRow>
-                                                                <TableHead className="h-8 py-1">Code No</TableHead>
-                                                                <TableHead className="h-8 py-1 text-right">Assign</TableHead>
-                                                                <TableHead className="h-8 py-1 text-right">Rem</TableHead>
-                                                                <TableHead className="h-8 py-1 text-right">Time</TableHead>
-                                                                <TableHead className="h-8 py-1 text-right">Total</TableHead>
-                                                            </TableRow>
-                                                        </TableHeader>
-                                                        <TableBody>
-                                                            {machine.items.map((item, idx) => (
-                                                                <TableRow key={`${item.codeNo}-${idx}`}>
-                                                                    <TableCell className="py-2 font-medium">{item.codeNo}</TableCell>
-                                                                    <TableCell className="py-2 text-right">{item.qtyAssign}</TableCell>
-                                                                    <TableCell className="py-2 text-right">
-                                                                        <span className={item.remaining > 0 ? "text-amber-600 font-medium" : "text-muted-foreground"}>
-                                                                            {item.remaining}
-                                                                        </span>
-                                                                    </TableCell>
-                                                                    <TableCell className="py-2 text-right">{item.cycleTimeSeconds}s</TableCell>
-                                                                    <TableCell className="py-2 text-right font-mono text-xs">
-                                                                        {item.totalSeconds}s
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                            ))}
-                                                            {machine.items.length === 0 && (
-                                                                <TableRow>
-                                                                    <TableCell colSpan={5} className="text-center py-4 text-muted-foreground italic">
-                                                                        No items assigned
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                            )}
-                                                        </TableBody>
-                                                    </Table>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
-                    </div>
                 ))}
 
+                {board.details.length === 0 && (
+                    <div className="py-20 text-center text-muted-foreground border rounded-lg">
+                        No machine data in this board.
+                    </div>
+                )}
             </div>
         </div>
     );
