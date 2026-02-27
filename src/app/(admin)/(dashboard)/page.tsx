@@ -13,6 +13,8 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { useCategories } from "@/hooks/use-category";
 import { useTodayCategorySchedule } from "@/hooks/use-schedule";
 import Link from "next/link";
+import { useShifts } from "@/hooks/use-shift";
+import { Shift } from "@/types/shift";
 
 const STORAGE_KEY = "selected-category-no";
 
@@ -20,17 +22,17 @@ export default function Page() {
   const [selectedCategoryNo, setSelectedCategoryNo] = useState<string>("");
   const { open } = useSidebar();
 
-  const { data: categoriesData, isLoading: isLoadingCategories } = useCategories({ limit: 100 });
-  const categories = categoriesData || [];
+  const { data: categoriesData = [], isLoading: isLoadingCategories } = useCategories({ limit: 100 });
+  const { data: shiftTime = [], isLoading: isLoadingShiftTime } = useShifts()
 
   useEffect(() => {
     const savedCategoryNo = localStorage.getItem(STORAGE_KEY);
     if (savedCategoryNo) {
       setSelectedCategoryNo(savedCategoryNo);
-    } else if (categories.length > 0) {
-      setSelectedCategoryNo(categories[0].categoryNo.toString());
+    } else if (categoriesData.length > 0) {
+      setSelectedCategoryNo(categoriesData[0].categoryNo.toString());
     }
-  }, [categories]);
+  }, [categoriesData]);
 
   // simpan ke localStorage setiap berubah
   useEffect(() => {
@@ -56,6 +58,8 @@ export default function Page() {
     const diffMs = date.getTime() - baseDate.getTime();
     return diffMs / (1000 * 60 * 60);
   };
+
+  // Removed unused and broken shiftTimeDecimal mapper that caused type errors
 
   const dashboardData = useMemo(() => {
     if (!scheduleData) return [];
@@ -101,7 +105,7 @@ export default function Page() {
               <SelectValue placeholder="Select Category" />
             </SelectTrigger>
             <SelectContent>
-              {categories.map((category) => (
+              {categoriesData.map((category) => (
                 <SelectItem key={category.id} value={category.categoryNo.toString()}>
                   {category.name}
                 </SelectItem>
@@ -119,12 +123,12 @@ export default function Page() {
             <span className="dark:text-slate-300">Curing</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-sm bg-yellow-300"></div>
-            <span className="dark:text-slate-300">Idle</span>
+            <div className="w-3 h-3 rounded-sm bg-red-600"></div>
+            <span className="dark:text-slate-300">Shortage</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-sm bg-pink-400"></div>
-            <span className="dark:text-slate-300">Buffer</span>
+            <div className="w-3 h-3 rounded-sm bg-red-100"></div>
+            <span className="dark:text-slate-300">Break Time</span>
           </div>
         </div>
       </div>
@@ -156,7 +160,7 @@ export default function Page() {
           ))}
         </div>
       ) : dashboardData.length > 0 ? (
-        <ScheduleBoard data={dashboardData} />
+        <ScheduleBoard data={dashboardData} shiftTime={shiftTime} />
       ) : (
         selectedCategoryNo && (
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-sidebar/50 rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-800">

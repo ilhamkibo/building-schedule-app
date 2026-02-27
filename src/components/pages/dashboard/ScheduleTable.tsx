@@ -1,3 +1,4 @@
+import { Shift } from "@/types/shift";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
@@ -34,7 +35,7 @@ export function MachineCard({ machine }: { machine: any }) {
     );
 }
 
-export function ScheduleBlock({ block }: { block: any }) {
+export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shift[] }) {
     const { setNodeRef, attributes, listeners, transform, transition } =
         useSortable({ id: block.id });
 
@@ -96,7 +97,7 @@ export function ScheduleBlock({ block }: { block: any }) {
 
                         </tbody>
                     </table>
-                    <ProductionGantt rows={block.rows} />
+                    <ProductionGantt rows={block.rows} shiftTime={shiftTime} />
                 </div>
             </div>
         </div>
@@ -106,30 +107,84 @@ export function ScheduleBlock({ block }: { block: any }) {
 const PHASE_COLOR: Record<string, string> = {
     building: "bg-blue-500",
     curing: "bg-orange-400",
-    idle: "bg-yellow-300",
-    buffer: "bg-pink-400",
+    shortage: "bg-red-600",
 };
 
 
-function GanttRow({ phases }: { phases: any[] }) {
+function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) {
     const hours = Array.from({ length: 24 }, (_, i) => i + 7);
+
+    // Filter breaktimes from shiftTime
+    const breaktimes = shiftTime.flatMap(s => s.shiftBreaks);
+
+    // Helper to convert time string (HH:mm:ss) to decimal hours relative to 00:00
+    const timeToDec = (timeStr: string) => {
+        const [h, m, s] = timeStr.split(':').map(Number);
+        let hour = h + (m || 0) / 60 + (s || 0) / 3600;
+        // If hour is before 7 AM, assume it's the next day (h + 24)
+        if (hour < 7) hour += 24;
+        return hour;
+    };
+
     return (
         <div className="relative h-8 border-b dark:border-slate-800">
+            {/* Grid Background */}
             <div className="absolute inset-0 grid grid-cols-24">
                 {hours.map((_, i) => (
                     <div key={i} className="border-r dark:border-slate-800" />
                 ))}
             </div>
-            {phases.map((p, i) => (
-                <div
-                    key={i}
-                    className={`absolute h-5 top-1 rounded opacity-90 ${PHASE_COLOR[p.type as string] || "bg-slate-300 dark:bg-slate-600"}`}
-                    style={{
-                        left: `${((p.start - 7) / 24) * 100}%`,
-                        width: `${((p.end - p.start) / 24) * 100}%`,
-                    }}
-                />
-            ))}
+
+            {/* Dynamic Breaktimes */}
+            {breaktimes.map((bt, i) => {
+                const startDec = timeToDec(bt.startTime);
+                const endDec = timeToDec(bt.endTime);
+
+                // Calculate position relative to timeline start (07:00)
+                const left = ((startDec - 7) / 24) * 100;
+                const width = ((endDec - startDec) / 24) * 100;
+
+                return (
+                    <div
+                        key={`break-${i}`}
+                        className="absolute h-7.5 bottom-0.25 rounded opacity-90 bg-red-100"
+                        title="Break Time"
+                        style={{
+                            left: `${left}%`,
+                            width: `${width}%`,
+                        }}
+                    />
+                );
+            })}
+
+            {/* Production Phases (Building & Curing) */}
+            {phases.map((p, i) => {
+                const isBuilding = p.type === 'building';
+                const isCuring = p.type === 'curing';
+
+                // Use separate vertical strips as in user example
+                // Building uses top-1 (h-2.5), Curing uses top-4 (h-2.5)
+                const topClass = isBuilding ? "top-1" : (isCuring ? "top-4" : "top-1");
+                const heightClass = (isBuilding || isCuring) ? "h-2.5" : "h-5";
+
+                // Map colors
+                let bgColor = "bg-slate-300 dark:bg-slate-600";
+                if (isBuilding) bgColor = "bg-blue-500";
+                else if (isCuring) bgColor = "bg-orange-400";
+                else if (PHASE_COLOR[p.type]) bgColor = PHASE_COLOR[p.type];
+
+                return (
+                    <div
+                        key={i}
+                        className={`absolute ${heightClass} ${topClass} rounded opacity-90 ${bgColor}`}
+                        title={`${p.type}: ${p.start.toFixed(2)} - ${p.end.toFixed(2)}`}
+                        style={{
+                            left: `${((p.start - 7) / 24) * 100}%`,
+                            width: `${((p.end - p.start) / 24) * 100}%`,
+                        }}
+                    />
+                );
+            })}
         </div>
     );
 }
@@ -147,12 +202,12 @@ function TimelineHeader() {
     );
 }
 
-export function ProductionGantt({ rows }: { rows: any[] }) {
+export function ProductionGantt({ rows, shiftTime }: { rows: any[]; shiftTime: Shift[] }) {
     return (
-        <div className="border-l dark:border-slate-800">
+        <div className="">
             <TimelineHeader />
             {rows.map((row, i) => (
-                <GanttRow key={i} phases={row.phases} />
+                <GanttRow key={i} phases={row.phases} shiftTime={shiftTime} />
             ))}
         </div>
     );

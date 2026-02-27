@@ -9,8 +9,9 @@ import {
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { useState, useEffect } from "react";
 import { ScheduleBlock } from "./ScheduleTable";
+import { Shift } from "@/types/shift";
 
-export default function ScheduleBoard({ data }: { data: any[] }) {
+export default function ScheduleBoard({ data, shiftTime }: { data: any[]; shiftTime: Shift[] }) {
     const [items, setItems] = useState(data);
 
     useEffect(() => {
@@ -49,7 +50,7 @@ export default function ScheduleBoard({ data }: { data: any[] }) {
             >
                 <div className="space-y-6">
                     {items.map((block) => (
-                        <ScheduleBlock key={block.id} block={block} />
+                        <ScheduleBlock key={block.id} block={block} shiftTime={shiftTime} />
                     ))}
                 </div>
             </SortableContext>
