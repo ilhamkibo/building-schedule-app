@@ -33,6 +33,7 @@ import { useLines, useDeleteLine, useCreateLine, useUpdateLine } from "@/hooks/u
 import { Line } from "@/types/line";
 import LineForm from "./line-form";
 import DataTablePagination from "@/components/common/data-table-pagination";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Eye } from "lucide-react";
 
 export default function LineList() {
@@ -138,9 +139,25 @@ export default function LineList() {
 
                     <TableBody>
                         {isLoading && (
-                            <TableRow>
-                                <TableCell className="text-center" colSpan={4}>Loading...</TableCell>
-                            </TableRow>
+                            Array.from({ length: 5 }).map((_, i) => (
+                                <TableRow key={i}>
+                                    <TableCell><Skeleton className="h-6 w-8" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-32" /></TableCell>
+                                    <TableCell>
+                                        <div className="flex gap-1">
+                                            <Skeleton className="h-5 w-10" />
+                                            <Skeleton className="h-5 w-10" />
+                                            <Skeleton className="h-5 w-10" />
+                                        </div>
+                                    </TableCell>
+                                    <TableCell><Skeleton className="h-6 w-48" /></TableCell>
+                                    <TableCell className="flex gap-1">
+                                        <Skeleton className="h-8 w-8 rounded-md" />
+                                        <Skeleton className="h-8 w-8 rounded-md" />
+                                        <Skeleton className="h-8 w-8 rounded-md" />
+                                    </TableCell>
+                                </TableRow>
+                            ))
                         )}
 
                         {!isLoading && lines.length === 0 && (

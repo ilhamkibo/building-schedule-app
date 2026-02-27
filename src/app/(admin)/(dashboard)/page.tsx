@@ -12,6 +12,7 @@ import {
 import { useSidebar } from "@/components/ui/sidebar";
 import { useCategories } from "@/hooks/use-category";
 import { useTodayCategorySchedule } from "@/hooks/use-schedule";
+import Link from "next/link";
 
 const STORAGE_KEY = "selected-category-no";
 
@@ -44,7 +45,6 @@ export default function Page() {
   );
 
   const scheduleData = scheduleResponse?.data;
-  console.log("🚀 ~ Page ~ scheduleData:", scheduleData)
 
   const timeToDecimal = (dateStr: string | null, baseDateStr: string) => {
     if (!dateStr) return 0;
@@ -93,7 +93,8 @@ export default function Page() {
         ? "max-w-[calc(100vw-20rem)]"
         : "max-w-full"
         }`}
-    >      <div className="px-4 mb-4 rounded-md py-2 font-semibold bg-sidebar border-b dark:border-slate-800 flex items-center justify-between">
+    >
+      <div className="px-4 mb-4 rounded-md py-2 font-semibold bg-sidebar border-b dark:border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Select value={selectedCategoryNo} onValueChange={setSelectedCategoryNo}>
             <SelectTrigger className="w-[180px] h-8 font-semibold bg-background dark:border-slate-700">
@@ -107,7 +108,6 @@ export default function Page() {
               ))}
             </SelectContent>
           </Select>
-          {(isLoadingCategories || isLoadingSchedules) && <span className="text-xs text-muted-foreground animate-pulse">Loading...</span>}
         </div>
         <div className="flex items-center gap-4 text-xs font-normal">
           <div className="flex items-center gap-1.5">
@@ -130,13 +130,41 @@ export default function Page() {
       </div>
 
       {/* CONTENT */}
-      {dashboardData.length > 0 ? (
+      {(isLoadingCategories || isLoadingSchedules) ? (
+        <div className="space-y-6">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="border dark:border-slate-800 rounded bg-sidebar shadow-sm overflow-hidden animate-pulse">
+              <div className="px-4 py-2 bg-background/30 dark:bg-background/10 border-b dark:border-slate-800 flex justify-between items-center">
+                <div className="h-5 w-32 bg-slate-200 dark:bg-slate-800 rounded"></div>
+                <div className="h-5 w-20 bg-slate-200 dark:bg-slate-800 rounded"></div>
+              </div>
+              <div className="p-4 flex gap-4">
+                <div className="w-1/2 space-y-2">
+                  <div className="h-8 bg-slate-200 dark:bg-slate-800 rounded w-full"></div>
+                  <div className="h-8 bg-slate-200 dark:bg-slate-800 rounded w-full"></div>
+                  <div className="h-8 bg-slate-200 dark:bg-slate-800 rounded w-full"></div>
+                </div>
+                <div className="w-1/2 bg-slate-100 dark:bg-slate-900/50 rounded flex items-center justify-center">
+                  <div className="w-full h-full p-4 space-y-4">
+                    <div className="h-2 bg-slate-200 dark:bg-slate-800 rounded w-3/4"></div>
+                    <div className="h-2 bg-slate-200 dark:bg-slate-800 rounded w-1/2"></div>
+                    <div className="h-2 bg-slate-200 dark:bg-slate-800 rounded w-full"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : dashboardData.length > 0 ? (
         <ScheduleBoard data={dashboardData} />
       ) : (
-        !isLoadingSchedules && selectedCategoryNo && (
+        selectedCategoryNo && (
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-sidebar/50 rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-800">
             <p className="text-lg font-medium">Tidak ada schedule untuk category ini</p>
             <p className="text-sm">Silahkan pilih category lain atau buat schedule baru.</p>
+            <Link href="/schedules/create" className="mt-2 text-md px-4 py-2 bg-primary text-white rounded-md cursor-pointer">
+              Buat Schedule
+            </Link>
           </div>
         )
       )}

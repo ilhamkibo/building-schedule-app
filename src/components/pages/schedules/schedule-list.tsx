@@ -33,6 +33,7 @@ import { Plus, Search, Trash2, Eye, LayoutGrid } from "lucide-react";
 import { useSchedules, useDeleteSchedule } from "@/hooks/use-schedule";
 import { Schedule } from "@/types/schedule";
 import DataTablePagination from "@/components/common/data-table-pagination";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useCategories } from "@/hooks/use-category";
 
 export default function ScheduleList() {
@@ -96,7 +97,7 @@ export default function ScheduleList() {
             </div>
 
             {/* Table */}
-            <div className="rounded-md border bg-sidebar">
+            <div className="rounded-md border dark:bg-sidebar">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -110,9 +111,18 @@ export default function ScheduleList() {
 
                     <TableBody>
                         {isLoading && (
-                            <TableRow>
-                                <TableCell className="text-center" colSpan={5}>Loading...</TableCell>
-                            </TableRow>
+                            Array.from({ length: 5 }).map((_, i) => (
+                                <TableRow key={i}>
+                                    <TableCell><Skeleton className="h-6 w-24" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-32" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-24" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-32" /></TableCell>
+                                    <TableCell className="flex gap-1">
+                                        <Skeleton className="h-8 w-8 rounded-md" />
+                                        <Skeleton className="h-8 w-8 rounded-md" />
+                                    </TableCell>
+                                </TableRow>
+                            ))
                         )}
 
                         {!isLoading && schedules.length === 0 && (

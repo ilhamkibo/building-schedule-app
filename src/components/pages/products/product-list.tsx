@@ -33,6 +33,7 @@ import { useProducts, useDeleteProduct, useCreateProduct, useUpdateProduct } fro
 import { Product } from "@/types/product";
 import ProductDetails from "./product-details";
 import DataTablePagination from "@/components/common/data-table-pagination";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProductList() {
     const [page, setPage] = useState(1);
@@ -143,9 +144,21 @@ export default function ProductList() {
 
                     <TableBody>
                         {isLoading && (
-                            <TableRow>
-                                <TableCell className="text-center" colSpan={6}>Loading...</TableCell>
-                            </TableRow>
+                            Array.from({ length: 5 }).map((_, i) => (
+                                <TableRow key={i}>
+                                    <TableCell><Skeleton className="h-6 w-24" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-60" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-20" /></TableCell>
+                                    <TableCell>
+                                        <div className="flex gap-1">
+                                            <Skeleton className="h-5 w-10" />
+                                            <Skeleton className="h-5 w-10" />
+                                        </div>
+                                    </TableCell>
+                                    <TableCell><Skeleton className="h-6 w-16" /></TableCell>
+                                    <TableCell><Skeleton className="h-8 w-8 rounded-md" /></TableCell>
+                                </TableRow>
+                            ))
                         )}
 
                         {!isLoading && products.length === 0 && (

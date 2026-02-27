@@ -36,6 +36,7 @@ import { toast } from "sonner";
 import { User } from "@/types/user";
 import UserForm from "./user-form";
 import DataTablePagination from "@/components/common/data-table-pagination";
+import { Skeleton } from "@/components/ui/skeleton";
 
 
 export default function UserList() {
@@ -119,9 +120,17 @@ export default function UserList() {
 
                     <TableBody>
                         {isLoading && (
-                            <TableRow>
-                                <TableCell className="text-center" colSpan={4}>Loading...</TableCell>
-                            </TableRow>
+                            Array.from({ length: 5 }).map((_, i) => (
+                                <TableRow key={i}>
+                                    <TableCell><Skeleton className="h-6 w-32" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-24" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-16" /></TableCell>
+                                    <TableCell className="flex gap-1">
+                                        <Skeleton className="h-8 w-8 rounded-md" />
+                                        <Skeleton className="h-8 w-8 rounded-md" />
+                                    </TableCell>
+                                </TableRow>
+                            ))
                         )}
 
                         {!isLoading && users.length === 0 && (

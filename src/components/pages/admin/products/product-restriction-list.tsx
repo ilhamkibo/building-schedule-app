@@ -38,6 +38,7 @@ import {
 import { ProductRestriction } from "@/types/product-restriction";
 import ProductRestrictionForm from "./product-restriction-form";
 import DataTablePagination from "@/components/common/data-table-pagination";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProductRestrictionList() {
     const [page, setPage] = useState(1);
@@ -141,9 +142,23 @@ export default function ProductRestrictionList() {
 
                     <TableBody>
                         {isLoading && (
-                            <TableRow>
-                                <TableCell className="text-center" colSpan={4}>Loading...</TableCell>
-                            </TableRow>
+                            Array.from({ length: 5 }).map((_, i) => (
+                                <TableRow key={i}>
+                                    <TableCell><Skeleton className="h-6 w-8" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-32" /></TableCell>
+                                    <TableCell>
+                                        <div className="flex gap-1.5">
+                                            <Skeleton className="h-5 w-20" />
+                                            <Skeleton className="h-5 w-20" />
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="flex gap-1">
+                                        <Skeleton className="h-8 w-8 rounded-md" />
+                                        <Skeleton className="h-8 w-8 rounded-md" />
+                                        <Skeleton className="h-8 w-8 rounded-md" />
+                                    </TableCell>
+                                </TableRow>
+                            ))
                         )}
 
                         {!isLoading && restrictions.length === 0 && (

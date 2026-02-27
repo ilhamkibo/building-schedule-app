@@ -33,6 +33,7 @@ import { usePPLs, useDeletePPL, useCreatePPL, useUpdatePPL } from "@/hooks/use-p
 import { PPL } from "@/types/ppl";
 import PPLForm from "./ppl-form";
 import DataTablePagination from "@/components/common/data-table-pagination";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
     Select,
     SelectContent,
@@ -247,9 +248,27 @@ export default function PPLList() {
 
                     <TableBody>
                         {isLoading && (
-                            <TableRow>
-                                <TableCell className="text-center" colSpan={9}>Loading...</TableCell>
-                            </TableRow>
+                            Array.from({ length: 5 }).map((_, i) => (
+                                <TableRow key={i}>
+                                    <TableCell><Skeleton className="h-6 w-32" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-12" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-12" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-24" /></TableCell>
+                                    <TableCell>
+                                        <div className="flex gap-1">
+                                            <Skeleton className="h-5 w-10" />
+                                            <Skeleton className="h-5 w-10" />
+                                        </div>
+                                    </TableCell>
+                                    <TableCell><Skeleton className="h-6 w-12" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-12" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-20" /></TableCell>
+                                    <TableCell className="flex gap-1">
+                                        <Skeleton className="h-8 w-8 rounded-md" />
+                                        <Skeleton className="h-8 w-8 rounded-md" />
+                                    </TableCell>
+                                </TableRow>
+                            ))
                         )}
 
                         {!isLoading && ppls.length === 0 && (

@@ -38,6 +38,7 @@ import { toast } from "sonner";
 import { Role } from "@/types/role";
 import RoleForm from "./role-form";
 import DataTablePagination from "@/components/common/data-table-pagination";
+import { Skeleton } from "@/components/ui/skeleton";
 
 
 export default function RoleList() {
@@ -120,9 +121,16 @@ export default function RoleList() {
 
                     <TableBody>
                         {isLoading && (
-                            <TableRow>
-                                <TableCell className="text-center" colSpan={4}>Loading...</TableCell>
-                            </TableRow>
+                            Array.from({ length: 5 }).map((_, i) => (
+                                <TableRow key={i}>
+                                    <TableCell><Skeleton className="h-6 w-32" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-64" /></TableCell>
+                                    <TableCell className="flex gap-1">
+                                        <Skeleton className="h-8 w-8 rounded-md" />
+                                        <Skeleton className="h-8 w-8 rounded-md" />
+                                    </TableCell>
+                                </TableRow>
+                            ))
                         )}
 
                         {!isLoading && roles.length === 0 && (
