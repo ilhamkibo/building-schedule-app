@@ -140,6 +140,8 @@ function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) 
                 const startDec = timeToDec(bt.startTime);
                 const endDec = timeToDec(bt.endTime);
 
+                console.log("🚀 ~ GanttRow ~ startDec:", endDec - startDec)
+
                 // Calculate position relative to timeline start (07:00)
                 const left = ((startDec - 7) / 24) * 100;
                 const width = ((endDec - startDec) / 24) * 100;
@@ -147,7 +149,7 @@ function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) 
                 return (
                     <div
                         key={`break-${i}`}
-                        className="absolute h-7.5 bottom-0.25 rounded opacity-90 bg-red-100"
+                        className={`absolute h-7.5 bottom-0.25 rounded opacity-90  ${endDec - startDec > 0.5 ? "bg-red-200" : "bg-yellow-200"}`}
                         title="Break Time"
                         style={{
                             left: `${left}%`,
@@ -164,7 +166,7 @@ function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) 
 
                 // Use separate vertical strips as in user example
                 // Building uses top-1 (h-2.5), Curing uses top-4 (h-2.5)
-                const topClass = isBuilding ? "top-1" : (isCuring ? "top-4" : "top-1");
+                const topClass = isCuring ? "top-1" : (isBuilding ? "top-4" : "top-1");
                 const heightClass = (isBuilding || isCuring) ? "h-2.5" : "h-5";
 
                 // Map colors
@@ -190,7 +192,7 @@ function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) 
 }
 
 function TimelineHeader() {
-    const hours = Array.from({ length: 24 }, (_, i) => i + 7);
+    const hours = Array.from({ length: 24 }, (_, i) => i + 8);
     return (
         <div className="grid grid-cols-24 text-sm h-12.75 text-center border-b dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400">
             {hours.map((h) => (

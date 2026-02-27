@@ -127,7 +127,8 @@ export default function Page() {
             <span className="dark:text-slate-300">Shortage</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-sm bg-red-100"></div>
+            <div className="w-3 h-3 rounded-sm bg-red-200"></div>
+            <div className="w-3 h-3 rounded-sm bg-yellow-200"></div>
             <span className="dark:text-slate-300">Break Time</span>
           </div>
         </div>
