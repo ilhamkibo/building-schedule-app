@@ -15,9 +15,9 @@ export default function CreateSchedulePage() {
             <AppHeader title="Create New Schedule" />
             <main className="flex-1 flex overflow-hidden p-4">
                 <div className="border rounded-lg flex flex-1 overflow-hidden">
-                    {/* <div className="w-[400px]  bg-muted/10 flex flex-col overflow-hidden">
+                    <div className="w-[400px]  bg-muted/10 flex flex-col overflow-hidden">
                         <PPLReferenceSidebar ppls={ppls} />
-                    </div> */}
+                    </div>
                     <div className="flex-1 overflow-hidden">
                         {/* <div className="max-w-5xl mx-auto h-full bg-sidebar shadow-sm overflow-hidden border-l"> */}
                         <div className=" mx-auto h-full bg-sidebar shadow-sm overflow-hidden border-l">
