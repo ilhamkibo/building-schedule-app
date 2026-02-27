@@ -8,12 +8,13 @@ import { useProducts } from "@/hooks/use-product";
 import { useAuth } from "@/hooks/use-auth";
 import { CreateScheduleRequest, CreateScheduleItemRequest, MachineScheduleDetail, MachineDetailItem } from "@/types/schedule";
 import { useState, useEffect } from "react";
-import { Trash2, Plus, Search } from "lucide-react";
+import { Trash2, Plus, Search, AlertCircle, Database, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { FormCombobox } from "@/components/ui/form-combobox";
 import { useCategories } from "@/hooks/use-category";
 import { useProductScheduleByDateAndCategoryNo } from "@/hooks/use-product-schedule";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => void, onSuccess: () => void }) {
     const { user } = useAuth();
@@ -21,13 +22,24 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
     const [code, setCode] = useState(`SCH-${new Date().toISOString().slice(0, 10)}`);
     const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
     const [items, setItems] = useState<CreateScheduleItemRequest[]>([]);
+    const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
 
+    // Debounce search
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [search]);
 
-    const { data: products = [] } = useProducts({
-        paginate: false,
+    const { data: products = [], isLoading: isProductsLoading } = useProducts({
+        search: debouncedSearch,
+        limit: 10,
     });
+
     const { data: categories = [] } = useCategories();
-    const { data: ppcData, isLoading: isPpcLoading } = useProductScheduleByDateAndCategoryNo(
+    const { data: ppcData, isLoading: isPpcLoading, isError } = useProductScheduleByDateAndCategoryNo(
         date,
         selectedCategoryNo ?? "",
         { enabled: !!selectedCategoryNo && !!date }
@@ -48,6 +60,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                 shift3Qty: d.shift3Qty ?? 0,
                 remark: "",
                 stockRc: d.stockRc ?? 0,
+                isManual: false,
             }))
         );
 
@@ -133,7 +146,62 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                 </div>
 
                 <div className="space-y-6">
-                    {selectedCategoryNo ? (
+                    {!selectedCategoryNo ? (
+                        <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed rounded-lg bg-muted/20 text-muted-foreground">
+                            <Search className="h-12 w-12 mb-4 opacity-20" />
+                            <p className="text-lg font-medium">Please select a Production Category first</p>
+                            <p className="text-sm">Machines will be automatically displayed based on your selection</p>
+                        </div>
+                    ) : isPpcLoading ? (
+                        <div className="space-y-4">
+                            {Array.from({ length: 2 }).map((_, i) => (
+                                <div key={i} className="border rounded-lg p-6 bg-background shadow-sm space-y-4">
+                                    <div className="flex items-center justify-between border-b pb-2">
+                                        <Skeleton className="h-7 w-48" />
+                                        <Skeleton className="h-8 w-32" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Skeleton className="h-10 w-full" />
+                                        <Skeleton className="h-10 w-full" />
+                                    </div>
+                                </div>
+                            ))}
+                            <div className="flex items-center justify-center py-4 text-muted-foreground gap-2">
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                <p className="text-sm">Fetching PPC data...</p>
+                            </div>
+                        </div>
+                    ) : isError ? (
+                        <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed border-red-200 rounded-lg bg-red-50 text-red-600">
+                            <AlertCircle className="h-12 w-12 mb-4 opacity-50" />
+                            <p className="text-lg font-medium">Failed to fetch PPC data</p>
+                            <p className="text-sm">There was an error connecting to the server. Please try again.</p>
+                        </div>
+                    ) : items.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed rounded-lg bg-muted/20 text-muted-foreground">
+                            <Database className="h-12 w-12 mb-4 opacity-20" />
+                            <p className="text-lg font-medium">No schedule items found</p>
+                            <p className="text-sm">No production data available for this category and date.</p>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="mt-4"
+                                onClick={() => setItems([{
+                                    codeNo: "",
+                                    machineNo: "New MC",
+                                    shift1Qty: 0,
+                                    shift2Qty: 0,
+                                    shift3Qty: 0,
+                                    remark: "",
+                                    stockRc: 0,
+                                    prioritas: "A",
+                                    isManual: true,
+                                }])}
+                            >
+                                <Plus className="mr-2 h-4 w-4" /> Add Manually
+                            </Button>
+                        </div>
+                    ) : (
                         Array.from(new Set(items.map(i => i.machineNo))).map((machineNo) => {
                             const machineItems = items.filter(i => i.machineNo === machineNo);
                             return (
@@ -158,7 +226,8 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                                                     shift3Qty: 0,
                                                     remark: "",
                                                     stockRc: 0,
-                                                    prioritas: nextPriority
+                                                    prioritas: nextPriority,
+                                                    isManual: true,
                                                 }]);
                                             }}
                                         >
@@ -219,29 +288,39 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                                                                 </Select>
                                                             </td>
                                                             <td className="p-2">
-                                                                {/* <select
-                                                                    className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 hover:border-primary/50"
-                                                                    value={item.codeNo}
-                                                                    onChange={(e) => updateItem(index, 'codeNo', e.target.value)}
-                                                                >
-                                                                    <option value="">Select Product ...</option>
-                                                                    {products.map(p => (
-                                                                        <option key={p.codeNo} value={p.codeNo}>
-                                                                            {p.codeNo}
-                                                                        </option>
-                                                                    ))}
-                                                                </select> */}
-                                                                <FormCombobox
-                                                                    value={item.codeNo}
-                                                                    onChange={(val: string) => {
-                                                                        const product = products.find(p => p.codeNo === val);
-                                                                        updateItem(index, {
-                                                                            codeNo: val,
-                                                                            stockRc: product?.faStock || 0
-                                                                        });
-                                                                    }}
-                                                                    options={products.map(p => ({ id: String(p.codeNo).replace(' ', ''), name: String(p.codeNo).replace(' ', '') }))}
-                                                                />
+                                                                {!item.isManual ? (
+                                                                    <Input
+                                                                        disabled
+                                                                        value={item.codeNo}
+                                                                        className="h-10 bg-muted/50 cursor-not-allowed"
+                                                                    />
+                                                                ) : (
+                                                                    <FormCombobox
+                                                                        value={item.codeNo}
+                                                                        onChange={(val: string) => {
+                                                                            const product = products.find(p => p.codeNo === val);
+                                                                            updateItem(index, {
+                                                                                codeNo: val,
+                                                                                stockRc: product?.faStock || 0
+                                                                            });
+                                                                        }}
+                                                                        onSearch={setSearch}
+                                                                        isLoading={isProductsLoading}
+                                                                        options={(() => {
+                                                                            const opts = products.map(p => ({
+                                                                                id: String(p.codeNo),
+                                                                                name: String(p.codeNo)
+                                                                            }));
+                                                                            if (item.codeNo && !opts.find(o => o.id === item.codeNo)) {
+                                                                                opts.unshift({
+                                                                                    id: item.codeNo,
+                                                                                    name: item.codeNo
+                                                                                });
+                                                                            }
+                                                                            return opts;
+                                                                        })()}
+                                                                    />
+                                                                )}
                                                             </td>
                                                             <td className="p-2">
                                                                 <Input
@@ -304,12 +383,6 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                                 </div>
                             );
                         })
-                    ) : (
-                        <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed rounded-lg bg-muted/20 text-muted-foreground">
-                            <Search className="h-12 w-12 mb-4 opacity-20" />
-                            <p className="text-lg font-medium">Please select a Production Line first</p>
-                            <p className="text-sm">Machines will be automatically displayed based on your selection</p>
-                        </div>
                     )}
                 </div>
             </div>

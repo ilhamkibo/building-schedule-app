@@ -28,6 +28,7 @@ export interface CreateScheduleItemRequest {
     shift3Qty: number;
     remark: string;
     stockRc?: number;
+    isManual?: boolean;
 }
 
 export interface CreateScheduleRequest {
