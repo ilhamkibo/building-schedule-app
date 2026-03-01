@@ -2,8 +2,8 @@
 
 import AppHeader from "@/components/layouts/app-header";
 import { usePPLs } from "@/hooks/use-ppl";
-import PPLReferenceSidebar from "@/components/pages/schedules/ppl-reference-sidebar";
-import ScheduleForm from "@/components/pages/schedules/schedule-form";
+import { ResponsivePPLReference } from "@/components/pages/schedules/components/responsive-ppl-reference";
+import ScheduleForm from "@/components/pages/schedules/row/schedule-form";
 import { useRouter } from "next/navigation";
 
 export default function CreateSchedulePage() {
@@ -14,13 +14,10 @@ export default function CreateSchedulePage() {
         <div className="flex flex-col h-screen overflow-hidden">
             <AppHeader title="Create New Schedule" />
             <main className="flex-1 flex overflow-hidden p-4">
-                <div className="border rounded-lg flex flex-1 overflow-hidden">
-                    <div className="w-[400px]  bg-muted/10 flex flex-col overflow-hidden">
-                        <PPLReferenceSidebar ppls={ppls} />
-                    </div>
+                <div className="flex flex-1 overflow-hidden">
+                    <ResponsivePPLReference ppls={ppls} />
                     <div className="flex-1 overflow-hidden">
-                        {/* <div className="max-w-5xl mx-auto h-full bg-sidebar shadow-sm overflow-hidden border-l"> */}
-                        <div className=" mx-auto h-full bg-sidebar shadow-sm overflow-hidden border-l">
+                        <div className=" mx-auto h-full bg-sidebar pt-2 shadow-sm overflow-hidden border-r border-t border-b rounded-r-xl">
                             <ScheduleForm
                                 onCancel={() => router.push("/schedules")}
                                 onSuccess={() => router.push("/schedules")}

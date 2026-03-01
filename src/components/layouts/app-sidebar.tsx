@@ -78,8 +78,13 @@ const navMain: NavGroup[] = [
             icon: CalendarCheck,
           },
           {
-            name: "Create Schedule",
-            url: "/schedules/create",
+            name: "Adjust Schedule Col",
+            url: "/schedules/adjust",
+            icon: CalendarCheck,
+          },
+          {
+            name: "Adjust Schedule Row",
+            url: "/schedules/adjust/row",
             icon: CalendarCheck,
           },
         ],
@@ -149,37 +154,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const { user, logout } = useAuthContext();
 
-  // const filteredNavMain = React.useMemo(() => {
-  //   if (!user) return [];
-
-  //   const role = user.role.toLowerCase();
-
-  //   return navMain.map(group => {
-  //     const filteredData = group.data.filter(item => {
-  //       // Admin can see everything
-  //       if (role === "admin") return true;
-
-  //       // Viewer only sees Dashboard
-  //       if (role === "viewer") {
-  //         return item.url === "/";
-  //       }
-
-  //       // Creator sees Dashboard, PPL, and Schedules
-  //       if (role === "creator") {
-  //         const allowedPaths = ["/", "/ppl", "/schedules"];
-  //         return allowedPaths.includes(item.url);
-  //       }
-
-  //       return false;
-  //     });
-
-  //     return {
-  //       ...group,
-  //       data: filteredData
-  //     };
-  //   }).filter(group => group.data.length > 0);
-  // }, [user]);
-
   const filteredNavMain = React.useMemo(() => {
     // kalau belum login → treat sebagai viewer
     const role = user?.role?.toLowerCase() ?? "viewer";
@@ -212,6 +186,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       .filter((group) => group.data.length > 0);
   }, [user]);
 
+  const isActiveRoute = (url: string) => {
+    if (pathname === url) return true;
+
+    // hanya aktif sebagai parent kalau bukan route child yang lebih spesifik
+    if (
+      pathname.startsWith(url + "/") &&
+      !navMain.some(group =>
+        group.data.some(item =>
+          item.items?.some(sub => sub.url === pathname)
+        )
+      )
+    ) {
+      return true;
+    }
+
+    return false;
+  };
 
   return (
     <Sidebar {...props}>
@@ -250,8 +241,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 <SidebarMenuSubItem key={sub.name}>
                                   <SidebarMenuSubButton
                                     asChild
-                                    isActive={pathname === sub.url}
-                                  >
+                                    isActive={isActiveRoute(sub.url)}                                  >
                                     <Link href={sub.url}>
                                       {/* {sub.icon && <sub.icon />} */}
                                       <span>{sub.name}</span>
@@ -267,7 +257,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   }
                   return (
                     <SidebarMenuItem key={menu.subtitle}>
-                      <SidebarMenuButton asChild isActive={pathname === menu.url}>
+                      <SidebarMenuButton asChild isActive={isActiveRoute(menu.url)}>
                         <Link href={menu.url}>
                           {menu.icon && <menu.icon />}
                           <span>{menu.subtitle}</span>

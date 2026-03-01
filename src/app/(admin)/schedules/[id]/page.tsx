@@ -1,7 +1,7 @@
 "use client";
 
 import AppHeader from "@/components/layouts/app-header";
-import ScheduleBoardView from "@/components/pages/schedules/schedule-board-view";
+import ScheduleDetails from "@/components/pages/schedules/schedule-details";
 import { useSchedule } from "@/hooks/use-schedule";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,7 @@ export default function ScheduleBoardPage() {
                         Error loading schedule data. Please check the ID.
                     </div>
                 ) : boardData && boardData.data ? (
-                    <ScheduleBoardView board={boardData.data} />
+                    <ScheduleDetails board={boardData.data} />
                 ) : (
                     <div className="py-20 text-center text-muted-foreground">
                         No data found.

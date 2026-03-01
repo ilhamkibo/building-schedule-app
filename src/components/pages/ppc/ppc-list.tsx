@@ -155,7 +155,7 @@ export default function PPCList() {
                             <TableHead>Size Code</TableHead>
                             <TableHead>Qty</TableHead>
                             <TableHead>Mold</TableHead>
-                            <TableHead>Updated At</TableHead>
+                            {/* <TableHead>Updated At</TableHead> */}
                         </TableRow>
                     </TableHeader>
 
@@ -169,7 +169,7 @@ export default function PPCList() {
                                     <TableCell className="py-4"><Skeleton className="h-6 w-20" /></TableCell>
                                     <TableCell className="py-4"><Skeleton className="h-6 w-16 mx-auto" /></TableCell>
                                     <TableCell className="py-4"><Skeleton className="h-6 w-8 mx-auto" /></TableCell>
-                                    <TableCell className="px-4 py-4"><Skeleton className="h-5 w-32 ml-auto" /></TableCell>
+                                    {/* <TableCell className="px-4 py-4"><Skeleton className="h-5 w-32 ml-auto" /></TableCell> */}
                                 </TableRow>
                             ))
                         )}
@@ -208,7 +208,7 @@ export default function PPCList() {
                                 <TableCell className="">
                                     {schedule.mold}
                                 </TableCell>
-                                <TableCell className="">
+                                {/* <TableCell className="">
                                     <div className="flex flex-col">
                                         <span className="text-xs font-medium">
                                             {formatDateTime(schedule.updatedAt).split(" ")[0]}
@@ -217,7 +217,7 @@ export default function PPCList() {
                                             {formatDateTime(schedule.updatedAt).split(" ")[1]}
                                         </span>
                                     </div>
-                                </TableCell>
+                                </TableCell> */}
                             </TableRow>
                         ))}
                     </TableBody>

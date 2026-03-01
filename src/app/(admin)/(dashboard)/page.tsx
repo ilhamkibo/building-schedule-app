@@ -66,30 +66,92 @@ export default function Page() {
 
     const scheduleDate = scheduleData.date;
 
-    return scheduleData.details.map(m => ({
-      id: m.machineNo,
-      machine: m.machineNo,
-      shift: "All Shifts",
-      rows: m.details.map(d => ({
-        code: d.codeNo,
-        rim: d.rim,
-        rcStock: d.stockRc,
-        cureEst: d.cureEst,
-        balanceOut: d.bo,
-        buildTime: d.buildingStart && d.buildingFinish
-          ? `${new Date(d.buildingStart).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${new Date(d.buildingFinish).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
-          : "-",
-        shift1Qty: d.shift1Qty,
-        shift2Qty: d.shift2Qty,
-        shift3Qty: d.shift3Qty,
-        phases: d.timelines.map(t => ({
-          type: t.processType.toLowerCase(),
-          start: timeToDecimal(t.startTime, scheduleDate),
-          end: timeToDecimal(t.endTime, scheduleDate)
-        }))
-      }))
-    }));
+    return scheduleData.details.map(m => {
+      // Group details by product code within the machine to match the dashboard's table row format (aggregating shifts)
+      const rowsMap = new Map<string, any>();
+
+      m.shifts.forEach(shift => {
+        shift.details.forEach(detail => {
+          if (!rowsMap.has(detail.codeNo)) {
+            rowsMap.set(detail.codeNo, {
+              code: detail.codeNo,
+              rim: detail.rim,
+              rcStock: detail.stockRc,
+              cureEst: detail.cureEst,
+              balanceOut: detail.bo,
+              buildTime: detail.buildingStart && detail.buildingFinish
+                ? `${new Date(detail.buildingStart).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${new Date(detail.buildingFinish).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+                : "-",
+              shift1Qty: 0,
+              shift2Qty: 0,
+              shift3Qty: 0,
+              remark: detail.remark,
+              phases: []
+            });
+          }
+
+          const row = rowsMap.get(detail.codeNo)!;
+
+          // Accumulate shift quantities
+          if (shift.shiftNo === 1) row.shift1Qty += detail.qty;
+          if (shift.shiftNo === 2) row.shift2Qty += detail.qty;
+          if (shift.shiftNo === 3) row.shift3Qty += detail.qty;
+
+          // Add timelines to phases
+          if (detail.timelines) {
+            detail.timelines.forEach(t => {
+              row.phases.push({
+                type: t.processType.toLowerCase(),
+                start: timeToDecimal(t.startTime, scheduleDate),
+                end: timeToDecimal(t.endTime, scheduleDate)
+              });
+            });
+          }
+        });
+      });
+
+      return {
+        id: m.machine,
+        machine: m.machine,
+        shift: "All Shifts",
+        rows: Array.from(rowsMap.values())
+      };
+    });
   }, [scheduleData]);
+
+  const dummyData = [
+    {
+      id: "M01",
+      machine: "M01",
+      shift: "All Shifts",
+      rows: [
+        {
+          code: "123456",
+          rim: "123456",
+          rcStock: 100,
+          cureEst: 100,
+          balanceOut: 100,
+          buildTime: "12:00 - 13:00",
+          shift1Qty: 100,
+          shift2Qty: 100,
+          shift3Qty: 100,
+          remark: "test",
+          phases: [
+            {
+              type: "building",
+              start: 8,
+              end: 13
+            },
+            {
+              type: "curing",
+              start: 8,
+              end: 14
+            }
+          ]
+        }
+      ]
+    }
+  ]
 
   return (
     <div
@@ -164,13 +226,14 @@ export default function Page() {
         <ScheduleBoard data={dashboardData} shiftTime={shiftTime} />
       ) : (
         selectedCategoryNo && (
-          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-sidebar/50 rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-800">
-            <p className="text-lg font-medium">Tidak ada schedule untuk category ini</p>
-            <p className="text-sm">Silahkan pilih category lain atau buat schedule baru.</p>
-            <Link href="/schedules/create" className="mt-2 text-md px-4 py-2 bg-primary text-white rounded-md cursor-pointer">
-              Buat Schedule
-            </Link>
-          </div>
+          // <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-sidebar/50 rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-800">
+          //   <p className="text-lg font-medium">Tidak ada schedule untuk category ini</p>
+          //   <p className="text-sm">Silahkan pilih category lain atau buat schedule baru.</p>
+          //   <Link href="/schedules/create" className="mt-2 text-md px-4 py-2 bg-primary text-white rounded-md cursor-pointer">
+          //     Buat Schedule
+          //   </Link>
+          // </div>
+          <ScheduleBoard data={dummyData} shiftTime={shiftTime} />
         )
       )}
     </div>

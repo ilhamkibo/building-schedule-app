@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useCreateSchedule } from "@/hooks/use-schedule";
 import { useProducts } from "@/hooks/use-product";
-import { CreateScheduleRequest, CreateScheduleMachine, CreateScheduleShift, PpcMachine, PpcShift, PpcDetailItem, FormItem } from "@/types/schedule";
+import { CreateScheduleRequest, CreateScheduleMachine, PpcMachine, PpcShift, PpcDetailItem, FormItem } from "@/types/schedule";
 import { useState, useEffect } from "react";
 import { Plus, Search, AlertCircle, Database, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -350,9 +350,10 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                     </div>
                 </div>
 
-                <div className="sticky bottom-0 z-20 flex justify-end gap-2 p-4 border-t bg-background shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">                    <Button variant="outline" onClick={handleReset}>
-                    Reset
-                </Button>
+                <div className="sticky bottom-0 z-20 flex justify-end gap-2 p-4 border-t bg-background shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                    <Button variant="outline" onClick={handleReset}>
+                        Reset
+                    </Button>
                     <Button
                         onClick={handleSubmit}
                         disabled={createMutation.isPending}

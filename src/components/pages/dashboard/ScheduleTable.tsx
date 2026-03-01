@@ -112,7 +112,7 @@ const PHASE_COLOR: Record<string, string> = {
 
 
 function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) {
-    const hours = Array.from({ length: 24 }, (_, i) => i + 7);
+    const hours = Array.from({ length: 24 }, (_, i) => i + 8);
 
     // Filter breaktimes from shiftTime
     const breaktimes = shiftTime.flatMap(s => s.shiftBreaks);
@@ -122,7 +122,7 @@ function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) 
         const [h, m, s] = timeStr.split(':').map(Number);
         let hour = h + (m || 0) / 60 + (s || 0) / 3600;
         // If hour is before 7 AM, assume it's the next day (h + 24)
-        if (hour < 7) hour += 24;
+        if (hour < 8) hour += 24;
         return hour;
     };
 
@@ -140,11 +140,10 @@ function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) 
                 const startDec = timeToDec(bt.startTime);
                 const endDec = timeToDec(bt.endTime);
 
-                console.log("🚀 ~ GanttRow ~ startDec:", endDec - startDec)
-
                 // Calculate position relative to timeline start (07:00)
-                const left = ((startDec - 7) / 24) * 100;
-                const width = ((endDec - startDec) / 24) * 100;
+                const left = ((startDec - 8) / 24) * 100;
+                const right = ((endDec - 8) / 24) * 100;
+                const width = right - left;
 
                 return (
                     <div
@@ -158,6 +157,7 @@ function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) 
                     />
                 );
             })}
+
 
             {/* Production Phases (Building & Curing) */}
             {phases.map((p, i) => {
@@ -181,7 +181,7 @@ function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) 
                         className={`absolute ${heightClass} ${topClass} rounded opacity-90 ${bgColor}`}
                         title={`${p.type}: ${p.start.toFixed(2)} - ${p.end.toFixed(2)}`}
                         style={{
-                            left: `${((p.start - 7) / 24) * 100}%`,
+                            left: `${((p.start - 8) / 24) * 100}%`,
                             width: `${((p.end - p.start) / 24) * 100}%`,
                         }}
                     />
@@ -193,20 +193,49 @@ function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) 
 
 function TimelineHeader() {
     const hours = Array.from({ length: 24 }, (_, i) => i + 8);
+
     return (
-        <div className="grid grid-cols-24 text-sm h-12.75 text-center border-b dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400">
-            {hours.map((h) => (
-                <div key={h} className="border-r dark:border-slate-800 py-3.75">
-                    {h > 24 ? h - 24 : h}
-                </div>
-            ))}
+        <div className="relative border-b dark:border-slate-800 bg-slate-50 dark:bg-slate-900 overflow-hidden">
+
+            {/* Hourly Grid */}
+            <div className="grid grid-cols-24 text-sm h-12.75 text-center text-slate-500 dark:text-slate-400">
+                {hours.map((h) => (
+                    <div key={h} className="border-r dark:border-slate-800 py-3.75 z-10">
+                        {h > 24 ? h - 24 : h}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }
 
 export function ProductionGantt({ rows, shiftTime }: { rows: any[]; shiftTime: Shift[] }) {
+    const timeToDec = (timeStr: string) => {
+        const [h, m, s] = timeStr.split(':').map(Number);
+        let hour = h + (m || 0) / 60 + (s || 0) / 3600;
+        if (hour < 8) hour += 24;
+        return hour;
+    };
+
     return (
-        <div className="">
+        <div className="relative flex flex-col">
+            {/* Continuous Vertical Separators */}
+            <div className="absolute inset-0 pointer-events-none z-30">
+                {shiftTime.map((st, i) => {
+
+                    const startDec = timeToDec(st.startTime);
+                    const left = ((startDec - (st.shiftNo === 1 ? 8 : 9)) / 24) * 100;
+
+                    return (
+                        <div
+                            key={`shift-sep-${i}`}
+                            className="absolute top-0 bottom-0 w-[2px] bg-slate-400/50 dark:bg-slate-500/50"
+                            style={{ left: `${left}%` }}
+                        />
+                    );
+                })}
+            </div>
+
             <TimelineHeader />
             {rows.map((row, i) => (
                 <GanttRow key={i} phases={row.phases} shiftTime={shiftTime} />

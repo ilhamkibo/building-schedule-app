@@ -7,7 +7,6 @@ export interface ProductSchedule {
     sizeCode: number;
     qty: number;
     mold: number;
-    updatedAt: string; // "2026-02-24T14:06:00"
 }
 
 export interface ProductScheduleParams extends PaginationParams {
