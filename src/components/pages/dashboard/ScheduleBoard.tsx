@@ -38,22 +38,22 @@ export default function ScheduleBoard({ data, shiftTime }: { data: any[]; shiftT
     };
 
     return (
-        <DndContext
+        /* <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={onDragEnd}
             modifiers={[restrictToVerticalAxis]}
-        >
-            <SortableContext
-                items={items.map((i) => i.id)}
-                strategy={verticalListSortingStrategy}
-            >
-                <div className="space-y-6">
-                    {items.map((block) => (
-                        <ScheduleBlock key={block.id} block={block} shiftTime={shiftTime} />
-                    ))}
-                </div>
-            </SortableContext>
-        </DndContext>
+        > */
+        /* <SortableContext
+            items={items.map((i) => i.id)}
+            strategy={verticalListSortingStrategy}
+        > */
+        <div className="space-y-6">
+            {items.map((block) => (
+                <ScheduleBlock key={block.id} block={block} shiftTime={shiftTime} />
+            ))}
+        </div>
+        /* </SortableContext>
+    </DndContext> */
     );
 }

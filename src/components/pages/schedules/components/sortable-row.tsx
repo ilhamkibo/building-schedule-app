@@ -19,7 +19,7 @@ interface SortableRowProps {
     setSearch: (search: string) => void;
 }
 
-export function StaticRow({ item, products }: { item: FormItem, products: any[] }) {
+export function StaticRow({ item }: { item: FormItem }) {
     return (
         <div className="flex items-center gap-2 p-2 bg-white border rounded shadow-sm">
             <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs border border-primary/20 shrink-0">

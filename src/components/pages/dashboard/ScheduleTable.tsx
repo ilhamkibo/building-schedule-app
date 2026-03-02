@@ -36,21 +36,22 @@ export function MachineCard({ machine }: { machine: any }) {
 }
 
 export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shift[] }) {
-    const { setNodeRef, attributes, listeners, transform, transition } =
+    /* const { setNodeRef, attributes, listeners, transform, transition } =
         useSortable({ id: block.id });
 
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
-    };
+    }; */
 
     return (
         <div
-            ref={setNodeRef}
+            /* ref={setNodeRef}
             style={style}
             {...attributes}
-            {...listeners}
-            className="border dark:border-slate-800 rounded bg-sidebar shadow-sm cursor-grab overflow-hidden"
+            {...listeners} */
+            // className="border dark:border-slate-800 rounded bg-sidebar shadow-sm cursor-grab overflow-hidden"
+            className="border dark:border-slate-800 rounded bg-sidebar shadow-sm overflow-hidden"
         >
             <div className="px-4 py-2 font-bold bg-background/30 dark:bg-background/10 border-b dark:border-slate-800 flex justify-between items-center text-slate-600 dark:text-slate-300">
                 <span>MC {block.machine}</span>
@@ -58,24 +59,31 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
             </div>
 
             <div className="w-full max-w-full overflow-x-auto">
-                <div className="grid grid-cols-[1fr_700px] min-w-[1350px]">
+                <div className="grid grid-cols-[1fr_900px] min-w-[1750px]">
                     <table className="w-full text-xs border-r dark:border-slate-800">
                         <thead className="bg-background/50 dark:bg-background/10 text-slate-600 dark:text-slate-300">
                             <tr>
                                 <th className="border dark:border-slate-800 p-1" rowSpan={2}>RIM</th>
                                 <th className="border dark:border-slate-800 p-1" rowSpan={2}>Code</th>
                                 <th className="border dark:border-slate-800 p-1" rowSpan={2}>Cure /shift</th>
-                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>R/C Stock</th>
+                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>Stock R/C</th>
                                 <th className="border dark:border-slate-800 p-1" rowSpan={2}>Cure est.</th>
                                 <th className="border dark:border-slate-800 p-1" rowSpan={2}>B.O</th>
-                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>Building Start - Finish</th>
-                                <th className="border dark:border-slate-800 p-1" colSpan={3}>Qty</th>
+                                <th className="border dark:border-slate-800 p-1" colSpan={3}>Shift 1</th>
+                                <th className="border dark:border-slate-800 p-1" colSpan={3}>Shift 2</th>
+                                <th className="border dark:border-slate-800 p-1" colSpan={3}>Shift 3</th>
                                 <th className="border dark:border-slate-800 p-1" rowSpan={2}>Remark</th>
                             </tr>
                             <tr>
-                                <th className="border dark:border-slate-800 p-1">Shift 1</th>
-                                <th className="border dark:border-slate-800 p-1">Shift 2</th>
-                                <th className="border dark:border-slate-800 p-1">Shift 3</th>
+                                <th className="border dark:border-slate-800 p-1">Build Time</th>
+                                <th className="border dark:border-slate-800 p-1">Prio.</th>
+                                <th className="border dark:border-slate-800 p-1">Qty</th>
+                                <th className="border dark:border-slate-800 p-1">Build Time</th>
+                                <th className="border dark:border-slate-800 p-1">Prio.</th>
+                                <th className="border dark:border-slate-800 p-1">Qty</th>
+                                <th className="border dark:border-slate-800 p-1">Build Time</th>
+                                <th className="border dark:border-slate-800 p-1">Prio.</th>
+                                <th className="border dark:border-slate-800 p-1">Qty</th>
                             </tr>
                         </thead>
                         <tbody className="bg-sidebar text-slate-700 dark:text-slate-300">
@@ -87,9 +95,14 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                                     <td className="border dark:border-slate-800 p-1">{r.rcStock || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.cureEst || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.balanceOut || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.buildTime || "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.buildTime1 || "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.priority1 || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.shift1Qty ?? "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.buildTime2 || "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.priority2 || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.shift2Qty ?? "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.buildTime3 || "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.priority3 || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.shift3Qty ?? "-"}</td>
                                     <td className="border dark:border-slate-800 p-1 text-red-600 dark:text-red-400">{r.remark}</td>
                                 </tr>
@@ -127,7 +140,7 @@ function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) 
     };
 
     return (
-        <div className="relative h-8 border-b dark:border-slate-800">
+        <div className="relative h-8 border-b dark:border-slate-800 overflow-hidden">
             {/* Grid Background */}
             <div className="absolute inset-0 grid grid-cols-24">
                 {hours.map((_, i) => (
@@ -166,8 +179,10 @@ function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) 
 
                 // Use separate vertical strips as in user example
                 // Building uses top-1 (h-2.5), Curing uses top-4 (h-2.5)
-                const topClass = isCuring ? "top-1" : (isBuilding ? "top-4" : "top-1");
-                const heightClass = (isBuilding || isCuring) ? "h-2.5" : "h-5";
+                // const topClass = isCuring ? "top-1" : (isBuilding ? "top-4" : "top-1");
+                const topClass = isBuilding ? "top-4" : "top-1";
+                // const heightClass = (isBuilding || isCuring) ? "h-2.5" : "h-5";
+                const heightClass = "h-2.5";
 
                 // Map colors
                 let bgColor = "bg-slate-300 dark:bg-slate-600";
@@ -175,14 +190,22 @@ function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) 
                 else if (isCuring) bgColor = "bg-orange-400";
                 else if (PHASE_COLOR[p.type]) bgColor = PHASE_COLOR[p.type];
 
+                let startNormal = p.start < 8 ? p.start + 24 : p.start;
+                let endNormal = p.end < 8 ? p.end + 24 : p.end;
+
+                // Ensure positive duration for spans crossing the boundary
+                if (endNormal <= startNormal && p.end !== p.start) {
+                    endNormal += 24;
+                }
+
                 return (
                     <div
                         key={i}
                         className={`absolute ${heightClass} ${topClass} rounded opacity-90 ${bgColor}`}
-                        title={`${p.type}: ${p.start.toFixed(2)} - ${p.end.toFixed(2)}`}
+                        title={`${p.type}: ${startNormal.toFixed(2)} - ${endNormal.toFixed(2)}`}
                         style={{
-                            left: `${((p.start - 8) / 24) * 100}%`,
-                            width: `${((p.end - p.start) / 24) * 100}%`,
+                            left: `${((startNormal - 8) / 24) * 100}%`,
+                            width: `${Math.max(0, endNormal - startNormal) / 24 * 100}%`,
                         }}
                     />
                 );
@@ -224,7 +247,7 @@ export function ProductionGantt({ rows, shiftTime }: { rows: any[]; shiftTime: S
                 {shiftTime.map((st, i) => {
 
                     const startDec = timeToDec(st.startTime);
-                    const left = ((startDec - (st.shiftNo === 1 ? 8 : 9)) / 24) * 100;
+                    const left = ((startDec - 8) / 24) * 100;
 
                     return (
                         <div

@@ -125,33 +125,139 @@ export default function Page() {
       machine: "M01",
       shift: "All Shifts",
       rows: [
+        // PRIORITY A → PRODUKSI DULU
         {
-          code: "123456",
-          rim: "123456",
-          rcStock: 100,
-          cureEst: 100,
-          balanceOut: 100,
-          buildTime: "12:00 - 13:00",
-          shift1Qty: 100,
-          shift2Qty: 100,
-          shift3Qty: 100,
-          remark: "test",
+          code: "A1101",
+          rim: "A1101",
+          rcStock: 140,
+          cureEst: "20:00",
+          balanceOut: 40,
+          buildTime1: "08:00 - 12:00",
+          buildTime2: "20:00 - 23:20",
+          buildTime3: "00:00 - 04:00",
+          priority1: "A",
+          priority2: "B",
+          priority3: "A",
+          shift1Qty: 60,
+          shift2Qty: 0,
+          shift3Qty: 30,
+          remark: "Produced first",
           phases: [
-            {
-              type: "building",
-              start: 8,
-              end: 13
-            },
-            {
-              type: "curing",
-              start: 8,
-              end: 14
-            }
+            { type: "building", start: 0, end: 4 },
+            { type: "building", start: 8, end: 12 },
+            { type: "building", start: 20, end: 23.33 },
+            { type: "curing", start: 8, end: 16 }
+          ]
+        },
+
+        // PRIORITY B → SETELAH A SELESAI
+        {
+          code: "E5501",
+          rim: "E5501",
+          rcStock: 90,
+          cureEst: "24:00",
+          balanceOut: 10,
+          buildTime1: "12:00 - 16:00",
+          buildTime2: "16:00 - 20:00",
+          buildTime3: "04:00 - 08:00",
+          priority1: "B",
+          priority2: "A",
+          priority3: "B",
+          shift1Qty: 30,
+          shift2Qty: 40,
+          shift3Qty: 20,
+          remark: "Second production",
+          phases: [
+            { type: "building", start: 4, end: 8 },
+            { type: "building", start: 12, end: 16 },
+            { type: "building", start: 16, end: 20 },
+            { type: "curing", start: 8, end: 20 },
+            { type: "shortage", start: 20, end: 24 }
+          ]
+        }
+      ]
+    },
+
+    {
+      id: "M02",
+      machine: "M02",
+      shift: "All Shifts",
+      rows: [
+        // PRIORITY A
+        {
+          code: "B2201",
+          rim: "B2201",
+          rcStock: 60,
+          cureEst: "18:00",
+          balanceOut: 20,
+          buildTime1: "08:00 - 12:00",
+          buildTime2: "-",
+          buildTime3: "00:00 - 02:00",
+          priority1: "A",
+          priority2: "-",
+          priority3: "A",
+          shift1Qty: 40,
+          shift2Qty: 0,
+          shift3Qty: 20,
+          remark: "Produced first",
+          phases: [
+            { type: "building", start: 8, end: 12 },
+            { type: "curing", start: 8, end: 14 },
+            { type: "building", start: 0, end: 2 },
+            { type: "shortage", start: 14, end: 18 }
+          ]
+        },
+
+        // PRIORITY B
+        {
+          code: "D4401",
+          rim: "D4401",
+          rcStock: 100,
+          cureEst: "22:00",
+          balanceOut: 20,
+          buildTime1: "12:00 - 16:00",
+          buildTime2: "16:00 - 20:00",
+          buildTime3: "-",
+          priority1: "B",
+          priority2: "B",
+          priority3: "-",
+          shift1Qty: 40,
+          shift2Qty: 60,
+          shift3Qty: 0,
+          remark: "Second production",
+          phases: [
+            { type: "building", start: 12, end: 16 },
+            { type: "building", start: 16, end: 20 },
+            { type: "curing", start: 8, end: 20 }
+          ]
+        },
+
+        // PRIORITY C
+        {
+          code: "C3301",
+          rim: "C3301",
+          rcStock: 40,
+          cureEst: "24:00",
+          balanceOut: 60,
+          buildTime1: "20:00 - 23:00",
+          buildTime2: "-",
+          buildTime3: "-",
+          priority1: "C",
+          priority2: "-",
+          priority3: "-",
+          shift1Qty: 0,
+          shift2Qty: 30,
+          shift3Qty: 0,
+          remark: "Last production",
+          phases: [
+            { type: "building", start: 20, end: 23 },
+            { type: "curing", start: 8, end: 11 },
+            { type: "shortage", start: 11, end: 24 }
           ]
         }
       ]
     }
-  ]
+  ];
 
   return (
     <div

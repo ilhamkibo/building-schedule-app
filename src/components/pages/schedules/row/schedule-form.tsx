@@ -368,7 +368,6 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                     <div className="bg-white border-2 border-primary shadow-2xl rounded-lg overflow-hidden opacity-90 scale-105 transition-transform w-[250px]">
                         <StaticRow
                             item={items.find(i => i.id === activeId)!}
-                            products={products}
                         />
                     </div>
                 ) : null}
