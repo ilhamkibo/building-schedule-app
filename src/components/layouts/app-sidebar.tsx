@@ -78,13 +78,8 @@ const navMain: NavGroup[] = [
             icon: CalendarCheck,
           },
           {
-            name: "Adjust Schedule Col",
+            name: "Adjust Schedule",
             url: "/schedules/adjust",
-            icon: CalendarCheck,
-          },
-          {
-            name: "Adjust Schedule Row",
-            url: "/schedules/adjust/row",
             icon: CalendarCheck,
           },
         ],

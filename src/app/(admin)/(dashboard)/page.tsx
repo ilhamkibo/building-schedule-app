@@ -63,15 +63,31 @@ export default function Page() {
 
   const dashboardData = useMemo(() => {
     if (!scheduleData) return [];
+    const scheduleDate = (scheduleData && !Array.isArray(scheduleData) ? (scheduleData as any).date : null) || scheduleResponse?.data?.date || new Date().toISOString();
 
-    const scheduleDate = scheduleData.date;
+    // If it's already in the dashboard format (array of machines with rows)
+    if (Array.isArray(scheduleData) && scheduleData.length > 0 && scheduleData[0].rows) {
+      return scheduleData.map((m: any) => ({
+        ...m,
+        rows: m.rows.map((row: any) => ({
+          ...row,
+          phases: row.phases?.map((p: any) => ({
+            ...p,
+            start: typeof p.start === 'string' ? timeToDecimal(p.start, scheduleDate) : p.start,
+            end: typeof p.end === 'string' ? timeToDecimal(p.end, scheduleDate) : p.end
+          })) || []
+        }))
+      }));
+    }
 
-    return scheduleData.details.map(m => {
+    if (!scheduleData.details) return [];
+
+    return (scheduleData as any).details.map((m: any) => {
       // Group details by product code within the machine to match the dashboard's table row format (aggregating shifts)
       const rowsMap = new Map<string, any>();
 
-      m.shifts.forEach(shift => {
-        shift.details.forEach(detail => {
+      m.shifts.forEach((shift: any) => {
+        shift.details.forEach((detail: any) => {
           if (!rowsMap.has(detail.codeNo)) {
             rowsMap.set(detail.codeNo, {
               code: detail.codeNo,
@@ -99,7 +115,7 @@ export default function Page() {
 
           // Add timelines to phases
           if (detail.timelines) {
-            detail.timelines.forEach(t => {
+            detail.timelines.forEach((t: any) => {
               row.phases.push({
                 type: t.processType.toLowerCase(),
                 start: timeToDecimal(t.startTime, scheduleDate),
@@ -129,7 +145,7 @@ export default function Page() {
         {
           code: "A1101",
           rim: "A1101",
-          rcStock: 140,
+          rcStock: 0,
           cureEst: "20:00",
           balanceOut: 40,
           buildTime1: "08:00 - 12:00",
@@ -141,12 +157,13 @@ export default function Page() {
           shift1Qty: 60,
           shift2Qty: 0,
           shift3Qty: 30,
-          remark: "Produced first",
+          remark: "Produced first fsdfsdfsd asasfasf sadasda das",
           phases: [
+            { type: "shortage", start: 8, end: 8.2 },
             { type: "building", start: 0, end: 4 },
             { type: "building", start: 8, end: 12 },
             { type: "building", start: 20, end: 23.33 },
-            { type: "curing", start: 8, end: 16 }
+            { type: "curing", start: 8.2, end: 16 }
           ]
         },
 
@@ -291,6 +308,10 @@ export default function Page() {
             <span className="dark:text-slate-300">Curing</span>
           </div>
           <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-sm bg-emerald-500"></div>
+            <span className="dark:text-slate-300">Add R/C</span>
+          </div>
+          <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm bg-red-600"></div>
             <span className="dark:text-slate-300">Shortage</span>
           </div>
@@ -332,14 +353,14 @@ export default function Page() {
         <ScheduleBoard data={dashboardData} shiftTime={shiftTime} />
       ) : (
         selectedCategoryNo && (
-          // <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-sidebar/50 rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-800">
-          //   <p className="text-lg font-medium">Tidak ada schedule untuk category ini</p>
-          //   <p className="text-sm">Silahkan pilih category lain atau buat schedule baru.</p>
-          //   <Link href="/schedules/create" className="mt-2 text-md px-4 py-2 bg-primary text-white rounded-md cursor-pointer">
-          //     Buat Schedule
-          //   </Link>
-          // </div>
-          <ScheduleBoard data={dummyData} shiftTime={shiftTime} />
+          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-sidebar/50 rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-800">
+            <p className="text-lg font-medium">Tidak ada schedule untuk category ini</p>
+            <p className="text-sm">Silahkan pilih category lain atau buat schedule baru.</p>
+            <Link href="/schedules/create" className="mt-2 text-md px-4 py-2 bg-primary text-white rounded-md cursor-pointer">
+              Buat Schedule
+            </Link>
+          </div>
+          // <ScheduleBoard data={dummyData} shiftTime={shiftTime} />
         )
       )}
     </div>

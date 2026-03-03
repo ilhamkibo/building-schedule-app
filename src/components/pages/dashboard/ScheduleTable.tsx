@@ -1,6 +1,7 @@
 import { Shift } from "@/types/shift";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 
 export function MachineCard({ machine }: { machine: any }) {
@@ -92,19 +93,34 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                                     <td className="border dark:border-slate-800 p-1">{r.rim || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1 font-semibold">{r.code}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.cureShift || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.rcStock || "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.rcStock || 0}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.cureEst || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.balanceOut || "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.balanceOut || 0}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.buildTime1 || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.priority1 || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.shift1Qty ?? "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.shift1Qty ?? 0}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.buildTime2 || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.priority2 || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.shift2Qty ?? "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.shift2Qty ?? 0}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.buildTime3 || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.priority3 || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.shift3Qty ?? "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1 text-red-600 dark:text-red-400">{r.remark}</td>
+                                    <td className="border dark:border-slate-800 p-1">{r.shift3Qty ?? 0}</td>
+                                    <td className="border dark:border-slate-800 p-1 text-red-600 dark:text-red-400">
+                                        {r.remark ? (
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <div className="whitespace-nowrap max-w-[120px] overflow-hidden text-ellipsis cursor-help">
+                                                        {r.remark}
+                                                    </div>
+                                                </TooltipTrigger>
+                                                <TooltipContent side="left" className="bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900 shadow-lg">
+                                                    <p className="font-medium max-w-[300px] wrap-break-word">{r.remark}</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        ) : (
+                                            "-"
+                                        )}
+                                    </td>
                                 </tr>
                             ))}
 
@@ -121,11 +137,21 @@ const PHASE_COLOR: Record<string, string> = {
     building: "bg-blue-500",
     curing: "bg-orange-400",
     shortage: "bg-red-600",
+    achievment: "bg-emerald-500",
 };
 
+function formatDecToTime(dec: number) {
+    const hours = Math.floor(dec);
+    const minutes = Math.round((dec - hours) * 60);
+    const h = (hours % 24).toString().padStart(2, '0');
+    const m = minutes.toString().padStart(2, '0');
+    return `${h}:${m}`;
+}
 
-function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) {
+
+function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
     const hours = Array.from({ length: 24 }, (_, i) => i + 8);
+    const phases = row.phases || [];
 
     // Filter breaktimes from shiftTime
     const breaktimes = shiftTime.flatMap(s => s.shiftBreaks);
@@ -173,21 +199,23 @@ function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) 
 
 
             {/* Production Phases (Building & Curing) */}
-            {phases.map((p, i) => {
+            {phases.map((p: any, i: number) => {
                 const isBuilding = p.type === 'building';
                 const isCuring = p.type === 'curing';
+                const isShortage = p.type === 'shortage';
+                const isAchievment = p.type === 'achievment';
 
                 // Use separate vertical strips as in user example
                 // Building uses top-1 (h-2.5), Curing uses top-4 (h-2.5)
-                // const topClass = isCuring ? "top-1" : (isBuilding ? "top-4" : "top-1");
                 const topClass = isBuilding ? "top-4" : "top-1";
-                // const heightClass = (isBuilding || isCuring) ? "h-2.5" : "h-5";
                 const heightClass = "h-2.5";
 
                 // Map colors
                 let bgColor = "bg-slate-300 dark:bg-slate-600";
                 if (isBuilding) bgColor = "bg-blue-500";
                 else if (isCuring) bgColor = "bg-orange-400";
+                else if (isShortage) bgColor = "bg-red-600";
+                else if (isAchievment) bgColor = "bg-emerald-500";
                 else if (PHASE_COLOR[p.type]) bgColor = PHASE_COLOR[p.type];
 
                 let startNormal = p.start < 8 ? p.start + 24 : p.start;
@@ -199,15 +227,35 @@ function GanttRow({ phases, shiftTime }: { phases: any[]; shiftTime: Shift[] }) 
                 }
 
                 return (
-                    <div
-                        key={i}
-                        className={`absolute ${heightClass} ${topClass} rounded opacity-90 ${bgColor}`}
-                        title={`${p.type}: ${startNormal.toFixed(2)} - ${endNormal.toFixed(2)}`}
-                        style={{
-                            left: `${((startNormal - 8) / 24) * 100}%`,
-                            width: `${Math.max(0, endNormal - startNormal) / 24 * 100}%`,
-                        }}
-                    />
+                    <Tooltip key={i}>
+                        <TooltipTrigger asChild>
+                            <div
+                                className={`absolute ${heightClass} ${topClass} rounded opacity-90 ${bgColor} cursor-pointer hover:brightness-110 transition-all`}
+                                style={{
+                                    left: `${((startNormal - 8) / 24) * 100}%`,
+                                    width: `${Math.max(0, endNormal - startNormal) / 24 * 100}%`,
+                                }}
+                            />
+                        </TooltipTrigger>
+                        <TooltipContent className="p-2 text-xs flex flex-col gap-1 min-w-[150px]">
+                            <div className="flex items-center justify-between border-b pb-1 mb-1">
+                                <span className="font-bold uppercase">{p.type}</span>
+                                <span className="text-slate-500 font-mono">
+                                    {formatDecToTime(startNormal)} - {formatDecToTime(endNormal)}
+                                </span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-slate-500">Code:</span>
+                                <span className="font-semibold">{row.code}</span>
+                            </div>
+                            {row.totalQty > 0 && (
+                                <div className="flex justify-between">
+                                    <span className="text-slate-500">Total Qty:</span>
+                                    <span className="font-semibold text-blue-600">{row.totalQty} PCS</span>
+                                </div>
+                            )}
+                        </TooltipContent>
+                    </Tooltip>
                 );
             })}
         </div>
@@ -245,7 +293,6 @@ export function ProductionGantt({ rows, shiftTime }: { rows: any[]; shiftTime: S
             {/* Continuous Vertical Separators */}
             <div className="absolute inset-0 pointer-events-none z-30">
                 {shiftTime.map((st, i) => {
-
                     const startDec = timeToDec(st.startTime);
                     const left = ((startDec - 8) / 24) * 100;
 
@@ -261,7 +308,7 @@ export function ProductionGantt({ rows, shiftTime }: { rows: any[]; shiftTime: S
 
             <TimelineHeader />
             {rows.map((row, i) => (
-                <GanttRow key={i} phases={row.phases} shiftTime={shiftTime} />
+                <GanttRow key={i} row={row} shiftTime={shiftTime} />
             ))}
         </div>
     );

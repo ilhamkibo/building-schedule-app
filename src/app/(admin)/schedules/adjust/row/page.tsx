@@ -3,7 +3,7 @@
 import AppHeader from "@/components/layouts/app-header";
 import { usePPLs } from "@/hooks/use-ppl";
 import { ResponsivePPLReference } from "@/components/pages/schedules/components/responsive-ppl-reference";
-import ScheduleForm from "@/components/pages/schedules/row/schedule-form";
+import ScheduleForm from "@/components/pages/schedules/schedule-form";
 import { useRouter } from "next/navigation";
 
 export default function CreateSchedulePage() {
@@ -12,7 +12,7 @@ export default function CreateSchedulePage() {
 
     return (
         <div className="flex flex-col h-screen overflow-hidden">
-            <AppHeader title="Create New Schedule" />
+            <AppHeader title="Adjust Schedule" />
             <main className="flex-1 flex overflow-hidden p-4">
                 <div className="flex flex-1 overflow-hidden">
                     <ResponsivePPLReference ppls={ppls} />
