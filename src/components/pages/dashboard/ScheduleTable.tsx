@@ -37,6 +37,7 @@ export function MachineCard({ machine }: { machine: any }) {
 }
 
 export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shift[] }) {
+    console.log("🚀 ~ ScheduleBlock ~ block:", block)
     /* const { setNodeRef, attributes, listeners, transform, transition } =
         useSortable({ id: block.id });
 
@@ -70,46 +71,48 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                                 <th className="border dark:border-slate-800 p-1" rowSpan={2}>Stock R/C</th>
                                 <th className="border dark:border-slate-800 p-1" rowSpan={2}>Cure est.</th>
                                 <th className="border dark:border-slate-800 p-1" rowSpan={2}>B.O</th>
-                                <th className="border dark:border-slate-800 p-1" colSpan={3}>Shift 1</th>
-                                <th className="border dark:border-slate-800 p-1" colSpan={3}>Shift 2</th>
-                                <th className="border dark:border-slate-800 p-1" colSpan={3}>Shift 3</th>
+                                <th className="border dark:border-slate-800 border-l-2 border-l-slate-300 dark:border-l-slate-700 p-1" colSpan={3}>Shift 1</th>
+                                <th className="border dark:border-slate-800 border-l-2 border-l-slate-300 dark:border-l-slate-700 p-1" colSpan={3}>Shift 2</th>
+                                <th className="border dark:border-slate-800 border-l-2 border-l-slate-300 border-r-2 border-r-slate-300 dark:border-l-slate-700 dark:border-r-slate-700 p-1" colSpan={3}>Shift 3</th>
                                 <th className="border dark:border-slate-800 p-1" rowSpan={2}>Remark</th>
                             </tr>
                             <tr>
-                                <th className="border dark:border-slate-800 p-1">Build Time</th>
+                                <th className="border dark:border-slate-800 border-l-2 border-l-slate-300 dark:border-l-slate-700 p-1">Build Time</th>
                                 <th className="border dark:border-slate-800 p-1">Prio.</th>
                                 <th className="border dark:border-slate-800 p-1">Qty</th>
-                                <th className="border dark:border-slate-800 p-1">Build Time</th>
+                                <th className="border dark:border-slate-800 border-l-2 border-l-slate-300 dark:border-l-slate-700 p-1">Build Time</th>
                                 <th className="border dark:border-slate-800 p-1">Prio.</th>
                                 <th className="border dark:border-slate-800 p-1">Qty</th>
-                                <th className="border dark:border-slate-800 p-1">Build Time</th>
+                                <th className="border dark:border-slate-800 border-l-2 border-l-slate-300 dark:border-l-slate-700 p-1">Build Time</th>
                                 <th className="border dark:border-slate-800 p-1">Prio.</th>
-                                <th className="border dark:border-slate-800 p-1">Qty</th>
+                                <th className="border dark:border-slate-800 p-1 border-r-2 border-r-slate-300 dark:border-r-slate-700">Qty</th>
                             </tr>
                         </thead>
                         <tbody className="bg-sidebar text-slate-700 dark:text-slate-300">
                             {block.rows.map((r: any, i: number) => (
                                 <tr key={i} className="text-center h-8 hover:bg-slate-50 dark:hover:bg-slate-800/30">
-                                    <td className="border dark:border-slate-800 p-1">{r.rim || "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1">{parseInt(r.rim) || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1 font-semibold">{r.code}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.cureShift || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.rcStock || 0}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.cureEst || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.balanceOut || 0}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.buildTime1 || "-"}</td>
+                                    <td className="border dark:border-slate-800 p-1 border-l-2 border-l-slate-300 dark:border-l-slate-700">{r.buildTime1 || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.priority1 || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.shift1Qty ?? 0}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.buildTime2 || "-"}</td>
+                                    <td className="border dark:border-slate-800 border-l-2 border-l-slate-300 dark:border-l-slate-700 p-1">{r.buildTime2 || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.priority2 || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.shift2Qty ?? 0}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.buildTime3 || "-"}</td>
+                                    <td className="border dark:border-slate-800 border-l-2 border-l-slate-300 dark:border-l-slate-700 p-1">{r.buildTime3 || "-"}</td>
                                     <td className="border dark:border-slate-800 p-1">{r.priority3 || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.shift3Qty ?? 0}</td>
+                                    <td className="border dark:border-slate-800 p-1 border-r-2 border-r-slate-300 dark:border-r-slate-700">{r.shift3Qty ?? 0}</td>
                                     <td className="border dark:border-slate-800 p-1 text-red-600 dark:text-red-400">
-                                        {r.remark ? (
+
+                                        {r.remark && r.remark !== "-" ? (
+
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
-                                                    <div className="whitespace-nowrap max-w-[120px] overflow-hidden text-ellipsis cursor-help">
+                                                    <div className="whitespace-nowrap w-[100px] overflow-hidden text-ellipsis">
                                                         {r.remark}
                                                     </div>
                                                 </TooltipTrigger>
@@ -118,7 +121,9 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                                                 </TooltipContent>
                                             </Tooltip>
                                         ) : (
-                                            "-"
+                                            <div className="whitespace-nowrap max-w-[100px] overflow-hidden text-ellipsis">
+                                                -
+                                            </div>
                                         )}
                                     </td>
                                 </tr>
@@ -137,7 +142,7 @@ const PHASE_COLOR: Record<string, string> = {
     building: "bg-blue-500",
     curing: "bg-orange-400",
     shortage: "bg-red-600",
-    achievment: "bg-emerald-500",
+    achievement: "bg-emerald-500",
 };
 
 function formatDecToTime(dec: number) {
@@ -187,7 +192,7 @@ function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
                 return (
                     <div
                         key={`break-${i}`}
-                        className={`absolute h-7.5 bottom-0.25 rounded opacity-90  ${endDec - startDec > 0.5 ? "bg-red-200" : "bg-yellow-200"}`}
+                        className={`absolute h-full bottom-0 opacity-80  ${endDec - startDec > 0.5 ? "bg-red-200" : "bg-yellow-200"}`}
                         title="Break Time"
                         style={{
                             left: `${left}%`,
@@ -203,7 +208,7 @@ function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
                 const isBuilding = p.type === 'building';
                 const isCuring = p.type === 'curing';
                 const isShortage = p.type === 'shortage';
-                const isAchievment = p.type === 'achievment';
+                const isAchievment = p.type === 'achievement';
 
                 // Use separate vertical strips as in user example
                 // Building uses top-1 (h-2.5), Curing uses top-4 (h-2.5)
@@ -230,7 +235,7 @@ function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
                     <Tooltip key={i}>
                         <TooltipTrigger asChild>
                             <div
-                                className={`absolute ${heightClass} ${topClass} rounded opacity-90 ${bgColor} cursor-pointer hover:brightness-110 transition-all`}
+                                className={`absolute ${heightClass} ${topClass} opacity-90 ${bgColor} cursor-pointer hover:brightness-110 transition-all`}
                                 style={{
                                     left: `${((startNormal - 8) / 24) * 100}%`,
                                     width: `${Math.max(0, endNormal - startNormal) / 24 * 100}%`,
@@ -238,7 +243,7 @@ function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
                             />
                         </TooltipTrigger>
                         <TooltipContent className="p-2 text-xs flex flex-col gap-1 min-w-[150px]">
-                            <div className="flex items-center justify-between border-b pb-1 mb-1">
+                            <div className="flex items-center justify-between border-b pb-1 mb-1 gap-2">
                                 <span className="font-bold uppercase">{p.type}</span>
                                 <span className="text-slate-500 font-mono">
                                     {formatDecToTime(startNormal)} - {formatDecToTime(endNormal)}

@@ -157,13 +157,14 @@ export default function Page() {
           shift1Qty: 60,
           shift2Qty: 0,
           shift3Qty: 30,
-          remark: "Produced first fsdfsdfsd asasfasf sadasda das",
+          remark: "First production, still need to produce more",
           phases: [
-            { type: "shortage", start: 8, end: 8.2 },
+            { type: "shortage", start: 8, end: 9.2 },
             { type: "building", start: 0, end: 4 },
             { type: "building", start: 8, end: 12 },
             { type: "building", start: 20, end: 23.33 },
-            { type: "curing", start: 8.2, end: 16 }
+            { type: "curing", start: 9.2, end: 16 },
+            { type: "achievment", start: 16, end: 20 }
           ]
         },
 
@@ -189,7 +190,7 @@ export default function Page() {
             { type: "building", start: 12, end: 16 },
             { type: "building", start: 16, end: 20 },
             { type: "curing", start: 8, end: 20 },
-            { type: "shortage", start: 20, end: 24 }
+            { type: "achievment", start: 20, end: 24 }
           ]
         }
       ]
@@ -204,7 +205,7 @@ export default function Page() {
         {
           code: "B2201",
           rim: "B2201",
-          rcStock: 60,
+          rcStock: 5,
           cureEst: "18:00",
           balanceOut: 20,
           buildTime1: "08:00 - 12:00",
@@ -216,12 +217,13 @@ export default function Page() {
           shift1Qty: 40,
           shift2Qty: 0,
           shift3Qty: 20,
-          remark: "Produced first",
+          remark: "",
           phases: [
             { type: "building", start: 8, end: 12 },
-            { type: "curing", start: 8, end: 14 },
+            { type: "curing", start: 8, end: 9 },
             { type: "building", start: 0, end: 2 },
-            { type: "shortage", start: 14, end: 18 }
+            { type: "shortage", start: 9, end: 9.15 },
+            { type: "achievment", start: 9.15, end: 19.5 }
           ]
         },
 
@@ -236,12 +238,12 @@ export default function Page() {
           buildTime2: "16:00 - 20:00",
           buildTime3: "-",
           priority1: "B",
-          priority2: "B",
+          priority2: "A",
           priority3: "-",
           shift1Qty: 40,
           shift2Qty: 60,
           shift3Qty: 0,
-          remark: "Second production",
+          remark: "",
           phases: [
             { type: "building", start: 12, end: 16 },
             { type: "building", start: 16, end: 20 },
@@ -253,14 +255,14 @@ export default function Page() {
         {
           code: "C3301",
           rim: "C3301",
-          rcStock: 40,
+          rcStock: 19,
           cureEst: "24:00",
           balanceOut: 60,
-          buildTime1: "20:00 - 23:00",
-          buildTime2: "-",
+          buildTime2: "20:00 - 23:00",
           buildTime3: "-",
-          priority1: "C",
-          priority2: "-",
+          buildTime1: "-",
+          priority1: "-",
+          priority2: "B",
           priority3: "-",
           shift1Qty: 0,
           shift2Qty: 30,
@@ -269,7 +271,8 @@ export default function Page() {
           phases: [
             { type: "building", start: 20, end: 23 },
             { type: "curing", start: 8, end: 11 },
-            { type: "shortage", start: 11, end: 24 }
+            { type: "shortage", start: 11, end: 21.12 },
+            { type: "achievment", start: 21.12, end: 2.7 }
           ]
         }
       ]
