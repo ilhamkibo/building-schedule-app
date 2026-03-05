@@ -22,7 +22,6 @@ export function useAuth() {
         mutationFn: (payload) => authService.login(payload),
 
         onSuccess: (res) => {
-            console.log("🚀 ~ useAuth ~ res:", res)
             const token =
                 typeof res.data.accessToken === "string"
                     ? res.data.accessToken

@@ -15,7 +15,7 @@ class ProductScheduleService {
     }
 
     async getByDateAndCategoryNo(date: string, categoryNo: string): Promise<ApiResponse<ScheduleByDateAndCategoryNo>> {
-        const response = await api.get<ApiResponse<ScheduleByDateAndCategoryNo>>(`${this.endpoint}/by-category-date`, {
+        const response = await api.get<ApiResponse<ScheduleByDateAndCategoryNo>>(`${this.endpoint}/by-category-line-date`, {
             params: {
                 date,
                 categoryNo,

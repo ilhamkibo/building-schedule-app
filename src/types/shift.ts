@@ -1,6 +1,7 @@
 export interface ShiftBreak {
     startTime: string;
     endTime: string;
+    isFriday: boolean;
     breakSeconds?: number;
 }
 
@@ -29,6 +30,7 @@ export interface CreateShiftRequest {
     shiftBreaks: {
         startTime: string;
         endTime: string;
+        isFriday: boolean;
     }[];
 }
 
@@ -44,5 +46,6 @@ export interface UpdateShiftRequest {
     shiftBreaks: {
         startTime: string;
         endTime: string;
+        isFriday: boolean;
     }[];
 }

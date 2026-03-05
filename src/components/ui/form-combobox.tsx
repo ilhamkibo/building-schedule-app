@@ -77,9 +77,9 @@ export function FormCombobox<T extends string | number = number>({
                             <>
                                 <CommandEmpty>{emptyText}</CommandEmpty>
                                 <CommandGroup>
-                                    {options.map((item) => (
+                                    {options.map((item, index) => (
                                         <CommandItem
-                                            key={item.id.toString()}
+                                            key={item.id !== null && item.id !== undefined ? item.id.toString() : `opt-${index}`}
                                             value={`${item.name} ${item.id}`} // Ensure uniqueness and searchability
                                             onSelect={() => {
                                                 onChange(item.id);

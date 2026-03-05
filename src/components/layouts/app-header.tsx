@@ -4,6 +4,7 @@ import ThemeToggleButton from "../common/ThemeToggle";
 import { useEffect, useState } from "react";
 import { SidebarTrigger } from "../ui/sidebar";
 import { Separator } from "../ui/separator";
+import { useShiftContext } from "@/context/shift-context";
 
 function formatTime(date: Date) {
   const hh = String(date.getHours()).padStart(2, "0");
@@ -14,6 +15,7 @@ function formatTime(date: Date) {
 }
 
 export default function AppHeader({ title = "Dashboard" }: { title: string }) {
+  const { activeShift } = useShiftContext();
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
 
@@ -58,8 +60,14 @@ export default function AppHeader({ title = "Dashboard" }: { title: string }) {
       {/* RIGHT */}
       <div className="ml-auto flex items-center gap-4">
         {/* REALTIME CLOCK */}
-        <div>
-          <h1 className="m-0 p-0 flex flex-col items-start">
+        <div className="flex items-center gap-4">
+          {activeShift && (
+            <div className="flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs animate-pulse font-semibold">
+              <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+              <span>Shift {activeShift}</span>
+            </div>
+          )}
+          <h1 className="m-0 p-0 flex flex-col items-start min-w-[100px]">
             <span className="text-md font-mono text-muted-foreground tabular-nums">
               {time}
             </span>

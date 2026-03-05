@@ -32,14 +32,14 @@ export default function ShiftForm({
     const [shiftBreaks, setShiftBreaks] = useState<ShiftBreak[]>(shift?.shiftBreaks ?? []);
 
     const addBreak = () => {
-        setShiftBreaks([...shiftBreaks, { startTime: "00:00:00", endTime: "00:00:00", breakSeconds: 0 }]);
+        setShiftBreaks([...shiftBreaks, { startTime: "00:00:00", endTime: "00:00:00", isFriday: false, breakSeconds: 0 }]);
     };
 
     const removeBreak = (index: number) => {
         setShiftBreaks(shiftBreaks.filter((_, i) => i !== index));
     };
 
-    const updateBreak = (index: number, field: keyof ShiftBreak, value: string | number) => {
+    const updateBreak = (index: number, field: keyof ShiftBreak, value: string | number | boolean) => {
         const newBreaks = [...shiftBreaks];
         newBreaks[index] = { ...newBreaks[index], [field]: value };
         setShiftBreaks(newBreaks);
@@ -58,7 +58,8 @@ export default function ShiftForm({
             colorBreak: colorBreak || null,
             shiftBreaks: shiftBreaks.map(b => ({
                 startTime: b.startTime,
-                endTime: b.endTime
+                endTime: b.endTime,
+                isFriday: b.isFriday
             }))
         });
     };
@@ -210,6 +211,13 @@ export default function ShiftForm({
                                         value={b.endTime}
                                         onChange={(e) => updateBreak(index, "endTime", e.target.value)}
                                         className="h-8 py-0 px-2"
+                                    />
+                                </div>
+                                <div className="flex flex-col items-center justify-center space-y-1 px-2 border-l border-r">
+                                    <Label className="text-[10px] uppercase font-bold text-muted-foreground">Fri Only</Label>
+                                    <Switch
+                                        checked={b.isFriday}
+                                        onCheckedChange={(checked) => updateBreak(index, "isFriday", checked)}
                                     />
                                 </div>
                                 <Button

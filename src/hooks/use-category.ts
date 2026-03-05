@@ -133,3 +133,29 @@ export function useDeleteCategory(options?: {
         },
     });
 }
+
+/**
+ * Hook to assign lines to a Category
+ */
+export function useAssignLines(options?: {
+    onSuccess?: () => void;
+    onError?: (error: unknown) => void;
+}) {
+    const queryClient = useQueryClient();
+
+    return useMutation<void, AxiosError<ApiError>, { categoryId: number; lineIds: number[] }>({
+        mutationKey: ["categories", "assign-lines"],
+        mutationFn: (payload) => categoryService.assignLines(payload),
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: ["categories"] });
+            queryClient.invalidateQueries({ queryKey: ["categories", variables.categoryId] });
+            toast.success("Lines assigned to category successfully.");
+            options?.onSuccess?.();
+        },
+        onError: (error) => {
+            const errorMessage = (error as AxiosError<ApiError>)?.response?.data?.message || "Failed to assign lines.";
+            toast.error(errorMessage);
+            options?.onError?.(error);
+        },
+    });
+}

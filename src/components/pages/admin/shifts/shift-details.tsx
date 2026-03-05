@@ -96,6 +96,7 @@ export default function ShiftDetails({ shift }: ShiftDetailsProps) {
                             <TableRow>
                                 <TableHead className="h-8 text-[10px] uppercase">Start Time</TableHead>
                                 <TableHead className="h-8 text-[10px] uppercase">End Time</TableHead>
+                                <TableHead className="h-8 text-[10px] uppercase">Friday</TableHead>
                                 <TableHead className="h-8 text-[10px] uppercase text-right">Duration</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -105,6 +106,15 @@ export default function ShiftDetails({ shift }: ShiftDetailsProps) {
                                     <TableRow key={index}>
                                         <TableCell className="py-2 text-sm">{b.startTime}</TableCell>
                                         <TableCell className="py-2 text-sm">{b.endTime}</TableCell>
+                                        <TableCell className="py-2 text-sm">
+                                            {b.isFriday ? (
+                                                <Badge variant="secondary" className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-orange-200 text-[10px] h-5">
+                                                    Friday Only
+                                                </Badge>
+                                            ) : (
+                                                <span className="text-muted-foreground text-[10px]">-</span>
+                                            )}
+                                        </TableCell>
                                         <TableCell className="py-2 text-sm text-right">
                                             {b.breakSeconds ? `${b.breakSeconds}s` : '-'}
                                         </TableCell>

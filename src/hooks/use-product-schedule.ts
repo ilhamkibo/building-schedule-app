@@ -36,7 +36,7 @@ export function useProductScheduleByDateAndCategoryNo(
     >
 ) {
     const queryResult = useQuery<ApiResponse<ScheduleByDateAndCategoryNo>, AxiosError<ApiError>>({
-        queryKey: ["product-schedule-by-date-category", date, categoryNo],
+        queryKey: ["product-schedule-by-category-line-date", date, categoryNo],
         queryFn: () => productScheduleService.getByDateAndCategoryNo(date, categoryNo),
         ...options,
     });

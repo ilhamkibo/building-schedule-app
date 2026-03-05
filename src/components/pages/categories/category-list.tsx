@@ -28,12 +28,14 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
-import { Plus, Search, Trash2, Pencil, Tags } from "lucide-react";
+import { Plus, Search, Trash2, Pencil, Tags, Layers } from "lucide-react";
 import { useCategories, useDeleteCategory, useCreateCategory, useUpdateCategory } from "@/hooks/use-category";
 import { Category } from "@/types/category";
 import CategoryForm from "./category-form";
+import AssignLineDialog from "./assign-line-dialog";
 import DataTablePagination from "@/components/common/data-table-pagination";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 
 export default function CategoryList() {
     const [page, setPage] = useState(1);
@@ -42,6 +44,7 @@ export default function CategoryList() {
     const [debouncedSearch, setDebouncedSearch] = useState("");
 
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [assignDialogOpen, setAssignDialogOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
     const [deleteCategory, setDeleteCategory] = useState<Category | null>(null);
 
@@ -94,6 +97,11 @@ export default function CategoryList() {
         }
     };
 
+    const openAssign = (category: Category) => {
+        setSelectedCategory(category);
+        setAssignDialogOpen(true);
+    };
+
     const handleSubmit = (payload: any) => {
         if (selectedCategory) {
             updateMutation.mutate({ id: selectedCategory.id, data: payload });
@@ -131,7 +139,8 @@ export default function CategoryList() {
                             <TableHead>Category Name</TableHead>
                             <TableHead>Start Code</TableHead>
                             <TableHead>End Code</TableHead>
-                            <TableHead className="w-[120px]">Actions</TableHead>
+                            <TableHead>Assigned Lines</TableHead>
+                            <TableHead className="w-[140px]">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
 
@@ -143,7 +152,9 @@ export default function CategoryList() {
                                     <TableCell><Skeleton className="h-6 w-40" /></TableCell>
                                     <TableCell><Skeleton className="h-6 w-20" /></TableCell>
                                     <TableCell><Skeleton className="h-6 w-20" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-24" /></TableCell>
                                     <TableCell className="flex gap-1">
+                                        <Skeleton className="h-8 w-8 rounded-md" />
                                         <Skeleton className="h-8 w-8 rounded-md" />
                                         <Skeleton className="h-8 w-8 rounded-md" />
                                     </TableCell>
@@ -153,7 +164,7 @@ export default function CategoryList() {
 
                         {!isLoading && categories.length === 0 && (
                             <TableRow>
-                                <TableCell className="text-center" colSpan={5}>No categories found</TableCell>
+                                <TableCell className="text-center" colSpan={6}>No categories found</TableCell>
                             </TableRow>
                         )}
 
@@ -176,7 +187,32 @@ export default function CategoryList() {
                                         {category.endCode}
                                     </span>
                                 </TableCell>
+                                <TableCell>
+                                    <div className="flex flex-wrap gap-1 max-w-[200px]">
+                                        {category.lines && category.lines.length > 0 ? (
+                                            category.lines.map((line) => (
+                                                <Badge
+                                                    key={line.id}
+                                                    variant="secondary"
+                                                    className="text-[10px] px-1.5 py-0 h-4 font-medium"
+                                                >
+                                                    {line.name}
+                                                </Badge>
+                                            ))
+                                        ) : (
+                                            <span className="text-muted-foreground text-xs italic">No lines</span>
+                                        )}
+                                    </div>
+                                </TableCell>
                                 <TableCell className="flex gap-1">
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() => openAssign(category)}
+                                        title="Assign Lines"
+                                    >
+                                        <Layers className="h-4 w-4 text-primary" />
+                                    </Button>
                                     <Button
                                         size="icon"
                                         variant="ghost"
@@ -227,6 +263,13 @@ export default function CategoryList() {
                     />
                 </DialogContent>
             </Dialog>
+
+            {/* Dialog Assign Lines */}
+            <AssignLineDialog
+                category={selectedCategory}
+                open={assignDialogOpen}
+                onOpenChange={setAssignDialogOpen}
+            />
 
             {/* Delete Confirmation */}
             <AlertDialog open={!!deleteCategory} onOpenChange={() => setDeleteCategory(null)}>

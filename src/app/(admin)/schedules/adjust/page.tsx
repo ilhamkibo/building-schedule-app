@@ -3,7 +3,7 @@
 import AppHeader from "@/components/layouts/app-header";
 import { usePPLs } from "@/hooks/use-ppl";
 import { ResponsivePPLReference } from "@/components/pages/schedules/components/responsive-ppl-reference";
-import ScheduleForm from "@/components/pages/schedules/row/schedule-form";
+import ScheduleForm from "@/components/pages/schedules/schedule-form";
 import { useRouter } from "next/navigation";
 
 export default function CreateSchedulePage() {
@@ -17,7 +17,7 @@ export default function CreateSchedulePage() {
                 <div className="flex flex-1 overflow-hidden">
                     <ResponsivePPLReference ppls={ppls} />
                     <div className="flex-1 overflow-hidden">
-                        <div className=" mx-auto h-full bg-sidebar pt-2 shadow-sm overflow-hidden border-r border-t border-b rounded-r-xl">
+                        <div className=" mx-auto h-full bg-sidebar pt-2 shadow-sm overflow-hidden border rounded-xl">
                             <ScheduleForm
                                 onCancel={() => router.push("/schedules")}
                                 onSuccess={() => router.push("/schedules")}

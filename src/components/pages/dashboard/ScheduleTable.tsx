@@ -2,6 +2,7 @@ import { Shift } from "@/types/shift";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { getCurrentShift } from "@/lib/shift-utils";
 
 
 export function MachineCard({ machine }: { machine: any }) {
@@ -37,7 +38,6 @@ export function MachineCard({ machine }: { machine: any }) {
 }
 
 export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shift[] }) {
-    console.log("🚀 ~ ScheduleBlock ~ block:", block)
     /* const { setNodeRef, attributes, listeners, transform, transition } =
         useSortable({ id: block.id });
 
@@ -55,80 +55,90 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
             // className="border dark:border-slate-800 rounded bg-sidebar shadow-sm cursor-grab overflow-hidden"
             className="border dark:border-slate-800 rounded bg-sidebar shadow-sm overflow-hidden"
         >
-            <div className="px-4 py-2 font-bold bg-background/30 dark:bg-background/10 border-b dark:border-slate-800 flex justify-between items-center text-slate-600 dark:text-slate-300">
-                <span>MC {block.machine}</span>
-                <span className="text-xs font-normal bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-500 dark:text-slate-400">{block.shift}</span>
+            <div className="px-5 py-3 font-bold bg-muted/30 dark:bg-muted/10 border-b dark:border-slate-800 flex justify-between items-center text-slate-700 dark:text-slate-200">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                        <span className="text-sm">MC</span>
+                    </div>
+                    <span className="text-lg">Machine {block.machine}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2.5 py-1 rounded-full border border-blue-200 dark:border-blue-800">{block.shift}</span>
+                </div>
             </div>
 
-            <div className="w-full max-w-full overflow-x-auto">
+            <div className="w-full max-w-full overflow-x-auto scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800">
                 <div className="grid grid-cols-[1fr_900px] min-w-[1750px]">
-                    <table className="w-full text-xs border-r dark:border-slate-800">
-                        <thead className="bg-background/50 dark:bg-background/10 text-slate-600 dark:text-slate-300">
+                    <table className="w-full text-xs border-r dark:border-slate-800 border-collapse">
+                        <thead className="bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-sm sticky top-0 z-10 text-slate-600 dark:text-slate-400">
                             <tr>
-                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>RIM</th>
-                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>Code</th>
-                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>Cure /shift</th>
-                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>Stock R/C</th>
-                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>Cure est.</th>
-                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>B.O</th>
-                                <th className="border dark:border-slate-800 border-l-2 border-l-slate-300 dark:border-l-slate-700 p-1" colSpan={3}>Shift 1</th>
-                                <th className="border dark:border-slate-800 border-l-2 border-l-slate-300 dark:border-l-slate-700 p-1" colSpan={3}>Shift 2</th>
-                                <th className="border dark:border-slate-800 border-l-2 border-l-slate-300 border-r-2 border-r-slate-300 dark:border-l-slate-700 dark:border-r-slate-700 p-1" colSpan={3}>Shift 3</th>
-                                <th className="border dark:border-slate-800 p-1" rowSpan={2}>Remark</th>
+                                <th className="border dark:border-slate-800 p-2 font-bold" rowSpan={2}>RIM</th>
+                                <th className="border dark:border-slate-800 p-2 font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider" rowSpan={2}>Code</th>
+                                <th className="border dark:border-slate-800 p-1 font-medium" rowSpan={2}>Cure /shift</th>
+                                <th className="border dark:border-slate-800 p-1 font-medium" rowSpan={2}>Stock R/C</th>
+                                <th className="border dark:border-slate-800 p-1 font-medium" rowSpan={2}>Cure est.</th>
+                                <th className="border dark:border-slate-800 p-1 font-medium" rowSpan={2}>B.O</th>
+                                <th className={`border dark:border-slate-800 border-l-2 border-l-blue-200 dark:border-l-blue-900 p-1.5 ${getCurrentShift(shiftTime) === 1 ? 'bg-blue-50/50 dark:bg-blue-950/20 font-bold text-blue-700 dark:text-blue-400' : ''}`} colSpan={3}>SHIFT 1</th>
+                                <th className={`border dark:border-slate-800 border-l-2 border-l-orange-200 dark:border-l-orange-900 p-1.5 ${getCurrentShift(shiftTime) === 2 ? 'bg-orange-50/50 dark:bg-orange-950/20 font-bold text-orange-700 dark:text-orange-400' : ''}`} colSpan={3}>SHIFT 2</th>
+                                <th className={`border dark:border-slate-800 border-l-2 border-l-emerald-200 dark:border-l-emerald-900 border-r-2 border-r-slate-200 dark:border-r-slate-800 p-1.5 ${getCurrentShift(shiftTime) === 3 ? 'bg-emerald-50/50 dark:bg-emerald-950/20 font-bold text-emerald-700 dark:text-emerald-400' : ''}`} colSpan={3}>SHIFT 3</th>
+                                <th className="border dark:border-slate-800 p-2 font-bold" rowSpan={2}>Remark</th>
                             </tr>
-                            <tr>
-                                <th className="border dark:border-slate-800 border-l-2 border-l-slate-300 dark:border-l-slate-700 p-1">Build Time</th>
-                                <th className="border dark:border-slate-800 p-1">Prio.</th>
-                                <th className="border dark:border-slate-800 p-1">Qty</th>
-                                <th className="border dark:border-slate-800 border-l-2 border-l-slate-300 dark:border-l-slate-700 p-1">Build Time</th>
-                                <th className="border dark:border-slate-800 p-1">Prio.</th>
-                                <th className="border dark:border-slate-800 p-1">Qty</th>
-                                <th className="border dark:border-slate-800 border-l-2 border-l-slate-300 dark:border-l-slate-700 p-1">Build Time</th>
-                                <th className="border dark:border-slate-800 p-1">Prio.</th>
-                                <th className="border dark:border-slate-800 p-1 border-r-2 border-r-slate-300 dark:border-r-slate-700">Qty</th>
+                            <tr className="bg-slate-50/30 dark:bg-slate-900/30 text-[10px] uppercase font-bold tracking-tight">
+                                <th className={`border dark:border-slate-800 border-l-2 border-l-blue-200 dark:border-l-blue-900 p-1 ${getCurrentShift(shiftTime) === 1 ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''}`}>Time</th>
+                                <th className={`border dark:border-slate-800 p-1 ${getCurrentShift(shiftTime) === 1 ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''}`}>Pri</th>
+                                <th className={`border dark:border-slate-800 p-1 ${getCurrentShift(shiftTime) === 1 ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''}`}>Qty</th>
+                                <th className={`border dark:border-slate-800 border-l-2 border-l-orange-200 dark:border-l-orange-900 p-1 ${getCurrentShift(shiftTime) === 2 ? 'bg-orange-50/50 dark:bg-orange-950/20' : ''}`}>Time</th>
+                                <th className={`border dark:border-slate-800 p-1 ${getCurrentShift(shiftTime) === 2 ? 'bg-orange-50/50 dark:bg-orange-950/20' : ''}`}>Pri</th>
+                                <th className={`border dark:border-slate-800 p-1 ${getCurrentShift(shiftTime) === 2 ? 'bg-orange-50/50 dark:bg-orange-950/20' : ''}`}>Qty</th>
+                                <th className={`border dark:border-slate-800 border-l-2 border-l-emerald-200 dark:border-l-emerald-900 p-1 ${getCurrentShift(shiftTime) === 3 ? 'bg-emerald-50/50 dark:bg-emerald-950/20' : ''}`}>Time</th>
+                                <th className={`border dark:border-slate-800 p-1 ${getCurrentShift(shiftTime) === 3 ? 'bg-emerald-50/50 dark:bg-emerald-950/20' : ''}`}>Pri</th>
+                                <th className={`border dark:border-slate-800 p-1 border-r-2 border-r-slate-200 dark:border-r-slate-800 ${getCurrentShift(shiftTime) === 3 ? 'bg-emerald-50/50 dark:bg-emerald-950/20' : ''}`}>Qty</th>
                             </tr>
                         </thead>
                         <tbody className="bg-sidebar text-slate-700 dark:text-slate-300">
-                            {block.rows.map((r: any, i: number) => (
-                                <tr key={i} className="text-center h-8 hover:bg-slate-50 dark:hover:bg-slate-800/30">
-                                    <td className="border dark:border-slate-800 p-1">{parseInt(r.rim) || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1 font-semibold">{r.code}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.cureShift || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.rcStock || 0}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.cureEst || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.balanceOut || 0}</td>
-                                    <td className="border dark:border-slate-800 p-1 border-l-2 border-l-slate-300 dark:border-l-slate-700">{r.buildTime1 || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.priority1 || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.shift1Qty ?? 0}</td>
-                                    <td className="border dark:border-slate-800 border-l-2 border-l-slate-300 dark:border-l-slate-700 p-1">{r.buildTime2 || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.priority2 || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.shift2Qty ?? 0}</td>
-                                    <td className="border dark:border-slate-800 border-l-2 border-l-slate-300 dark:border-l-slate-700 p-1">{r.buildTime3 || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1">{r.priority3 || "-"}</td>
-                                    <td className="border dark:border-slate-800 p-1 border-r-2 border-r-slate-300 dark:border-r-slate-700">{r.shift3Qty ?? 0}</td>
-                                    <td className="border dark:border-slate-800 p-1 text-red-600 dark:text-red-400">
+                            {block.rows.map((r: any, i: number) => {
+                                const currentShift = getCurrentShift(shiftTime);
+                                return (
+                                    <tr key={i} className="text-center h-8 hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors border-b dark:border-slate-800 last:border-0">
+                                        <td className="border-x dark:border-slate-800 p-1 font-mono text-slate-500">{r.rim ? (parseInt(r.rim) / 10) : "-"}</td>
+                                        <td className="border-x dark:border-slate-800 p-1 font-bold text-slate-900 dark:text-slate-100">{r.code}</td>
+                                        <td className="border-x dark:border-slate-800 p-1">{r.cureShift || "-"}</td>
+                                        <td className="border-x dark:border-slate-800 p-1">{r.rcStock || 0}</td>
+                                        <td className="border-x dark:border-slate-800 p-1 font-medium">{r.cureEst || "-"}</td>
+                                        <td className="border-x dark:border-slate-800 p-1">{r.balanceOut || 0}</td>
 
-                                        {r.remark && r.remark !== "-" ? (
+                                        <td className={`border-x dark:border-slate-800 p-1 border-l-2 border-l-blue-200 dark:border-l-blue-900 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.buildTime1 || "-"}</td>
+                                        <td className={`border-x dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.priority1 || "-"}</td>
+                                        <td className={`border-x dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.shift1Qty ?? 0}</td>
 
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <div className="whitespace-nowrap w-[100px] overflow-hidden text-ellipsis">
-                                                        {r.remark}
-                                                    </div>
-                                                </TooltipTrigger>
-                                                <TooltipContent side="left" className="bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900 shadow-lg">
-                                                    <p className="font-medium max-w-[300px] wrap-break-word">{r.remark}</p>
-                                                </TooltipContent>
-                                            </Tooltip>
-                                        ) : (
-                                            <div className="whitespace-nowrap max-w-[100px] overflow-hidden text-ellipsis">
-                                                -
-                                            </div>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
+                                        <td className={`border-x dark:border-slate-800 border-l-2 border-l-orange-200 dark:border-l-orange-900 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.buildTime2 || "-"}</td>
+                                        <td className={`border-x dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.priority2 || "-"}</td>
+                                        <td className={`border-x dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.shift2Qty ?? 0}</td>
 
+                                        <td className={`border-x dark:border-slate-800 border-l-2 border-l-emerald-200 dark:border-l-emerald-900 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.buildTime3 || "-"}</td>
+                                        <td className={`border-x dark:border-slate-800 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.priority3 || "-"}</td>
+                                        <td className={`border-x dark:border-slate-800 p-1 border-r-2 border-r-slate-200 dark:border-r-slate-800 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.shift3Qty ?? 0}</td>
+
+                                        <td className="border-x dark:border-slate-800 p-1">
+                                            {r.remark && r.remark !== "-" ? (
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <div className="whitespace-nowrap w-[100px] mx-auto overflow-hidden text-ellipsis text-red-600 dark:text-red-400 font-medium">
+                                                            {r.remark}
+                                                        </div>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent side="left" className="bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900 shadow-xl p-3">
+                                                        <p className="font-semibold mb-1 border-b border-red-200 pb-1">Remark</p>
+                                                        <p className="font-medium max-w-[300px] wrap-break-word">{r.remark}</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            ) : (
+                                                <span className="text-slate-400">-</span>
+                                            )}
+                                        </td>
+                                    </tr>
+                                )
+                            })}
                         </tbody>
                     </table>
                     <ProductionGantt rows={block.rows} shiftTime={shiftTime} />
@@ -158,8 +168,17 @@ function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
     const hours = Array.from({ length: 24 }, (_, i) => i + 8);
     const phases = row.phases || [];
 
+    const isTodayFriday = new Date().getDay() === 5;
+
     // Filter breaktimes from shiftTime
-    const breaktimes = shiftTime.flatMap(s => s.shiftBreaks);
+    const breaktimes = shiftTime.flatMap(s => {
+        if (s.shiftNo === 1) {
+            // Specific for shift 1: filter by Friday status
+            return (s.shiftBreaks || []).filter(b => b.isFriday === isTodayFriday);
+        }
+        // For other shifts, take all (or we could apply similar logic if needed)
+        return s.shiftBreaks || [];
+    });
 
     // Helper to convert time string (HH:mm:ss) to decimal hours relative to 00:00
     const timeToDec = (timeStr: string) => {
@@ -212,8 +231,8 @@ function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
 
                 // Use separate vertical strips as in user example
                 // Building uses top-1 (h-2.5), Curing uses top-4 (h-2.5)
-                const topClass = isBuilding ? "top-4" : "top-1";
-                const heightClass = "h-2.5";
+                const topClass = isBuilding ? "top-3" : "top-1";
+                const heightClass = isBuilding ? "h-4" : "h-1.5";
 
                 // Map colors
                 let bgColor = "bg-slate-300 dark:bg-slate-600";

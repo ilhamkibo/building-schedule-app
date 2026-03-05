@@ -14,7 +14,7 @@ export function ResponsivePPLReference({ ppls }: ResponsivePPLReferenceProps) {
     return (
         <>
             {/* Desktop Sidebar: Visible only on large screens */}
-            <div className="hidden lg:flex w-[350px] xl:w-[400px] bg-muted/10 flex-col overflow-hidden border rounded-l-xl">
+            <div className="hidden bg-muted/10 flex-col overflow-hidden border rounded-l-xl">
                 <PPLReferenceSidebar ppls={ppls} />
             </div>
 
@@ -24,7 +24,7 @@ export function ResponsivePPLReference({ ppls }: ResponsivePPLReferenceProps) {
                     <Button
                         variant="default"
                         size="icon"
-                        className="lg:hidden fixed bottom-24 right-6 z-50 rounded-full shadow-2xl w-14 h-14 bg-primary hover:bg-primary/90 transition-all active:scale-90 animate-in fade-in slide-in-from-bottom-10 duration-500"
+                        className="fixed bottom-24 right-6 z-50 rounded-full shadow-2xl w-14 h-14 bg-primary hover:bg-primary/90 transition-all active:scale-90 animate-in fade-in slide-in-from-bottom-10 duration-500"
                     >
                         <Search className="h-6 w-6 text-white" />
                         <span className="sr-only">PPL Reference</span>

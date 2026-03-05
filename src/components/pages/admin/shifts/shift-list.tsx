@@ -158,9 +158,16 @@ export default function ShiftList() {
                                 <TableCell>{shift.endTime}</TableCell>
                                 <TableCell>{shift.workSeconds}s</TableCell>
                                 <TableCell>
-                                    <Badge variant="outline">
-                                        {shift.shiftBreaks?.length || 0} breaks
-                                    </Badge>
+                                    <div className="flex flex-col gap-1">
+                                        <Badge variant="outline" className="w-fit">
+                                            {shift.shiftBreaks?.length || 0} breaks
+                                        </Badge>
+                                        {shift.shiftBreaks?.some(b => b.isFriday) && (
+                                            <Badge variant="secondary" className="bg-orange-100 text-orange-700 border-orange-200 text-[9px] h-4 w-fit px-1">
+                                                Friday Specific
+                                            </Badge>
+                                        )}
+                                    </div>
                                 </TableCell>
                                 <TableCell>
                                     {shift.isActive ? (

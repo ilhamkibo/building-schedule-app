@@ -207,4 +207,5 @@ export interface FormItem {
     size?: number | string;
     rim?: string;
     boQty?: number;
+    qtyPpl?: string;
 }

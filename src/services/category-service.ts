@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
 import { PaginatedResponse, PaginationParams } from "@/types/pagination";
-import { Category, CreateCategoryRequest, UpdateCategoryRequest } from "@/types/category";
+import { Category, CreateCategoryRequest, UpdateCategoryRequest, AssignLinesRequest } from "@/types/category";
 
 class CategoryService {
     private endpoint = '/categories';
@@ -27,6 +27,10 @@ class CategoryService {
 
     async delete(id: number): Promise<void> {
         await api.delete(`${this.endpoint}/${id}`);
+    }
+
+    async assignLines(payload: AssignLinesRequest): Promise<void> {
+        await api.post(`${this.endpoint}/assign-lines/${payload.categoryId}`, payload);
     }
 }
 

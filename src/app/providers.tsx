@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/context/auth-context";
 import { getValidatedUser } from "@/lib/auth-validator";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ShiftProvider } from "@/context/shift-context";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -26,8 +27,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <AuthProvider initialUser={validatedUser}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <TooltipProvider>
-            <Toaster position="top-right" />
-            {children}
+            <ShiftProvider>
+              <Toaster position="top-right" />
+              {children}
+            </ShiftProvider>
           </TooltipProvider>
         </ThemeProvider>
       </AuthProvider>

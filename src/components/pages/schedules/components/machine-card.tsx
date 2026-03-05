@@ -48,7 +48,7 @@ export function MachineCard({
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="flex flex-col gap-3">
                 {[1, 2, 3].map((sNo) => (
                     <ShiftColumn
                         key={sNo}
