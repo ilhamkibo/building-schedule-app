@@ -99,27 +99,35 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                             {block.rows.map((r: any, i: number) => {
                                 const currentShift = getCurrentShift(shiftTime);
                                 return (
-                                    <tr key={i} className="text-center h-8 hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors border-b dark:border-slate-800 last:border-0">
-                                        <td className="border-x dark:border-slate-800 p-1 font-mono text-slate-500">{r.rim ? (parseInt(r.rim) / 10) : "-"}</td>
-                                        <td className="border-x dark:border-slate-800 p-1 font-bold text-slate-900 dark:text-slate-100">{r.code}</td>
-                                        <td className="border-x dark:border-slate-800 p-1">{r.cureShift || "-"}</td>
-                                        <td className="border-x dark:border-slate-800 p-1">{r.rcStock || 0}</td>
-                                        <td className="border-x dark:border-slate-800 p-1 font-medium">{r.cureEst || "-"}</td>
-                                        <td className="border-x dark:border-slate-800 p-1">{r.balanceOut || 0}</td>
+                                    <tr key={i} className="text-center h-9 hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors border-b dark:border-slate-800 last:border-0">
+                                        <td className="border dark:border-slate-800 p-1 font-mono text-slate-500">{r.rim ? (parseInt(r.rim) / 10) : "-"}</td>
+                                        <td className="border dark:border-slate-800 p-1 font-bold text-slate-900 dark:text-slate-100">{r.code}</td>
+                                        <td className="border dark:border-slate-800 p-1">{r.cureShift || "-"}</td>
+                                        <td className="border dark:border-slate-800 p-1">{r.rcStock || 0}</td>
+                                        <td className="border dark:border-slate-800 p-1 font-medium">{r.cureEst || "-"}</td>
+                                        <td className="border dark:border-slate-800 p-1">{r.balanceOut || 0}</td>
+                                        <td className={`border dark:border-slate-800 p-1 border-l-2 border-l-blue-200 dark:border-l-blue-900 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>
+                                            {r.shift1Qty == 74 ? (
+                                                <div className="flex flex-col">
+                                                    <span className="text-[10px]">{`${r.shift1Qty == 74 ? "16:00 - 18:31" : ""}`}</span>
+                                                    <span className="text-[10px]">{r.buildTime1 || "-"}</span>
+                                                </div>
+                                            ) : (
+                                                <span>{r.buildTime1 || "-"}</span>
+                                            )}
+                                        </td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.priority1 || "-"}</td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.shift1Qty ?? 0}</td>
 
-                                        <td className={`border-x dark:border-slate-800 p-1 border-l-2 border-l-blue-200 dark:border-l-blue-900 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.buildTime1 || "-"}</td>
-                                        <td className={`border-x dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.priority1 || "-"}</td>
-                                        <td className={`border-x dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.shift1Qty ?? 0}</td>
+                                        <td className={`border dark:border-slate-800 border-l-2 border-l-orange-200 dark:border-l-orange-900 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.buildTime2 || "-"}</td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.priority2 || "-"}</td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.shift2Qty ?? 0}</td>
 
-                                        <td className={`border-x dark:border-slate-800 border-l-2 border-l-orange-200 dark:border-l-orange-900 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.buildTime2 || "-"}</td>
-                                        <td className={`border-x dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.priority2 || "-"}</td>
-                                        <td className={`border-x dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.shift2Qty ?? 0}</td>
+                                        <td className={`border dark:border-slate-800 border-l-2 border-l-emerald-200 dark:border-l-emerald-900 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.buildTime3 || "-"}</td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.priority3 || "-"}</td>
+                                        <td className={`border dark:border-slate-800 p-1 border-r-2 border-r-slate-200 dark:border-r-slate-800 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.shift3Qty ?? 0}</td>
 
-                                        <td className={`border-x dark:border-slate-800 border-l-2 border-l-emerald-200 dark:border-l-emerald-900 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.buildTime3 || "-"}</td>
-                                        <td className={`border-x dark:border-slate-800 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.priority3 || "-"}</td>
-                                        <td className={`border-x dark:border-slate-800 p-1 border-r-2 border-r-slate-200 dark:border-r-slate-800 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.shift3Qty ?? 0}</td>
-
-                                        <td className="border-x dark:border-slate-800 p-1">
+                                        <td className="border dark:border-slate-800 p-1">
                                             {r.remark && r.remark !== "-" ? (
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
@@ -148,12 +156,6 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
     );
 }
 
-const PHASE_COLOR: Record<string, string> = {
-    building: "bg-blue-500",
-    curing: "bg-orange-400",
-    shortage: "bg-red-600",
-    achievement: "bg-emerald-500",
-};
 
 function formatDecToTime(dec: number) {
     const hours = Math.floor(dec);
@@ -163,6 +165,37 @@ function formatDecToTime(dec: number) {
     return `${h}:${m}`;
 }
 
+const PHASE_CONFIG: Record<string, {
+    priority: number
+    color: string
+    height: string
+    top: string
+}> = {
+    building: {
+        priority: 0,
+        color: "bg-blue-500",
+        height: "h-9",
+        top: ""
+    },
+    curing: {
+        priority: 1,
+        color: "bg-orange-400",
+        height: "h-2.5",
+        top: "top-3.5"
+    },
+    shortage: {
+        priority: 2,
+        color: "bg-red-600",
+        height: "h-2.5",
+        top: "top-3.5"
+    },
+    achievement: {
+        priority: 3,
+        color: "bg-emerald-300",
+        height: "h-2.5",
+        top: "top-3.5"
+    }
+};
 
 function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
     const hours = Array.from({ length: 24 }, (_, i) => i + 8);
@@ -190,7 +223,7 @@ function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
     };
 
     return (
-        <div className="relative h-8 border-b dark:border-slate-800 overflow-hidden">
+        <div className="relative h-9 border-b dark:border-slate-800 overflow-hidden">
             {/* Grid Background */}
             <div className="absolute inset-0 grid grid-cols-24">
                 {hours.map((_, i) => (
@@ -223,24 +256,13 @@ function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
 
 
             {/* Production Phases (Building & Curing) */}
-            {phases.map((p: any, i: number) => {
-                const isBuilding = p.type === 'building';
-                const isCuring = p.type === 'curing';
-                const isShortage = p.type === 'shortage';
-                const isAchievment = p.type === 'achievement';
+            {[...phases].sort((a, b) => PHASE_CONFIG[a.type].priority - PHASE_CONFIG[b.type].priority).map((p: any, i: number) => {
 
-                // Use separate vertical strips as in user example
-                // Building uses top-1 (h-2.5), Curing uses top-4 (h-2.5)
-                const topClass = isBuilding ? "top-3" : "top-1";
-                const heightClass = isBuilding ? "h-4" : "h-1.5";
-
-                // Map colors
-                let bgColor = "bg-slate-300 dark:bg-slate-600";
-                if (isBuilding) bgColor = "bg-blue-500";
-                else if (isCuring) bgColor = "bg-orange-400";
-                else if (isShortage) bgColor = "bg-red-600";
-                else if (isAchievment) bgColor = "bg-emerald-500";
-                else if (PHASE_COLOR[p.type]) bgColor = PHASE_COLOR[p.type];
+                const config = PHASE_CONFIG[p.type] || {
+                    color: "bg-slate-300 dark:bg-slate-600",
+                    height: "h-2",
+                    top: "top-3"
+                };
 
                 let startNormal = p.start < 8 ? p.start + 24 : p.start;
                 let endNormal = p.end < 8 ? p.end + 24 : p.end;
@@ -254,7 +276,7 @@ function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
                     <Tooltip key={i}>
                         <TooltipTrigger asChild>
                             <div
-                                className={`absolute ${heightClass} ${topClass} opacity-90 ${bgColor} cursor-pointer hover:brightness-110 transition-all`}
+                                className={`absolute ${config.height} ${config.top} opacity-90 ${config.color} cursor-pointer hover:brightness-110 transition-all`}
                                 style={{
                                     left: `${((startNormal - 8) / 24) * 100}%`,
                                     width: `${Math.max(0, endNormal - startNormal) / 24 * 100}%`,

@@ -8,13 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormCombobox } from "@/components/ui/form-combobox";
 import { FormItem } from "@/types/schedule";
+import { Product } from "@/types/product";
 
 interface SortableRowProps {
     item: FormItem;
     index: number;
     removeItem: (index: number) => void;
     updateItem: (index: number, updates: Partial<FormItem>) => void;
-    products: any[];
+    products: Product[];
     isProductsLoading: boolean;
     setSearch: (search: string) => void;
 }
@@ -165,9 +166,19 @@ export function SortableRow({
                             <Label className="text-[10px] uppercase text-muted-foreground mb-1">
                                 B.O
                             </Label>
-                            <div className="h-8 flex items-center justify-center bg-muted/30 rounded text-xs font-medium border">
+                            <Input
+                                type="number"
+                                className="h-8 text-center bg-white"
+                                value={item.boQty || 0}
+                                onChange={(e) =>
+                                    updateItem(index, {
+                                        boQty: parseInt(e.target.value) || 0,
+                                    })
+                                }
+                            />
+                            {/* <div className="h-8 flex items-center justify-center bg-muted/30 rounded text-xs font-medium border">
                                 {item.boQty || 0}
-                            </div>
+                            </div> */}
                         </div>
 
                         {/* Quantity */}

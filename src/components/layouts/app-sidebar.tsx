@@ -129,11 +129,11 @@ const navMain: NavGroup[] = [
         url: "/admin/products",
         icon: Package,
       },
-      {
-        subtitle: "Product Restrictions",
-        url: "/admin/product-restrictions",
-        icon: ShieldAlert,
-      },
+      // {
+      //   subtitle: "Product Restrictions",
+      //   url: "/admin/product-restrictions",
+      //   icon: ShieldAlert,
+      // },
       {
         subtitle: "Shift Time",
         url: "/admin/shifts",

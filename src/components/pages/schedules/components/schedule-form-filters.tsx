@@ -26,7 +26,6 @@ export function ScheduleFormFilters({
     onLineIdChange,
     categories,
 }: ScheduleFormFiltersProps) {
-    console.log("🚀 ~ ScheduleFormFilters ~ selectedLineId:", selectedLineId, selectedCategoryNo)
     const selectedCategory = categories.find(c => Number(c.categoryNo) === Number(selectedCategoryNo));
 
     return (

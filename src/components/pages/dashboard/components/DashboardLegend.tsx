@@ -14,7 +14,7 @@ export function DashboardLegend() {
                 <span className="text-slate-600 dark:text-slate-300">Curing</span>
             </div>
             <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded-sm bg-emerald-500 shadow-sm"></div>
+                <div className="w-3 h-3 rounded-sm bg-emerald-300 shadow-sm"></div>
                 <span className="text-slate-600 dark:text-slate-300">Add R/C</span>
             </div>
             <div className="flex items-center gap-1.5">
