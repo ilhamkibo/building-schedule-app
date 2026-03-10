@@ -63,7 +63,7 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                     <span className="text-lg">Machine {block.machine}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2.5 py-1 rounded-full border border-blue-200 dark:border-blue-800">{block.shift}</span>
+                    <span className="text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2.5 py-1 rounded-full border border-blue-200 dark:border-blue-800">{block.shifts || "All Shifts"}</span>
                 </div>
             </div>
 
@@ -99,7 +99,7 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                             {block.rows.map((r: any, i: number) => {
                                 const currentShift = getCurrentShift(shiftTime);
                                 return (
-                                    <tr key={i} className="text-center h-9 hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors border-b dark:border-slate-800 last:border-0">
+                                    <tr key={i} className="text-center h-8 hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors border-b dark:border-slate-800 last:border-0">
                                         <td className="border dark:border-slate-800 p-1 font-mono text-slate-500">{r.rim ? (parseInt(r.rim) / 10) : "-"}</td>
                                         <td className="border dark:border-slate-800 p-1 font-bold text-slate-900 dark:text-slate-100">{r.code}</td>
                                         <td className="border dark:border-slate-800 p-1">{r.cureShift || "-"}</td>
@@ -107,10 +107,10 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                                         <td className="border dark:border-slate-800 p-1 font-medium">{r.cureEst || "-"}</td>
                                         <td className="border dark:border-slate-800 p-1">{r.balanceOut || 0}</td>
                                         <td className={`border dark:border-slate-800 p-1 border-l-2 border-l-blue-200 dark:border-l-blue-900 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>
-                                            {r.shift1Qty == 74 ? (
+                                            {r.shift1Qty == 17 ? (
                                                 <div className="flex flex-col">
-                                                    <span className="text-[10px]">{`${r.shift1Qty == 74 ? "16:00 - 18:31" : ""}`}</span>
-                                                    <span className="text-[10px]">{r.buildTime1 || "-"}</span>
+                                                    <span className="text-[8.5px]">{"16:00 - 18:31"}</span>
+                                                    <span className="text-[8.5px]">{r.buildTime1 || "-"}</span>
                                                 </div>
                                             ) : (
                                                 <span>{r.buildTime1 || "-"}</span>
@@ -174,26 +174,26 @@ const PHASE_CONFIG: Record<string, {
     building: {
         priority: 0,
         color: "bg-blue-500",
-        height: "h-9",
+        height: "h-8.5",
         top: ""
     },
     curing: {
         priority: 1,
         color: "bg-orange-400",
-        height: "h-2.5",
-        top: "top-3.5"
+        height: "h-2",
+        top: "top-3"
     },
     shortage: {
         priority: 2,
         color: "bg-red-600",
-        height: "h-2.5",
-        top: "top-3.5"
+        height: "h-2",
+        top: "top-3"
     },
     achievement: {
         priority: 3,
         color: "bg-emerald-300",
-        height: "h-2.5",
-        top: "top-3.5"
+        height: "h-2",
+        top: "top-3"
     }
 };
 
@@ -223,7 +223,7 @@ function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
     };
 
     return (
-        <div className="relative h-9 border-b dark:border-slate-800 overflow-hidden">
+        <div className="relative h-8 border-b dark:border-slate-800 overflow-hidden">
             {/* Grid Background */}
             <div className="absolute inset-0 grid grid-cols-24">
                 {hours.map((_, i) => (

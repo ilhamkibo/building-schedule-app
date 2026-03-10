@@ -1,22 +1,28 @@
-export interface ScheduleItem {
-    id: number;
-    codeNo: string;
-    machineCode: string;
-    quantity: number;
-    stdDandatory: number;
-    cycleTime: number;
-    totalSecondShift: number;
-    capacityPerShift: number;
-}
+
 
 export interface Schedule {
     id: number;
-    code: string;
     date: string;
     createdAt: string;
-    createdBy: string;
-    categoryNo: number;
-    updatedAt: string | null;
+    machineCount: number;
+    lineNo: number;
+}
+
+export interface CreateScheduleRequest {
+    date: string;
+    lineNo: number;
+    machines: CreateScheduleMachine[];
+}
+
+export interface CreateScheduleMachine {
+    machine: string;
+    shifts: CreateScheduleShift[];
+}
+
+
+export interface CreateScheduleShift {
+    shiftNo: number;
+    details: CreateScheduleDetail[];
 }
 
 export interface CreateScheduleDetail {
@@ -28,21 +34,7 @@ export interface CreateScheduleDetail {
     remark: string;
 }
 
-export interface CreateScheduleShift {
-    shiftNo: number;
-    details: CreateScheduleDetail[];
-}
 
-export interface CreateScheduleMachine {
-    machine: string;
-    shifts: CreateScheduleShift[];
-}
-
-export interface CreateScheduleRequest {
-    date: string;
-    categoryNo: number;
-    machines: CreateScheduleMachine[];
-}
 
 export interface UpdateScheduleRequest {
     code?: string;
@@ -51,64 +43,10 @@ export interface UpdateScheduleRequest {
     machines?: CreateScheduleMachine[];
 }
 
-export interface ScheduleBoard {
-    id: number;
-    code: string;
-    date: string;
-    categoryNo: number;
-    details: MachineBoardDetail[];
-}
-
-export interface MachineBoardDetail {
-    machine: string;
-    shifts: MachineShiftDetail[];
-}
-
-export interface MachineShiftDetail {
-    shiftNo: number;
-    buildingStart: string | null;
-    buildingFinish: string | null;
-    details: ScheduleBoardDetailItem[];
-}
-
-export interface ScheduleBoardDetailItem {
-    priority: string | null;
-    codeNo: string;
-    rim: string | null;
-    stockRc: number | null;
-    cureEst: number | null;
-    bo: number | null;
-    buildingStart?: string | null;
-    buildingFinish?: string | null;
-    loadingTime?: number | null;
-    shortageEst?: number | null;
-    fw: number | string | null;
-    br: number | string | null;
-    deck: string | null;
-    qty: number;
-    remark: string;
-    timelines?: BoardTimelineItem[];
-}
-
-export interface BoardTimelineItem {
-    processType: string;
-    startTime: string | null;
-    endTime: string | null;
-    shift: {
-        shiftNo: number;
-        shiftName: string;
-        startTime: string;
-        endTime: string;
-        workSeconds: number;
-        colorCode: string | null;
-        colorBreak: string | null;
-    };
-}
-
-export interface ScheduleByDateAndCategoryNo {
-    id: number;
+// PPC
+export interface ScheduleByDateAndLineNo {
+    lineNo: number;
     scheduleDate: string;
-    categoryNo: number;
     details: PpcMachine[];
 }
 
@@ -129,69 +67,53 @@ export interface PpcDetailItem {
     qty: number;
     mold: number;
     stockRc: number;
+    totalBoQty: number;
     boQty: number | null;
     rim: string;
-}
-
-export interface TimelineItem {
-    processType: string;
-    startTime: string;
-    endTime: string;
-    shift: ShiftInfo;
-}
-
-export interface ShiftInfo {
-    shiftNo: number;
-    shiftName: string;
-    startTime: string;
-    endTime: string;
-    workSeconds: number;
-    colorCode: string | null;
-    colorBreak: string | null;
-}
-
-export interface TimelineItemToday {
-    processType: string;
-    startTime: string | null;
-    endTime: string | null;
-    shift: string | null;
-}
-
-export interface ScheduleDetailToday {
-    priority: string | null;
-    codeNo: string;
-    rim: string | null;
-    stockRc: number | null;
-    cureEst: string | null;
-    bo: string | null;
-    buildingStart?: string | null;
-    buildingFinish?: string | null;
-    qty: number;
-    remark: string;
-    fw: string | null;
-    br: string | null;
-    deck: string | null;
-    timelines: TimelineItemToday[];
-}
-
-export interface MachineShiftToday {
-    shiftNo: number;
+    qtyPpl: number;
     buildingStart: string | null;
     buildingFinish: string | null;
-    details: ScheduleDetailToday[];
 }
 
-export interface MachineScheduleToday {
-    machine: string;
-    shifts: MachineShiftToday[];
-}
-
-export interface TodayCategorySchedule {
-    id: number;
-    code: string;
+// SCHEDULE DETAIL
+export interface ScheduleBoard {
+    scheduleId: number;
     date: string;
-    categoryNo: number;
-    details: MachineScheduleToday[];
+    machineCount: number;
+    machines: TodayLineSchedule[];
+}
+
+//NEW DASHBOARD
+export interface TodayLineSchedule {
+    id: number;
+    machine: string;
+    shifts: string;
+    rows: ScheduleLineDetailToday[];
+}
+
+export interface ScheduleLineDetailToday {
+    code: string;
+    rim: string;
+    rcStock: number;
+    cureEst: string;
+    balanceOut: string;
+    buildTime1: string;
+    buildTime2: string;
+    buildTime3: string;
+    priority1: string;
+    priority2: string;
+    priority3: string;
+    shift1Qty: number;
+    shift2Qty: number;
+    shift3Qty: number;
+    remark: string;
+    phases: SchedulePhase[];
+}
+
+export interface SchedulePhase {
+    type: string;
+    start: string;
+    end: string;
 }
 
 export interface FormItem {
@@ -207,5 +129,5 @@ export interface FormItem {
     size?: number | string;
     rim?: string;
     boQty?: number;
-    qtyPpl?: string;
+    qtyPpl?: number;
 }

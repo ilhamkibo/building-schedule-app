@@ -13,6 +13,7 @@ export default function ScheduleBoardPage() {
     const id = parseInt(params.id as string);
 
     const { data: boardData, isLoading, isError } = useSchedule(id);
+    console.log("🚀 ~ ScheduleBoardPage ~ boardData:", boardData)
 
     return (
         <div>

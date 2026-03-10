@@ -131,6 +131,7 @@ export default function LineList() {
                         <TableRow>
                             <TableHead>No</TableHead>
                             <TableHead>Line Name</TableHead>
+                            <TableHead>Line No</TableHead>
                             <TableHead>Machines</TableHead>
                             <TableHead>Description</TableHead>
                             <TableHead className="w-[120px]">Actions</TableHead>
@@ -143,6 +144,7 @@ export default function LineList() {
                                 <TableRow key={i}>
                                     <TableCell><Skeleton className="h-6 w-8" /></TableCell>
                                     <TableCell><Skeleton className="h-6 w-32" /></TableCell>
+                                    <TableCell><Skeleton className="h-6 w-16" /></TableCell>
                                     <TableCell>
                                         <div className="flex gap-1">
                                             <Skeleton className="h-5 w-10" />
@@ -162,7 +164,7 @@ export default function LineList() {
 
                         {!isLoading && lines.length === 0 && (
                             <TableRow>
-                                <TableCell className="text-center" colSpan={4}>No lines found</TableCell>
+                                <TableCell className="text-center" colSpan={6}>No lines found</TableCell>
                             </TableRow>
                         )}
 
@@ -170,6 +172,7 @@ export default function LineList() {
                             <TableRow key={line.id}>
                                 <TableCell className="font-medium">{index + 1}</TableCell>
                                 <TableCell>{line.name ?? "-"}</TableCell>
+                                <TableCell>{line.lineNo}</TableCell>
                                 <TableCell>
                                     <div className="flex flex-wrap gap-1">
                                         {line.machines.length <= 3 ? (
@@ -258,6 +261,11 @@ export default function LineList() {
                             <div>
                                 <p className="text-sm text-muted-foreground">Line Name</p>
                                 <p className="font-medium">{detailLine.name ?? "-"}</p>
+                            </div>
+
+                            <div>
+                                <p className="text-sm text-muted-foreground">Line No</p>
+                                <p className="font-medium">{detailLine.lineNo}</p>
                             </div>
 
                             <div>

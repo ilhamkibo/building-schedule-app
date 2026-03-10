@@ -1,8 +1,7 @@
 import {
     ScheduleBoard,
-    MachineBoardDetail,
-    ScheduleBoardDetailItem,
-    BoardTimelineItem,
+    TodayLineSchedule,
+    ScheduleLineDetailToday,
 } from "@/types/schedule";
 
 import {
@@ -39,10 +38,10 @@ export default function ScheduleDetails({
             <div className="space-y-3">
                 <div className="flex items-center gap-3">
                     <Badge variant="outline" className="font-mono text-xs">
-                        ID {board.id}
+                        ID {board.scheduleId}
                     </Badge>
                     <h1 className="text-3xl font-semibold tracking-tight">
-                        {board.code}
+                        {board.date}
                     </h1>
                 </div>
 
@@ -60,15 +59,15 @@ export default function ScheduleDetails({
                     <Separator orientation="vertical" className="h-4" />
 
                     <div>
-                        <span className="text-foreground font-medium mr-2">Category</span>
-                        {board.categoryNo}
+                        <span className="text-foreground font-medium mr-2">Machine Count</span>
+                        {board.machineCount}
                     </div>
                 </div>
             </div>
 
             {/* ================= MACHINES ================= */}
             <div className="space-y-4">
-                {board.details.map((machine: MachineBoardDetail) => (
+                {board.machines.map((machine: TodayLineSchedule) => (
                     <Card key={machine.machine} className="shadow-sm">
                         <CardHeader className="bg-muted/5 border-b py-3 px-6">
                             <CardTitle className="text-lg font-semibold flex items-center gap-3">
@@ -77,127 +76,81 @@ export default function ScheduleDetails({
                             </CardTitle>
                         </CardHeader>
 
-                        <CardContent className="p-0">
-                            <Table>
+                        <CardContent className="p-0 overflow-x-auto">
+                            <Table className="min-w-[1000px]">
                                 <TableHeader>
                                     <TableRow className="bg-muted/5 hover:bg-muted/5">
-                                        <TableHead className="w-[60px] text-center font-bold">Shift</TableHead>
-                                        <TableHead className="w-[80px] font-bold">Priority</TableHead>
-                                        <TableHead className="font-bold">Product Code</TableHead>
-                                        <TableHead className="w-[80px] text-center font-bold">Rim</TableHead>
-                                        <TableHead className="w-[100px] text-center font-bold">Qty</TableHead>
-                                        <TableHead className="font-bold min-w-[250px]">Timeline & Logistics</TableHead>
+                                        <TableHead className="w-[60px] text-center font-bold" rowSpan={2}>RIM</TableHead>
+                                        <TableHead className="font-bold" rowSpan={2}>Code</TableHead>
+                                        <TableHead className="w-[80px] text-center font-bold" rowSpan={2}>Stock RC</TableHead>
+                                        <TableHead className="w-[80px] text-center font-bold" rowSpan={2}>Cure Est</TableHead>
+                                        <TableHead className="w-[80px] text-center font-bold" rowSpan={2}>B.O</TableHead>
+                                        <TableHead className="text-center font-bold bg-blue-50/50" colSpan={3}>SHIFT 1</TableHead>
+                                        <TableHead className="text-center font-bold bg-orange-50/50" colSpan={3}>SHIFT 2</TableHead>
+                                        <TableHead className="text-center font-bold bg-emerald-50/50" colSpan={3}>SHIFT 3</TableHead>
+                                        <TableHead className="font-bold min-w-[150px]" rowSpan={2}>Remark</TableHead>
+                                    </TableRow>
+                                    <TableRow className="bg-muted/5 hover:bg-muted/5 text-[10px]">
+                                        <TableHead className="text-center bg-blue-50/30">Time</TableHead>
+                                        <TableHead className="text-center bg-blue-50/30">Pri</TableHead>
+                                        <TableHead className="text-center bg-blue-50/30">Qty</TableHead>
+                                        <TableHead className="text-center bg-orange-50/30">Time</TableHead>
+                                        <TableHead className="text-center bg-orange-50/30">Pri</TableHead>
+                                        <TableHead className="text-center bg-orange-50/30">Qty</TableHead>
+                                        <TableHead className="text-center bg-emerald-50/30">Time</TableHead>
+                                        <TableHead className="text-center bg-emerald-50/30">Pri</TableHead>
+                                        <TableHead className="text-center bg-emerald-50/30">Qty</TableHead>
                                     </TableRow>
                                 </TableHeader>
 
                                 <TableBody>
-                                    {machine.shifts.flatMap((shift) =>
-                                        shift.details.map((item: ScheduleBoardDetailItem, itemIdx: number) => (
-                                            <TableRow key={`${machine.machine}-${shift.shiftNo}-${item.codeNo}-${itemIdx}`}>
-                                                {/* SHIFT */}
-                                                <TableCell className="text-center">
-                                                    <Badge
-                                                        variant="outline"
-                                                        className={`font-mono text-[10px] w-6 h-6 rounded-full p-0 flex items-center justify-center ${shift.shiftNo === 1 ? 'border-blue-500 text-blue-600 bg-blue-50' :
-                                                            shift.shiftNo === 2 ? 'border-orange-500 text-orange-600 bg-orange-50' :
-                                                                'border-purple-500 text-purple-600 bg-purple-50'
-                                                            }`}
-                                                    >
-                                                        {shift.shiftNo}
-                                                    </Badge>
-                                                </TableCell>
+                                    {machine.rows.map((row: ScheduleLineDetailToday, rowIdx: number) => (
+                                        <TableRow key={`${machine.machine}-${row.code}-${rowIdx}`}>
+                                            <TableCell className="text-center font-mono text-xs">
+                                                {row.rim ? (parseInt(row.rim) / 10) : "-"}
+                                            </TableCell>
+                                            <TableCell className="font-bold">{row.code}</TableCell>
+                                            <TableCell className="text-center">{row.rcStock || 0}</TableCell>
+                                            <TableCell className="text-center">{row.cureEst || "-"}</TableCell>
+                                            <TableCell className="text-center">{row.balanceOut || 0}</TableCell>
 
-                                                {/* PRIORITY */}
-                                                <TableCell>
-                                                    <Badge
-                                                        variant={item.priority ? "default" : "secondary"}
-                                                        className={`font-mono w-7 h-7 flex items-center justify-center p-0 rounded-full ${item.priority === 'A' ? 'bg-red-600' :
-                                                            item.priority === 'B' ? 'bg-orange-500' :
-                                                                item.priority === 'C' ? 'bg-blue-600' : ''
-                                                            }`}
-                                                    >
-                                                        {item.priority || "-"}
-                                                    </Badge>
-                                                </TableCell>
+                                            {/* Shift 1 */}
+                                            <TableCell className="text-center text-[11px] bg-blue-50/10 font-mono">{row.buildTime1 || "-"}</TableCell>
+                                            <TableCell className="text-center bg-blue-50/10">
+                                                {row.priority1 && (
+                                                    <Badge className="h-5 w-5 p-0 justify-center rounded-full bg-blue-600 text-[10px]">{row.priority1}</Badge>
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="text-center font-bold bg-blue-50/10">{row.shift1Qty || 0}</TableCell>
 
-                                                {/* PRODUCT */}
-                                                <TableCell>
-                                                    <div className="flex flex-col gap-0.5">
-                                                        <span className="font-bold text-sm tracking-tight">
-                                                            {item.codeNo}
-                                                        </span>
-                                                        <div className="flex gap-1.5 text-[10px]">
-                                                            {item.bo && item.bo > 0 && (
-                                                                <Badge variant="destructive" className="h-4 px-1 leading-none text-[9px]">
-                                                                    BO {item.bo}
-                                                                </Badge>
-                                                            )}
-                                                            {item.stockRc !== null && (
-                                                                <Badge variant="outline" className="h-4 px-1 leading-none text-[9px] border-muted-foreground/30 text-muted-foreground">
-                                                                    Stock {item.stockRc}
-                                                                </Badge>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </TableCell>
+                                            {/* Shift 2 */}
+                                            <TableCell className="text-center text-[11px] bg-orange-50/10 font-mono">{row.buildTime2 || "-"}</TableCell>
+                                            <TableCell className="text-center bg-orange-50/10">
+                                                {row.priority2 && (
+                                                    <Badge className="h-5 w-5 p-0 justify-center rounded-full bg-orange-500 text-[10px]">{row.priority2}</Badge>
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="text-center font-bold bg-orange-50/10">{row.shift2Qty || 0}</TableCell>
 
-                                                {/* RIM */}
-                                                <TableCell className="text-center font-mono text-xs">
-                                                    {item.rim || "-"}
-                                                </TableCell>
+                                            {/* Shift 3 */}
+                                            <TableCell className="text-center text-[11px] bg-emerald-50/10 font-mono">{row.buildTime3 || "-"}</TableCell>
+                                            <TableCell className="text-center bg-emerald-50/10">
+                                                {row.priority3 && (
+                                                    <Badge className="h-5 w-5 p-0 justify-center rounded-full bg-emerald-600 text-[10px]">{row.priority3}</Badge>
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="text-center font-bold bg-emerald-50/10">{row.shift3Qty || 0}</TableCell>
 
-                                                {/* QUANTITY */}
-                                                <TableCell className="text-center font-bold text-sm">
-                                                    {item.qty}
-                                                </TableCell>
+                                            <TableCell className="text-xs text-muted-foreground italic">
+                                                {row.remark || "-"}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
 
-                                                {/* TIMELINE */}
-                                                <TableCell>
-                                                    <div className="space-y-2">
-                                                        {/* Building Times if available in shift */}
-                                                        {(shift.buildingStart || shift.buildingFinish) && (
-                                                            <div className="flex items-center gap-2 text-[11px] text-muted-foreground bg-muted/30 p-1.5 rounded border border-dashed">
-                                                                <span className="font-semibold uppercase text-[9px] bg-background px-1 rounded border shadow-sm">Shift</span>
-                                                                <span className="font-mono">
-                                                                    {shift.buildingStart ? new Date(shift.buildingStart).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'}
-                                                                    {" — "}
-                                                                    {shift.buildingFinish ? new Date(shift.buildingFinish).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'}
-                                                                </span>
-                                                            </div>
-                                                        )}
-
-                                                        {item.timelines && item.timelines.length > 0 ? (
-                                                            <div className="flex flex-wrap gap-2">
-                                                                {item.timelines.map((tl: BoardTimelineItem, idx) => (
-                                                                    <div
-                                                                        key={idx}
-                                                                        className="flex items-center gap-1.5 text-[11px] bg-background border rounded px-1.5 py-0.5 shadow-sm"
-                                                                    >
-                                                                        <span className="font-bold text-primary uppercase text-[9px]">{tl.processType}</span>
-                                                                        <span className="text-muted-foreground scale-90">S{tl.shift?.shiftNo ?? "-"}</span>
-                                                                        <span className="font-mono font-medium">
-                                                                            {tl.startTime ? new Date(tl.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "-"}
-                                                                            {"-"}
-                                                                            {tl.endTime ? new Date(tl.endTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "-"}
-                                                                        </span>
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        ) : (
-                                                            <span className="text-[10px] text-muted-foreground italic pl-1">
-                                                                No logistics info
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
-                                    )}
-
-                                    {machine.shifts.every(s => s.details.length === 0) && (
+                                    {machine.rows.length === 0 && (
                                         <TableRow>
                                             <TableCell
-                                                colSpan={6}
+                                                colSpan={15}
                                                 className="text-center py-10 text-muted-foreground italic"
                                             >
                                                 No products assigned.
@@ -210,7 +163,7 @@ export default function ScheduleDetails({
                     </Card>
                 ))}
 
-                {board.details.length === 0 && (
+                {board.machines.length === 0 && (
                     <div className="py-20 text-center text-muted-foreground border rounded-lg bg-muted/5">
                         No machine data in this board.
                     </div>

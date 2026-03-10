@@ -1,7 +1,7 @@
 import { api } from "@/lib/api";
 import { ProductSchedule, ProductScheduleParams } from "@/types/product-schedule";
 import { PaginatedResponse } from "@/types/pagination";
-import { ScheduleByDateAndCategoryNo } from "@/types/schedule";
+import { ScheduleByDateAndLineNo } from "@/types/schedule";
 import { ApiResponse } from "@/types/api-response";
 
 class ProductScheduleService {
@@ -14,11 +14,11 @@ class ProductScheduleService {
         return response.data;
     }
 
-    async getByDateAndCategoryNo(date: string, categoryNo: string): Promise<ApiResponse<ScheduleByDateAndCategoryNo>> {
-        const response = await api.get<ApiResponse<ScheduleByDateAndCategoryNo>>(`${this.endpoint}/by-category-line-date`, {
+    async getByDateAndLineNo(date: string, lineNo: string): Promise<ApiResponse<ScheduleByDateAndLineNo>> {
+        const response = await api.get<ApiResponse<ScheduleByDateAndLineNo>>(`${this.endpoint}/by-line-date`, {
             params: {
                 date,
-                categoryNo,
+                lineNo,
             },
         });
         return response.data;

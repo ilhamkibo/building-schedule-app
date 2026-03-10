@@ -7,8 +7,7 @@ import { CreateScheduleRequest, CreateScheduleMachine, PpcMachine, PpcShift, Ppc
 import { useState, useEffect } from "react";
 import { Plus, Search, AlertCircle, Database, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useCategories } from "@/hooks/use-category";
-import { useProductScheduleByDateAndCategoryNo } from "@/hooks/use-product-schedule";
+import { useProductScheduleByDateAndLineNo } from "@/hooks/use-product-schedule";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     DndContext,
@@ -28,9 +27,9 @@ import {
 import { ScheduleFormFilters } from "./components/schedule-form-filters";
 import { MachineCard } from "./components/machine-card";
 import { StaticRow } from "./components/sortable-row";
+import { useLines } from "@/hooks/use-line";
 
 export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => void, onSuccess: () => void }) {
-    const [selectedCategoryNo, setSelectedCategoryNo] = useState<string | undefined>(undefined);
     const [selectedLineId, setSelectedLineId] = useState<string | undefined>(undefined);
     const [code] = useState(`SCH-${new Date().toISOString().slice(0, 10)}`);
     const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
@@ -51,6 +50,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
         })
     );
 
+    const { data: lines = [] } = useLines();
     // Debounce search
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -64,15 +64,18 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
         limit: 10,
     });
 
-    const { data: categories = [] } = useCategories();
-    const { data: ppcData, isLoading: isPpcLoading, isError } = useProductScheduleByDateAndCategoryNo(
+    const selectedLine = lines.find(l => String(l.id) === selectedLineId);
+    const lineNoForFetching = selectedLine?.lineNo ? String(selectedLine.lineNo) : "";
+    console.log("🚀 ~ ScheduleForm ~ lineNoForFetching:", lineNoForFetching)
+
+    const { data: ppcData, isLoading: isPpcLoading, isError } = useProductScheduleByDateAndLineNo(
         date,
-        selectedCategoryNo ?? "",
-        { enabled: !!selectedCategoryNo && !!date }
+        lineNoForFetching,
+        { enabled: !!selectedLineId && !!date && !!lineNoForFetching }
     );
 
     useEffect(() => {
-        if (!ppcData || !("details" in ppcData) || !selectedCategoryNo || !date) {
+        if (!ppcData || !("details" in ppcData) || !selectedLineId || !date) {
             return;
         }
 
@@ -90,12 +93,15 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                     isManual: false,
                     size: d.size,
                     rim: d.rim,
+                    qtyPpl: d.qtyPpl || 0,
+                    boQty: d.boQty || 0,
+                    totalBoQty: d.totalBoQty || 0,
                 }))
             )
         );
 
         setItems(updatePriorities(mapped));
-    }, [ppcData, selectedCategoryNo, date]);
+    }, [ppcData, selectedLineId, date]);
 
     const createMutation = useCreateSchedule({
         onSuccess: () => {
@@ -210,7 +216,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
     };
 
     const handleReset = () => {
-        setSelectedCategoryNo(undefined);
+        setSelectedLineId(undefined);
         setItems([]);
         toast.success("Form has been reset.");
     };
@@ -255,8 +261,9 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
         const formattedDate = today.toISOString().split('T')[0];
 
         const payload: CreateScheduleRequest = {
-            date: formattedDate,
-            categoryNo: Number(selectedCategoryNo),
+            // date: formattedDate,
+            date,
+            lineNo: Number(lineNoForFetching),
             machines: Array.from(machinesMap.values())
         };
 
@@ -280,18 +287,16 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                         code={code}
                         date={date}
                         onDateChange={setDate}
-                        selectedCategoryNo={selectedCategoryNo}
-                        onCategoryChange={setSelectedCategoryNo}
                         onLineIdChange={setSelectedLineId}
                         selectedLineId={selectedLineId}
-                        categories={categories}
+                        lines={lines}
                     />
 
                     <div className="space-y-6">
-                        {!selectedCategoryNo ? (
+                        {!selectedLineId ? (
                             <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed rounded-lg bg-muted/20 text-muted-foreground">
                                 <Search className="h-12 w-12 mb-4 opacity-20" />
-                                <p className="text-lg font-medium">Please select a Production Category first</p>
+                                <p className="text-lg font-medium">Please select a Line first</p>
                                 <p className="text-sm">Machines will be automatically displayed based on your selection</p>
                             </div>
                         ) : isPpcLoading ? (

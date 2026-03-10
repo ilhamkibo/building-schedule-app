@@ -3,30 +3,25 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormCombobox } from "@/components/ui/form-combobox";
-import { Category } from "@/types/category";
+import { Line } from "@/types/line";
 
 interface ScheduleFormFiltersProps {
     code: string;
     date: string;
     onDateChange: (date: string) => void;
-    selectedCategoryNo: string | undefined;
-    onCategoryChange: (categoryNo: string | undefined) => void;
     selectedLineId: string | undefined;
     onLineIdChange: (lineId: string | undefined) => void;
-    categories: Category[];
+    lines: Line[];
 }
 
 export function ScheduleFormFilters({
     code,
     date,
     onDateChange,
-    selectedCategoryNo,
-    onCategoryChange,
     selectedLineId,
     onLineIdChange,
-    categories,
+    lines,
 }: ScheduleFormFiltersProps) {
-    const selectedCategory = categories.find(c => Number(c.categoryNo) === Number(selectedCategoryNo));
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-muted/20 border p-4 rounded-xl">
@@ -35,21 +30,21 @@ export function ScheduleFormFilters({
                 <Input id="code" className="bg-white" disabled value={code} />
             </div>
             <div className="space-y-2">
-                <Label htmlFor="category">Production Category</Label>
+                <Label htmlFor="lineId">Production Line</Label>
                 <FormCombobox
-                    value={selectedCategoryNo}
-                    onChange={onCategoryChange}
-                    options={categories?.map(l => ({
+                    value={selectedLineId}
+                    onChange={onLineIdChange}
+                    options={lines?.map(l => ({
                         ...l,
-                        id: String(l.categoryNo || l.id),
-                        name: l.name ?? "Unnamed Category"
+                        id: String(l.id),
+                        name: l.name ?? "Unnamed Line"
                     }))}
-                    placeholder="Select Category"
-                    searchPlaceholder="Search Category"
-                    emptyText="No categories found."
+                    placeholder="Select Line"
+                    searchPlaceholder="Search Line"
+                    emptyText="No lines found."
                 />
             </div>
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
                 <Label htmlFor="line">Line</Label>
                 {selectedCategory?.lines?.length !== undefined && selectedCategory?.lines?.length !== null && selectedCategory?.lines?.length > 0 ? (
                     <FormCombobox
@@ -72,7 +67,7 @@ export function ScheduleFormFilters({
                         value="No lines available"
                     />
                 )}
-            </div>
+            </div> */}
             <div className="space-y-2">
                 <Label htmlFor="date">Date</Label>
                 <Input

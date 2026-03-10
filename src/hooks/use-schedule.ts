@@ -11,7 +11,7 @@ import { ApiError, ApiResponse } from "../types/api-response";
 import { toast } from "sonner";
 import { PaginatedResponse, PaginationParams } from "../types/pagination";
 import { scheduleService } from "@/services/schedule-service";
-import { Schedule, CreateScheduleRequest, UpdateScheduleRequest, ScheduleBoard, TodayCategorySchedule } from "@/types/schedule";
+import { Schedule, CreateScheduleRequest, UpdateScheduleRequest, ScheduleBoard, TodayLineSchedule } from "@/types/schedule";
 
 /**
  * Hook to fetch all Schedules with pagination
@@ -139,14 +139,14 @@ export function useDeleteSchedule(options?: {
 /**
  * Hook to fetch today's category schedule
  */
-export function useTodayCategorySchedule(
-    categoryNo: number,
-    options?: Omit<UseQueryOptions<ApiResponse<TodayCategorySchedule>, AxiosError<ApiError>>, "queryKey" | "queryFn">
+export function useTodayLineSchedule(
+    lineNo: number,
+    options?: Omit<UseQueryOptions<ApiResponse<TodayLineSchedule[]>, AxiosError<ApiError>>, "queryKey" | "queryFn">
 ) {
-    return useQuery<ApiResponse<TodayCategorySchedule>, AxiosError<ApiError>>({
-        queryKey: ["schedules", "today-category", categoryNo],
-        queryFn: () => scheduleService.getTodayCategorySchedule(categoryNo),
-        enabled: !!categoryNo,
+    return useQuery<ApiResponse<TodayLineSchedule[]>, AxiosError<ApiError>>({
+        queryKey: ["schedules", "today-line", lineNo],
+        queryFn: () => scheduleService.getTodayLineSchedule(lineNo),
+        enabled: !!lineNo,
         ...options,
     });
 }

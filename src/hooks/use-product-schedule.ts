@@ -4,7 +4,7 @@ import { ApiError } from "@/types/api-response";
 import { ProductSchedule, ProductScheduleParams } from "@/types/product-schedule";
 import { productScheduleService } from "@/services/product-schedule-service";
 import { PaginatedResponse } from "@/types/pagination";
-import { ScheduleByDateAndCategoryNo } from "@/types/schedule";
+import { ScheduleByDateAndLineNo } from "@/types/schedule";
 import { ApiResponse } from "@/types/api-response";
 
 export function useProductSchedules(
@@ -27,17 +27,17 @@ export function useProductSchedules(
     };
 }
 
-export function useProductScheduleByDateAndCategoryNo(
+export function useProductScheduleByDateAndLineNo(
     date: string,
-    categoryNo: string,
+    lineNo: string,
     options?: Omit<
-        UseQueryOptions<ApiResponse<ScheduleByDateAndCategoryNo>, AxiosError<ApiError>, ApiResponse<ScheduleByDateAndCategoryNo>, any>,
+        UseQueryOptions<ApiResponse<ScheduleByDateAndLineNo>, AxiosError<ApiError>, ApiResponse<ScheduleByDateAndLineNo>, any>,
         "queryKey" | "queryFn"
     >
 ) {
-    const queryResult = useQuery<ApiResponse<ScheduleByDateAndCategoryNo>, AxiosError<ApiError>>({
-        queryKey: ["product-schedule-by-category-line-date", date, categoryNo],
-        queryFn: () => productScheduleService.getByDateAndCategoryNo(date, categoryNo),
+    const queryResult = useQuery<ApiResponse<ScheduleByDateAndLineNo>, AxiosError<ApiError>>({
+        queryKey: ["product-schedule-by-line-date", date, lineNo],
+        queryFn: () => productScheduleService.getByDateAndLineNo(date, lineNo),
         ...options,
     });
 

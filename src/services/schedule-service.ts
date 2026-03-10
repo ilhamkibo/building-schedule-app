@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import { Schedule, CreateScheduleRequest, UpdateScheduleRequest, ScheduleBoard, TodayCategorySchedule } from "@/types/schedule";
+import { Schedule, CreateScheduleRequest, UpdateScheduleRequest, ScheduleBoard, TodayLineSchedule } from "@/types/schedule";
 import { PaginatedResponse, PaginationParams } from "@/types/pagination";
 import { ApiResponse } from "@/types/api-response";
 
@@ -31,8 +31,8 @@ class ScheduleService {
         await api.delete(`${this.endpoint}/${id}`);
     }
 
-    async getTodayCategorySchedule(categoryNo: number): Promise<ApiResponse<TodayCategorySchedule>> {
-        const response = await api.get<ApiResponse<TodayCategorySchedule>>(`${this.endpoint}/${categoryNo}/today-category`);
+    async getTodayLineSchedule(lineNo: number): Promise<ApiResponse<TodayLineSchedule[]>> {
+        const response = await api.get<ApiResponse<TodayLineSchedule[]>>(`${this.endpoint}/${lineNo}/today-line`);
         return response.data;
     }
 }

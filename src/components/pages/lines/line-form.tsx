@@ -11,6 +11,7 @@ interface LineFormProps {
     onCancel: () => void;
     onSubmit: (payload: {
         name: string | null;
+        lineNo: number;
         description: string | null;
     }) => void;
     isLoading?: boolean;
@@ -23,6 +24,7 @@ export default function LineForm({
     isLoading,
 }: LineFormProps) {
     const [name, setName] = useState(line?.name ?? "");
+    const [lineNo, setLineNo] = useState(line?.lineNo ?? 0);
     const [description, setDescription] = useState(line?.description ?? "");
 
     return (
@@ -33,6 +35,16 @@ export default function LineForm({
                     placeholder="e.g. Line Assembly 1"
                     value={name ?? ""}
                     onChange={(e) => setName(e.target.value)}
+                />
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <Label>Line Number</Label>
+                <Input
+                    type="number"
+                    placeholder="e.g. 1"
+                    value={lineNo}
+                    onChange={(e) => setLineNo(Number(e.target.value))}
                 />
             </div>
 
@@ -55,7 +67,7 @@ export default function LineForm({
                     Cancel
                 </Button>
                 <Button
-                    onClick={() => onSubmit({ name, description })}
+                    onClick={() => onSubmit({ name, lineNo, description })}
                     disabled={isLoading || !name}
                 >
                     {isLoading ? "Saving..." : line ? "Update" : "Create"}

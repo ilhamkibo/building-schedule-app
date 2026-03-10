@@ -34,7 +34,7 @@ import { useSchedules, useDeleteSchedule } from "@/hooks/use-schedule";
 import { Schedule } from "@/types/schedule";
 import DataTablePagination from "@/components/common/data-table-pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCategories } from "@/hooks/use-category";
+import { useLines } from "@/hooks/use-line";
 
 export default function ScheduleList() {
     const router = useRouter();
@@ -42,11 +42,9 @@ export default function ScheduleList() {
     const [limit, setLimit] = useState(10);
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
-
-    const [detailSchedule, setDetailSchedule] = useState<Schedule | null>(null);
     const [deleteSchedule, setDeleteSchedule] = useState<Schedule | null>(null);
 
-    const { data: categories = [] } = useCategories();
+    const { data: lines = [] } = useLines();
 
     /* debounce search */
     useEffect(() => {
@@ -101,10 +99,10 @@ export default function ScheduleList() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Code</TableHead>
+                            <TableHead>ID</TableHead>
                             <TableHead>Category</TableHead>
                             <TableHead>Date</TableHead>
-                            <TableHead>Created By</TableHead>
+                            <TableHead>Machine Count</TableHead>
                             <TableHead className="w-[120px]">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -133,10 +131,10 @@ export default function ScheduleList() {
 
                         {schedules.map((schedule) => (
                             <TableRow key={schedule.id}>
-                                <TableCell className="font-medium">{schedule.code}</TableCell>
-                                <TableCell>{categories.find((category) => category.categoryNo === schedule.categoryNo)?.name}</TableCell>
+                                <TableCell className="font-medium">{schedule.id}</TableCell>
+                                <TableCell>{lines.find((line) => line.lineNo === schedule.lineNo)?.name}</TableCell>
                                 <TableCell>{new Date(schedule.date).toLocaleDateString()}</TableCell>
-                                <TableCell>{schedule.createdBy}</TableCell>
+                                <TableCell>{schedule.machineCount}</TableCell>
                                 <TableCell className="flex gap-1">
                                     <Button
                                         size="icon"
@@ -156,7 +154,7 @@ export default function ScheduleList() {
                                     >
                                         <Eye className="h-4 w-4" />
                                     </Button> */}
-                                    <Button
+                                    {/* <Button
                                         size="icon"
                                         className="cursor-pointer"
                                         variant="ghost"
@@ -164,7 +162,7 @@ export default function ScheduleList() {
                                         title="Delete"
                                     >
                                         <Trash2 className="h-4 w-4 text-red-500" />
-                                    </Button>
+                                    </Button> */}
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -220,13 +218,13 @@ export default function ScheduleList() {
             </Dialog> */}
 
             {/* Delete Confirmation */}
-            <AlertDialog open={!!deleteSchedule} onOpenChange={() => setDeleteSchedule(null)}>
+            {/* <AlertDialog open={!!deleteSchedule} onOpenChange={() => setDeleteSchedule(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete schedule?</AlertDialogTitle>
                         <AlertDialogDescription>
                             This action cannot be undone. Schedule{" "}
-                            <b>{deleteSchedule?.code}</b> will be permanently deleted.
+                            <b>{deleteSchedule?.id}</b> will be permanently deleted.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -240,7 +238,7 @@ export default function ScheduleList() {
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
-            </AlertDialog>
+            </AlertDialog> */}
         </div>
     );
 }

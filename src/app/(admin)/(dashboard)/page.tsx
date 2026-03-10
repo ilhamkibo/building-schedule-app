@@ -10,42 +10,43 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useSidebar } from "@/components/ui/sidebar";
-import { useCategories } from "@/hooks/use-category";
-import { useTodayCategorySchedule } from "@/hooks/use-schedule";
+import { useLines } from "@/hooks/use-line";
+import { useTodayLineSchedule } from "@/hooks/use-schedule";
 import Link from "next/link";
 import { useShiftContext } from "@/context/shift-context";
+import { TodayLineSchedule } from "@/types/schedule";
 import { DashboardFilterBar } from "@/components/pages/dashboard/components/DashboardFilterBar";
 import { DashboardSkeleton } from "@/components/pages/dashboard/components/DashboardSkeleton";
 
-const STORAGE_KEY = "selected-category-no";
+const STORAGE_KEY = "selected-line-no";
 
 export default function Page() {
-  const [selectedCategoryNo, setSelectedCategoryNo] = useState<string>("");
+  const [selectedLineNo, setSelectedLineNo] = useState<string>("");
   const { open } = useSidebar();
   const { activeShift, shifts: shiftTime, isLoading: isLoadingShiftTime } = useShiftContext();
 
-  const { data: categoriesData = [], isLoading: isLoadingCategories } = useCategories({ limit: 100 });
+  const { data: linesData = [], isLoading: isLoadingLines } = useLines({ limit: 100 });
   // Removed local shift fetching as it's now handled by useShiftContext
 
   useEffect(() => {
-    const savedCategoryNo = localStorage.getItem(STORAGE_KEY);
-    if (savedCategoryNo) {
-      setSelectedCategoryNo(savedCategoryNo);
-    } else if (categoriesData.length > 0) {
-      setSelectedCategoryNo(categoriesData[0].categoryNo.toString());
+    const savedLineNo = localStorage.getItem(STORAGE_KEY);
+    if (savedLineNo) {
+      setSelectedLineNo(savedLineNo);
+    } else if (linesData.length > 0) {
+      setSelectedLineNo(linesData[0].lineNo.toString());
     }
-  }, [categoriesData]);
+  }, [linesData]);
 
   // simpan ke localStorage setiap berubah
   useEffect(() => {
-    if (selectedCategoryNo) {
-      localStorage.setItem(STORAGE_KEY, selectedCategoryNo);
+    if (selectedLineNo) {
+      localStorage.setItem(STORAGE_KEY, selectedLineNo);
     }
-  }, [selectedCategoryNo]);
+  }, [selectedLineNo]);
 
-  const { data: scheduleResponse, isLoading: isLoadingSchedules } = useTodayCategorySchedule(
-    parseInt(selectedCategoryNo),
-    { enabled: !!selectedCategoryNo }
+  const { data: scheduleResponse, isLoading: isLoadingSchedules } = useTodayLineSchedule(
+    parseInt(selectedLineNo),
+    { enabled: !!selectedLineNo }
   );
 
   const scheduleData = scheduleResponse?.data;
@@ -64,78 +65,26 @@ export default function Page() {
   // Removed unused and broken shiftTimeDecimal mapper that caused type errors
 
   const dashboardData = useMemo(() => {
-    if (!scheduleData) return [];
-    const scheduleDate = (scheduleData && !Array.isArray(scheduleData) ? (scheduleData as any).date : null) || scheduleResponse?.data?.date || new Date().toISOString();
+    if (!scheduleData || !Array.isArray(scheduleData)) return [];
 
-    // If it's already in the dashboard format (array of machines with rows)
-    if (Array.isArray(scheduleData) && scheduleData.length > 0 && scheduleData[0].rows) {
-      return scheduleData.map((m: any) => ({
-        ...m,
-        rows: m.rows.map((row: any) => ({
-          ...row,
-          phases: row.phases?.map((p: any) => ({
-            ...p,
-            start: typeof p.start === 'string' ? timeToDecimal(p.start, scheduleDate) : p.start,
-            end: typeof p.end === 'string' ? timeToDecimal(p.end, scheduleDate) : p.end
-          })) || []
-        }))
-      }));
-    }
+    const scheduleDate =
+      (scheduleResponse?.data as any)?.date || new Date().toISOString();
 
-    if (!scheduleData.details) return [];
-
-    return (scheduleData as any).details.map((m: any) => {
-      // Group details by product code within the machine to match the dashboard's table row format (aggregating shifts)
-      const rowsMap = new Map<string, any>();
-
-      m.shifts.forEach((shift: any) => {
-        shift.details.forEach((detail: any) => {
-          if (!rowsMap.has(detail.codeNo)) {
-            rowsMap.set(detail.codeNo, {
-              code: detail.codeNo,
-              rim: detail.rim,
-              rcStock: detail.stockRc,
-              cureEst: detail.cureEst,
-              balanceOut: detail.bo,
-              buildTime: detail.buildingStart && detail.buildingFinish
-                ? `${new Date(detail.buildingStart).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${new Date(detail.buildingFinish).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
-                : "-",
-              shift1Qty: 0,
-              shift2Qty: 0,
-              shift3Qty: 0,
-              remark: detail.remark,
-              phases: []
-            });
-          }
-
-          const row = rowsMap.get(detail.codeNo)!;
-
-          // Accumulate shift quantities
-          if (shift.shiftNo === 1) row.shift1Qty += detail.qty;
-          if (shift.shiftNo === 2) row.shift2Qty += detail.qty;
-          if (shift.shiftNo === 3) row.shift3Qty += detail.qty;
-
-          // Add timelines to phases
-          if (detail.timelines) {
-            detail.timelines.forEach((t: any) => {
-              row.phases.push({
-                type: t.processType.toLowerCase(),
-                start: timeToDecimal(t.startTime, scheduleDate),
-                end: timeToDecimal(t.endTime, scheduleDate)
-              });
-            });
-          }
-        });
-      });
-
-      return {
-        id: m.machine,
-        machine: m.machine,
-        shift: "All Shifts",
-        rows: Array.from(rowsMap.values())
-      };
-    });
-  }, [scheduleData]);
+    return scheduleData.map((m: TodayLineSchedule) => ({
+      id: m.machine || m.id?.toString(),
+      machine: m.machine,
+      shift: m.shifts || "All Shifts",
+      rows: (m.rows || []).map((row: any) => ({
+        ...row,
+        totalQty: (row.shift1Qty || 0) + (row.shift2Qty || 0) + (row.shift3Qty || 0),
+        phases: (row.phases || []).map((p: any) => ({
+          ...p,
+          start: typeof p.start === "string" ? timeToDecimal(p.start, scheduleDate) : p.start,
+          end: typeof p.end === "string" ? timeToDecimal(p.end, scheduleDate) : p.end,
+        })),
+      })),
+    }));
+  }, [scheduleData, scheduleResponse]);
 
   const dummyData = [
     {
@@ -289,21 +238,21 @@ export default function Page() {
         }`}
     >
       <DashboardFilterBar
-        selectedCategoryNo={selectedCategoryNo}
-        onCategoryChange={setSelectedCategoryNo}
-        categories={categoriesData}
+        selectedLineNo={selectedLineNo}
+        onLineNoChange={setSelectedLineNo}
+        lines={linesData}
       />
 
       {/* CONTENT */}
-      {(isLoadingCategories || isLoadingSchedules) ? (
+      {(isLoadingShiftTime || isLoadingLines || isLoadingSchedules) ? (
         <DashboardSkeleton />
       ) : dashboardData.length > 0 ? (
         <ScheduleBoard data={dashboardData} shiftTime={shiftTime} />
       ) : (
-        selectedCategoryNo && (
+        selectedLineNo && (
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-sidebar/50 rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-800">
-            <p className="text-lg font-medium">Tidak ada schedule untuk category ini</p>
-            <p className="text-sm">Silahkan pilih category lain atau buat schedule baru.</p>
+            <p className="text-lg font-medium">Tidak ada schedule untuk line ini</p>
+            <p className="text-sm">Silahkan pilih line lain atau buat schedule baru.</p>
             <Link href="/schedules/adjust" className="mt-2 text-md px-4 py-2 bg-primary text-white rounded-md cursor-pointer">
               Buat Schedule
             </Link>
