@@ -19,7 +19,6 @@ export interface CreateScheduleMachine {
     shifts: CreateScheduleShift[];
 }
 
-
 export interface CreateScheduleShift {
     shiftNo: number;
     details: CreateScheduleDetail[];
@@ -27,14 +26,14 @@ export interface CreateScheduleShift {
 
 export interface CreateScheduleDetail {
     priority: string;
-    size: number;
     codeNo: string;
+    size: number;
     qty: number;
     rim: string;
+    boQty: number;
+    totalBoQty: number;
     remark: string;
 }
-
-
 
 export interface UpdateScheduleRequest {
     code?: string;
@@ -129,5 +128,6 @@ export interface FormItem {
     size?: number | string;
     rim?: string;
     boQty?: number;
+    totalBoQty?: number;
     qtyPpl?: number;
 }

@@ -78,21 +78,23 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                                 <th className="border dark:border-slate-800 p-1 font-medium" rowSpan={2}>Stock R/C</th>
                                 <th className="border dark:border-slate-800 p-1 font-medium" rowSpan={2}>Cure est.</th>
                                 <th className="border dark:border-slate-800 p-1 font-medium" rowSpan={2}>B.O</th>
-                                <th className={`border dark:border-slate-800 border-l-2 border-l-blue-200 dark:border-l-blue-900 p-1.5 ${getCurrentShift(shiftTime) === 1 ? 'bg-blue-50/50 dark:bg-blue-950/20 font-bold text-blue-700 dark:text-blue-400' : ''}`} colSpan={3}>SHIFT 1</th>
-                                <th className={`border dark:border-slate-800 border-l-2 border-l-orange-200 dark:border-l-orange-900 p-1.5 ${getCurrentShift(shiftTime) === 2 ? 'bg-orange-50/50 dark:bg-orange-950/20 font-bold text-orange-700 dark:text-orange-400' : ''}`} colSpan={3}>SHIFT 2</th>
-                                <th className={`border dark:border-slate-800 border-l-2 border-l-emerald-200 dark:border-l-emerald-900 border-r-2 border-r-slate-200 dark:border-r-slate-800 p-1.5 ${getCurrentShift(shiftTime) === 3 ? 'bg-emerald-50/50 dark:bg-emerald-950/20 font-bold text-emerald-700 dark:text-emerald-400' : ''}`} colSpan={3}>SHIFT 3</th>
-                                <th className="border dark:border-slate-800 p-2 font-bold" rowSpan={2}>Remark</th>
+                                <th className={`border dark:border-slate-800 border-l-2 border-l-blue-200 dark:border-l-blue-900 p-1.5 ${getCurrentShift(shiftTime) === 1 ? 'bg-blue-50/50 dark:bg-blue-950/20 font-bold text-blue-700 dark:text-blue-400' : ''}`} colSpan={4}>SHIFT 1</th>
+                                <th className={`border dark:border-slate-800 border-l-2 border-l-orange-200 dark:border-l-orange-900 p-1.5 ${getCurrentShift(shiftTime) === 2 ? 'bg-orange-50/50 dark:bg-orange-950/20 font-bold text-orange-700 dark:text-orange-400' : ''}`} colSpan={4}>SHIFT 2</th>
+                                <th className={`border dark:border-slate-800 border-l-2 border-l-emerald-200 dark:border-l-emerald-900 border-r-2 border-r-slate-200 dark:border-r-slate-800 p-1.5 ${getCurrentShift(shiftTime) === 3 ? 'bg-emerald-50/50 dark:bg-emerald-950/20 font-bold text-emerald-700 dark:text-emerald-400' : ''}`} colSpan={4}>SHIFT 3</th>
                             </tr>
                             <tr className="bg-slate-50/30 dark:bg-slate-900/30 text-[10px] uppercase font-bold tracking-tight">
                                 <th className={`border dark:border-slate-800 border-l-2 border-l-blue-200 dark:border-l-blue-900 p-1 ${getCurrentShift(shiftTime) === 1 ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''}`}>Time</th>
                                 <th className={`border dark:border-slate-800 p-1 ${getCurrentShift(shiftTime) === 1 ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''}`}>Pri</th>
                                 <th className={`border dark:border-slate-800 p-1 ${getCurrentShift(shiftTime) === 1 ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''}`}>Qty</th>
+                                <th className={`border dark:border-slate-800 p-1 ${getCurrentShift(shiftTime) === 1 ? 'bg-blue-50/50 dark:bg-blue-950/20' : ''}`}>Remark</th>
                                 <th className={`border dark:border-slate-800 border-l-2 border-l-orange-200 dark:border-l-orange-900 p-1 ${getCurrentShift(shiftTime) === 2 ? 'bg-orange-50/50 dark:bg-orange-950/20' : ''}`}>Time</th>
                                 <th className={`border dark:border-slate-800 p-1 ${getCurrentShift(shiftTime) === 2 ? 'bg-orange-50/50 dark:bg-orange-950/20' : ''}`}>Pri</th>
                                 <th className={`border dark:border-slate-800 p-1 ${getCurrentShift(shiftTime) === 2 ? 'bg-orange-50/50 dark:bg-orange-950/20' : ''}`}>Qty</th>
+                                <th className={`border dark:border-slate-800 p-1 ${getCurrentShift(shiftTime) === 2 ? 'bg-orange-50/50 dark:bg-orange-950/20' : ''}`}>Remark</th>
                                 <th className={`border dark:border-slate-800 border-l-2 border-l-emerald-200 dark:border-l-emerald-900 p-1 ${getCurrentShift(shiftTime) === 3 ? 'bg-emerald-50/50 dark:bg-emerald-950/20' : ''}`}>Time</th>
                                 <th className={`border dark:border-slate-800 p-1 ${getCurrentShift(shiftTime) === 3 ? 'bg-emerald-50/50 dark:bg-emerald-950/20' : ''}`}>Pri</th>
                                 <th className={`border dark:border-slate-800 p-1 border-r-2 border-r-slate-200 dark:border-r-slate-800 ${getCurrentShift(shiftTime) === 3 ? 'bg-emerald-50/50 dark:bg-emerald-950/20' : ''}`}>Qty</th>
+                                <th className={`border dark:border-slate-800 p-1 border-r-2 border-r-slate-200 dark:border-r-slate-800 ${getCurrentShift(shiftTime) === 3 ? 'bg-emerald-50/50 dark:bg-emerald-950/20' : ''}`}>Remark</th>
                             </tr>
                         </thead>
                         <tbody className="bg-sidebar text-slate-700 dark:text-slate-300">
@@ -109,8 +111,8 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                                         <td className={`border dark:border-slate-800 p-1 border-l-2 border-l-blue-200 dark:border-l-blue-900 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>
                                             {r.shift1Qty == 17 ? (
                                                 <div className="flex flex-col">
-                                                    <span className="text-[8.5px]">{"16:00 - 18:31"}</span>
                                                     <span className="text-[8.5px]">{r.buildTime1 || "-"}</span>
+                                                    <span className="text-[8.5px]">{"13:59 - 15:31"}</span>
                                                 </div>
                                             ) : (
                                                 <span>{r.buildTime1 || "-"}</span>
@@ -118,16 +120,7 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                                         </td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.priority1 || "-"}</td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.shift1Qty ?? 0}</td>
-
-                                        <td className={`border dark:border-slate-800 border-l-2 border-l-orange-200 dark:border-l-orange-900 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.buildTime2 || "-"}</td>
-                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.priority2 || "-"}</td>
-                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.shift2Qty ?? 0}</td>
-
-                                        <td className={`border dark:border-slate-800 border-l-2 border-l-emerald-200 dark:border-l-emerald-900 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.buildTime3 || "-"}</td>
-                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.priority3 || "-"}</td>
-                                        <td className={`border dark:border-slate-800 p-1 border-r-2 border-r-slate-200 dark:border-r-slate-800 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.shift3Qty ?? 0}</td>
-
-                                        <td className="border dark:border-slate-800 p-1">
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>
                                             {r.remark && r.remark !== "-" ? (
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
@@ -144,6 +137,49 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                                                 <span className="text-slate-400">-</span>
                                             )}
                                         </td>
+
+                                        <td className={`border dark:border-slate-800 border-l-2 border-l-orange-200 dark:border-l-orange-900 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.buildTime2 || "-"}</td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.priority2 || "-"}</td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.shift2Qty ?? 0}</td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>
+                                            {r.remark && r.remark !== "-" ? (
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <div className="whitespace-nowrap w-[100px] mx-auto overflow-hidden text-ellipsis text-red-600 dark:text-red-400 font-medium">
+                                                            {r.remark}
+                                                        </div>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent side="left" className="bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900 shadow-xl p-3">
+                                                        <p className="font-semibold mb-1 border-b border-red-200 pb-1">Remark</p>
+                                                        <p className="font-medium max-w-[300px] wrap-break-word">{r.remark}</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            ) : (
+                                                <span className="text-slate-400">-</span>
+                                            )}
+                                        </td>
+
+                                        <td className={`border dark:border-slate-800 border-l-2 border-l-emerald-200 dark:border-l-emerald-900 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.buildTime3 || "-"}</td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.priority3 || "-"}</td>
+                                        <td className={`border dark:border-slate-800 p-1 border-r-2 border-r-slate-200 dark:border-r-slate-800 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.shift3Qty ?? 0}</td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>
+                                            {r.remark && r.remark !== "-" ? (
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <div className="whitespace-nowrap w-[100px] mx-auto overflow-hidden text-ellipsis text-red-600 dark:text-red-400 font-medium">
+                                                            {r.remark}
+                                                        </div>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent side="left" className="bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900 shadow-xl p-3">
+                                                        <p className="font-semibold mb-1 border-b border-red-200 pb-1">Remark</p>
+                                                        <p className="font-medium max-w-[300px] wrap-break-word">{r.remark}</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            ) : (
+                                                <span className="text-slate-400">-</span>
+                                            )}
+                                        </td>
+
                                     </tr>
                                 )
                             })}

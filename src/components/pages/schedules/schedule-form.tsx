@@ -66,7 +66,6 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
 
     const selectedLine = lines.find(l => String(l.id) === selectedLineId);
     const lineNoForFetching = selectedLine?.lineNo ? String(selectedLine.lineNo) : "";
-    console.log("🚀 ~ ScheduleForm ~ lineNoForFetching:", lineNoForFetching)
 
     const { data: ppcData, isLoading: isPpcLoading, isError } = useProductScheduleByDateAndLineNo(
         date,
@@ -252,6 +251,8 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                 size: Number(item.size) || 0,
                 codeNo: item.codeNo,
                 qty: item.qty,
+                boQty: item.boQty || 0,
+                totalBoQty: item.totalBoQty || 0,
                 rim: item.rim || "",
                 remark: item.remark
             });
@@ -266,8 +267,10 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
             lineNo: Number(lineNoForFetching),
             machines: Array.from(machinesMap.values())
         };
+        console.log("🚀 ~ handleSubmit ~ payload:", payload)
+        toast.success("Schedule has been created.");
 
-        createMutation.mutate(payload);
+        // createMutation.mutate(payload);
     };
 
     const machineNumbers = ppcData && "details" in ppcData
