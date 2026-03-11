@@ -102,20 +102,21 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                                 const currentShift = getCurrentShift(shiftTime);
                                 return (
                                     <tr key={i} className="text-center h-8 hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors border-b dark:border-slate-800 last:border-0">
-                                        <td className="border dark:border-slate-800 p-1 font-mono text-slate-500">{r.rim ? (parseInt(r.rim) / 10) : "-"}</td>
+                                        <td className="border dark:border-slate-800 p-1 font-mono text-slate-500">{r.rim || "-"}</td>
                                         <td className="border dark:border-slate-800 p-1 font-bold text-slate-900 dark:text-slate-100">{r.code}</td>
                                         <td className="border dark:border-slate-800 p-1">{r.cureShift || "-"}</td>
                                         <td className="border dark:border-slate-800 p-1">{r.rcStock || 0}</td>
                                         <td className="border dark:border-slate-800 p-1 font-medium">{r.cureEst || "-"}</td>
                                         <td className="border dark:border-slate-800 p-1">{r.balanceOut || 0}</td>
                                         <td className={`border dark:border-slate-800 p-1 border-l-2 border-l-blue-200 dark:border-l-blue-900 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>
-                                            {r.shift1Qty == 17 ? (
+                                            {i == 0 ? (
                                                 <div className="flex flex-col">
                                                     <span className="text-[8.5px]">{r.buildTime1 || "-"}</span>
                                                     <span className="text-[8.5px]">{"13:59 - 15:31"}</span>
                                                 </div>
                                             ) : (
-                                                <span>{r.buildTime1 || "-"}</span>
+                                                <span className="whitespace-nowrap">{r.buildTime1 || "-"}</span>
+                                                // <span className="text-[8.5px]">{r.buildTime1 || "-"}</span>
                                             )}
                                         </td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.priority1 || "-"}</td>
@@ -138,7 +139,9 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                                             )}
                                         </td>
 
-                                        <td className={`border dark:border-slate-800 border-l-2 border-l-orange-200 dark:border-l-orange-900 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.buildTime2 || "-"}</td>
+                                        <td className={`border dark:border-slate-800 border-l-2 border-l-orange-200 dark:border-l-orange-900 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''} whitespace-nowrap`}>
+                                            {r.buildTime2 || "-"}
+                                        </td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.priority2 || "-"}</td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.shift2Qty ?? 0}</td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>
@@ -159,7 +162,7 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                                             )}
                                         </td>
 
-                                        <td className={`border dark:border-slate-800 border-l-2 border-l-emerald-200 dark:border-l-emerald-900 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.buildTime3 || "-"}</td>
+                                        <td className={`border whitespace-nowrap dark:border-slate-800 border-l-2 border-l-emerald-200 dark:border-l-emerald-900 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.buildTime3 || "-"}</td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.priority3 || "-"}</td>
                                         <td className={`border dark:border-slate-800 p-1 border-r-2 border-r-slate-200 dark:border-r-slate-800 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.shift3Qty ?? 0}</td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>
