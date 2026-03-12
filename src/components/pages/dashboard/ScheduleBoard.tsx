@@ -1,6 +1,6 @@
 "use client";
 
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
 import {
     SortableContext,
     verticalListSortingStrategy,
@@ -10,8 +10,9 @@ import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { useState, useEffect } from "react";
 import { ScheduleBlock } from "./ScheduleTable";
 import { Shift } from "@/types/shift";
+import { TodayLineSchedule } from "@/types/schedule";
 
-export default function ScheduleBoard({ data, shiftTime }: { data: any[]; shiftTime: Shift[] }) {
+export default function ScheduleBoard({ data, shiftTime }: { data: TodayLineSchedule[]; shiftTime: Shift[] }) {
     const [items, setItems] = useState(data);
 
     useEffect(() => {
@@ -26,7 +27,7 @@ export default function ScheduleBoard({ data, shiftTime }: { data: any[]; shiftT
         })
     );
 
-    const onDragEnd = (e: any) => {
+    const onDragEnd = (e: DragEndEvent) => {
         const { active, over } = e;
         if (!over || active.id === over.id) return;
 

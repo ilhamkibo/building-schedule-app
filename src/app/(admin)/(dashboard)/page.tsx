@@ -14,7 +14,7 @@ import { useLines } from "@/hooks/use-line";
 import { useTodayLineSchedule } from "@/hooks/use-schedule";
 import Link from "next/link";
 import { useShiftContext } from "@/context/shift-context";
-import { TodayLineSchedule } from "@/types/schedule";
+import { TodayLineSchedule, ScheduleLineDetailToday, SchedulePhase } from "@/types/schedule";
 import { DashboardFilterBar } from "@/components/pages/dashboard/components/DashboardFilterBar";
 import { DashboardSkeleton } from "@/components/pages/dashboard/components/DashboardSkeleton";
 
@@ -67,17 +67,16 @@ export default function Page() {
   const dashboardData = useMemo(() => {
     if (!scheduleData || !Array.isArray(scheduleData)) return [];
 
-    const scheduleDate =
-      (scheduleResponse?.data as any)?.date || new Date().toISOString();
+    const scheduleDate = new Date().toISOString();
 
-    return scheduleData.map((m: TodayLineSchedule) => ({
+    return (scheduleData as TodayLineSchedule[]).map((m: TodayLineSchedule) => ({
       id: m.machine || m.id?.toString(),
       machine: m.machine,
-      shift: m.shifts || "All Shifts",
-      rows: (m.rows || []).map((row: any) => ({
+      shift: m.shift || "All Shifts",
+      rows: (m.rows || []).map((row: ScheduleLineDetailToday) => ({
         ...row,
         totalQty: (row.shift1Qty || 0) + (row.shift2Qty || 0) + (row.shift3Qty || 0),
-        phases: (row.phases || []).map((p: any) => ({
+        phases: (row.phases || []).map((p: SchedulePhase) => ({
           ...p,
           start: typeof p.start === "string" ? timeToDecimal(p.start, scheduleDate) : p.start,
           end: typeof p.end === "string" ? timeToDecimal(p.end, scheduleDate) : p.end,
@@ -113,7 +112,6 @@ export default function Page() {
               Buat Schedule
             </Link>
           </div>
-          // <ScheduleBoard data={dummyData} shiftTime={shiftTime} />
         )
       )}
     </div>

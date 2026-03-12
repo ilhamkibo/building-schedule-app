@@ -3,9 +3,10 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { getCurrentShift } from "@/lib/shift-utils";
+import { ScheduleLineDetailToday, TodayLineSchedule, MachineInfo, SchedulePhase } from "@/types/schedule";
 
 
-export function MachineCard({ machine }: { machine: any }) {
+export function MachineCard({ machine }: { machine: MachineInfo }) {
     return (
         <div className="border rounded p-3 bg-sidebar dark:border-slate-800 shadow-sm flex flex-col gap-2 w-full hover:shadow-md transition-shadow">
             <div className="flex justify-between items-center border-b dark:border-slate-800 pb-1 mb-1">
@@ -37,7 +38,7 @@ export function MachineCard({ machine }: { machine: any }) {
     );
 }
 
-export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shift[] }) {
+export function ScheduleBlock({ block, shiftTime }: { block: TodayLineSchedule; shiftTime: Shift[] }) {
     /* const { setNodeRef, attributes, listeners, transform, transition } =
         useSortable({ id: block.id });
 
@@ -63,7 +64,7 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                     <span className="text-lg">Machine {block.machine}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2.5 py-1 rounded-full border border-blue-200 dark:border-blue-800">{block.shifts || "All Shifts"}</span>
+                    <span className="text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2.5 py-1 rounded-full border border-blue-200 dark:border-blue-800">{block.shift || "All Shifts"}</span>
                 </div>
             </div>
 
@@ -98,7 +99,7 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                             </tr>
                         </thead>
                         <tbody className="bg-sidebar text-slate-700 dark:text-slate-300">
-                            {block.rows.map((r: any, i: number) => {
+                            {block.rows.map((r: ScheduleLineDetailToday, i: number) => {
                                 const currentShift = getCurrentShift(shiftTime);
                                 return (
                                     <tr key={i} className="text-center h-8 hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors border-b dark:border-slate-800 last:border-0">
@@ -125,7 +126,7 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                                             {r.remark && r.remark !== "-" ? (
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
-                                                        <div className="whitespace-nowrap w-[100px] mx-auto overflow-hidden text-ellipsis text-red-600 dark:text-red-400 font-medium">
+                                                        <div className="whitespace-nowrap w-[30px] mx-auto overflow-hidden text-ellipsis text-red-600 dark:text-red-400 font-medium">
                                                             {r.remark}
                                                         </div>
                                                     </TooltipTrigger>
@@ -148,7 +149,7 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                                             {r.remark && r.remark !== "-" ? (
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
-                                                        <div className="whitespace-nowrap w-[100px] mx-auto overflow-hidden text-ellipsis text-red-600 dark:text-red-400 font-medium">
+                                                        <div className="whitespace-nowrap w-[30px] mx-auto overflow-hidden text-ellipsis text-red-600 dark:text-red-400 font-medium">
                                                             {r.remark}
                                                         </div>
                                                     </TooltipTrigger>
@@ -169,7 +170,7 @@ export function ScheduleBlock({ block, shiftTime }: { block: any; shiftTime: Shi
                                             {r.remark && r.remark !== "-" ? (
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
-                                                        <div className="whitespace-nowrap w-[100px] mx-auto overflow-hidden text-ellipsis text-red-600 dark:text-red-400 font-medium">
+                                                        <div className="whitespace-nowrap w-[30px] mx-auto overflow-hidden text-ellipsis text-red-600 dark:text-red-400 font-medium">
                                                             {r.remark}
                                                         </div>
                                                     </TooltipTrigger>
@@ -236,7 +237,7 @@ const PHASE_CONFIG: Record<string, {
     }
 };
 
-function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
+function GanttRow({ row, shiftTime }: { row: ScheduleLineDetailToday; shiftTime: Shift[] }) {
     const hours = Array.from({ length: 24 }, (_, i) => i + 8);
     const phases = row.phases || [];
 
@@ -295,7 +296,7 @@ function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
 
 
             {/* Production Phases (Building & Curing) */}
-            {[...phases].sort((a, b) => PHASE_CONFIG[a.type].priority - PHASE_CONFIG[b.type].priority).map((p: any, i: number) => {
+            {[...phases].sort((a, b) => PHASE_CONFIG[a.type].priority - PHASE_CONFIG[b.type].priority).map((p: SchedulePhase, i: number) => {
 
                 const config = PHASE_CONFIG[p.type] || {
                     color: "bg-slate-300 dark:bg-slate-600",
@@ -303,11 +304,14 @@ function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
                     top: "top-3"
                 };
 
-                let startNormal = p.start < 8 ? p.start + 24 : p.start;
-                let endNormal = p.end < 8 ? p.end + 24 : p.end;
+                const start = Number(p.start);
+                const end = Number(p.end);
+
+                let startNormal = start < 8 ? start + 24 : start;
+                let endNormal = end < 8 ? end + 24 : end;
 
                 // Ensure positive duration for spans crossing the boundary
-                if (endNormal <= startNormal && p.end !== p.start) {
+                if (endNormal <= startNormal && end !== start) {
                     endNormal += 24;
                 }
 
@@ -333,7 +337,7 @@ function GanttRow({ row, shiftTime }: { row: any; shiftTime: Shift[] }) {
                                 <span className="text-slate-500">Code:</span>
                                 <span className="font-semibold">{row.code}</span>
                             </div>
-                            {row.totalQty > 0 && (
+                            {(row.totalQty ?? 0) > 0 && (
                                 <div className="flex justify-between">
                                     <span className="text-slate-500">Total Qty:</span>
                                     <span className="font-semibold text-blue-600">{row.totalQty} PCS</span>
@@ -365,7 +369,7 @@ function TimelineHeader() {
     );
 }
 
-export function ProductionGantt({ rows, shiftTime }: { rows: any[]; shiftTime: Shift[] }) {
+export function ProductionGantt({ rows, shiftTime }: { rows: ScheduleLineDetailToday[]; shiftTime: Shift[] }) {
     const timeToDec = (timeStr: string) => {
         const [h, m, s] = timeStr.split(':').map(Number);
         let hour = h + (m || 0) / 60 + (s || 0) / 3600;

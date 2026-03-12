@@ -84,35 +84,45 @@ export interface ScheduleBoard {
 
 //NEW DASHBOARD
 export interface TodayLineSchedule {
-    id: number;
+    id: string | number;
     machine: string;
-    shifts: string;
+    shift: string;
     rows: ScheduleLineDetailToday[];
+}
+
+export interface MachineInfo {
+    code: string;
+    stock: number;
+    totalQty: number;
+    startTime: string;
+    endTime: string;
 }
 
 export interface ScheduleLineDetailToday {
     code: string;
-    rim: string;
-    rcStock: number;
-    cureEst: string;
-    balanceOut: string;
-    buildTime1: string;
-    buildTime2: string;
-    buildTime3: string;
-    priority1: string;
-    priority2: string;
-    priority3: string;
+    rim?: string;
+    rcStock?: number;
+    cureShift?: number;
+    cureEst?: string;
+    balanceOut?: string | number;
+    buildTime1?: string;
+    buildTime2?: string;
+    buildTime3?: string;
+    priority1?: string;
+    priority2?: string;
+    priority3?: string;
     shift1Qty: number;
     shift2Qty: number;
     shift3Qty: number;
+    totalQty?: number;
     remark: string;
     phases: SchedulePhase[];
 }
 
 export interface SchedulePhase {
     type: string;
-    start: string;
-    end: string;
+    start: number | string;
+    end: number | string;
 }
 
 export interface FormItem {
