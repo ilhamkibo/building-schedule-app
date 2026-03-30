@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Input } from "@/components/ui/input";
 import {
     Select,
     SelectContent,
@@ -14,12 +15,16 @@ import { Line } from "@/types/line";
 interface DashboardFilterBarProps {
     selectedLineNo: string;
     onLineNoChange: (value: string) => void;
+    selectedDate: string;
+    onDateChange: (value: string) => void;
     lines: Line[];
 }
 
 export function DashboardFilterBar({
     selectedLineNo,
     onLineNoChange,
+    selectedDate,
+    onDateChange,
     lines,
 }: DashboardFilterBarProps) {
     return (
@@ -37,6 +42,12 @@ export function DashboardFilterBar({
                         ))}
                     </SelectContent>
                 </Select>
+                <Input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => onDateChange(e.target.value)}
+                    className="w-[160px] h-8 font-semibold bg-background dark:border-slate-700"
+                />
             </div>
 
             <DashboardLegend />

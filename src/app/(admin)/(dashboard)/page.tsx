@@ -22,6 +22,9 @@ const STORAGE_KEY = "selected-line-no";
 
 export default function Page() {
   const [selectedLineNo, setSelectedLineNo] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date().toLocaleDateString('en-CA')
+  );
   const { open } = useSidebar();
   const { activeShift, shifts: shiftTime, isLoading: isLoadingShiftTime } = useShiftContext();
 
@@ -46,20 +49,22 @@ export default function Page() {
 
   const { data: scheduleResponse, isLoading: isLoadingSchedules } = useTodayLineSchedule(
     parseInt(selectedLineNo),
-    { enabled: !!selectedLineNo }
+    selectedDate,
+    { enabled: !!selectedLineNo && !!selectedDate }
   );
 
   const scheduleData = scheduleResponse?.data;
+  console.log("🚀 ~ Page ~ scheduleData:", scheduleData)
 
-  const timeToDecimal = (dateStr: string | null, baseDateStr: string) => {
+  const timeToDecimal = (dateStr: string | null) => {
     if (!dateStr) return 0;
+    const timeMatch = dateStr.match(/T(\d{2}:\d{2}:\d{2})/);
+    if (timeMatch) {
+      const [h, m, s] = timeMatch[1].split(':').map(Number);
+      return h + m / 60 + s / 3600;
+    }
     const date = new Date(dateStr);
-    const baseDate = new Date(baseDateStr);
-    baseDate.setHours(0, 0, 0, 0);
-
-    // Difference in hours relative to the start of the base date
-    const diffMs = date.getTime() - baseDate.getTime();
-    return diffMs / (1000 * 60 * 60);
+    return date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600;
   };
 
   // Removed unused and broken shiftTimeDecimal mapper that caused type errors
@@ -78,8 +83,8 @@ export default function Page() {
         totalQty: (row.shift1Qty || 0) + (row.shift2Qty || 0) + (row.shift3Qty || 0),
         phases: (row.phases || []).map((p: SchedulePhase) => ({
           ...p,
-          start: typeof p.start === "string" ? timeToDecimal(p.start, scheduleDate) : p.start,
-          end: typeof p.end === "string" ? timeToDecimal(p.end, scheduleDate) : p.end,
+          start: typeof p.start === "string" ? timeToDecimal(p.start) : p.start,
+          end: typeof p.end === "string" ? timeToDecimal(p.end) : p.end,
         })),
       })),
     }));
@@ -95,6 +100,8 @@ export default function Page() {
       <DashboardFilterBar
         selectedLineNo={selectedLineNo}
         onLineNoChange={setSelectedLineNo}
+        selectedDate={selectedDate}
+        onDateChange={setSelectedDate}
         lines={linesData}
       />
 

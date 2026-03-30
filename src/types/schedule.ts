@@ -27,11 +27,14 @@ export interface CreateScheduleShift {
 export interface CreateScheduleDetail {
     priority: string;
     codeNo: string;
-    size: number;
+    size: string;
     qty: number;
-    rim: string;
-    boQty: number;
-    totalBoQty: number;
+    boQty: string;
+    remainingBoQty: string;
+    buildAchQty: number;
+    isBuildAch: boolean;
+    totalBoQty: string;
+    qtyPpl: number;
     remark: string;
 }
 
@@ -60,16 +63,17 @@ export interface PpcShift {
 }
 
 export interface PpcDetailItem {
-    prioritas: string;
+    priority: string;
     size: number | string;
-    codeNo: string;
     qty: number;
     mold: number;
     stockRc: number;
-    totalBoQty: number;
-    boQty: number | null;
-    rim: string;
-    qtyPpl: number;
+    boQty: number | string | null;
+    remainingBoQty: number | string | null;
+    buildAchQty: number | null;
+    isBuildAch: boolean;
+    rim: string | null;
+    qtyPpl: number | null;
     buildingStart: string | null;
     buildingFinish: string | null;
 }
@@ -105,9 +109,11 @@ export interface ScheduleLineDetailToday {
     cureShift?: number;
     cureEst?: string;
     balanceOut?: string | number;
-    buildTime1?: string;
-    buildTime2?: string;
-    buildTime3?: string;
+    buildTimes?: {
+        shift1?: string[];
+        shift2?: string[];
+        shift3?: string[];
+    };
     priority1?: string;
     priority2?: string;
     priority3?: string;
@@ -127,17 +133,19 @@ export interface SchedulePhase {
 
 export interface FormItem {
     id: string;
-    prioritas: string;
+    priority: string;
+    codeNo?: string;
+    size?: number | string;
     machineNo: string;
-    codeNo: string;
     shiftNo: number;
     qty: number;
     remark: string;
     stockRc?: number;
     isManual?: boolean;
-    size?: number | string;
-    rim?: string;
-    boQty?: number;
-    totalBoQty?: number;
-    qtyPpl?: number;
+    rim?: string | null;
+    boQty?: number | string | null;
+    qtyPpl?: number | null;
+    remainingBoQty?: number | string | null;
+    buildAchQty?: number | null;
+    isBuildAch?: boolean;
 }

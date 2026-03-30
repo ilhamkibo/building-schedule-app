@@ -1,0 +1,3 @@
+src/components/pages/machines/machine-form.tsx(62,49): error TS2339: Property 'code' does not exist on type 'Line'.
+src/components/pages/products/product-details.tsx(138,36): error TS2339: Property 'id' does not exist on type 'Product'.
+src/components/pages/products/product-details.tsx(139,50): error TS2339: Property 'createdAt' does not exist on type 'Product'.

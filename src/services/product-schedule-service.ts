@@ -5,7 +5,7 @@ import { ScheduleByDateAndLineNo } from "@/types/schedule";
 import { ApiResponse } from "@/types/api-response";
 
 class ProductScheduleService {
-    private endpoint = "/product-schedules";
+    private endpoint = "/ppc-schedules";
 
     async getAll(params?: ProductScheduleParams): Promise<PaginatedResponse<ProductSchedule>> {
         const response = await api.get<PaginatedResponse<ProductSchedule>>(this.endpoint, {
@@ -21,6 +21,7 @@ class ProductScheduleService {
                 lineNo,
             },
         });
+        console.log("🚀 ~ ProductScheduleService ~ getByDateAndLineNo ~ response:", response)
         return response.data;
     }
 }

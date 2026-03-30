@@ -82,9 +82,8 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
             m.shifts.flatMap((s: PpcShift) =>
                 s.details.map((d: PpcDetailItem, idx: number) => ({
                     id: `ppc-${m.machine}-s${s.shiftNo}-${idx}-${Math.random().toString(36).substr(2, 4)}`,
-                    prioritas: d.prioritas || "none",
+                    priority: d.priority || "none",
                     machineNo: String(m.machine),
-                    codeNo: String(d.codeNo),
                     shiftNo: s.shiftNo,
                     qty: d.qty || 0,
                     remark: "",
@@ -94,7 +93,9 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                     rim: d.rim,
                     qtyPpl: d.qtyPpl || 0,
                     boQty: d.boQty || 0,
-                    totalBoQty: d.totalBoQty || 0,
+                    remainingBoQty: d.remainingBoQty || 0,
+                    buildAchQty: d.buildAchQty || 0,
+                    isBuildAch: d.isBuildAch || false,
                 }))
             )
         );
@@ -132,7 +133,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
 
         Object.values(groups).forEach(group => {
             group.forEach((item, idx) => {
-                item.prioritas = priorities[idx] || "none";
+                item.priority = priorities[idx] || "none";
             });
         });
 
@@ -180,7 +181,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
         const priorities = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
         const taken = items
             .filter(i => i.machineNo === machineNo && i.shiftNo === shiftNo)
-            .map(i => i.prioritas);
+            .map(i => i.priority);
         return priorities.find(p => !taken.includes(p)) || "none";
     };
 
@@ -188,13 +189,13 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
         const nextPriority = getNextPriority(mNo, sNo);
         setItems([...items, {
             id: `manual-${mNo}-s${sNo}-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
-            codeNo: "",
+            size: "",
             machineNo: mNo,
             shiftNo: sNo,
             qty: 0,
             remark: "",
             stockRc: 0,
-            prioritas: nextPriority,
+            priority: nextPriority,
             isManual: true,
         }]);
     };
@@ -202,13 +203,13 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
     const handleBulkAddItem = (mNo: string) => {
         const newItems = [1, 2, 3].map(sNo => ({
             id: `manual-${mNo}-s${sNo}-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
-            codeNo: "",
+            size: "",
             machineNo: mNo,
             shiftNo: sNo,
             qty: 0,
             remark: "",
             stockRc: 0,
-            prioritas: getNextPriority(mNo, sNo),
+            priority: getNextPriority(mNo, sNo),
             isManual: true,
         }));
         setItems([...items, ...newItems]);
@@ -247,14 +248,17 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
             }
 
             shift.details.push({
-                priority: item.prioritas === "none" ? "" : item.prioritas,
-                size: Number(item.size) || 0,
-                codeNo: item.codeNo,
-                qty: item.qty,
-                boQty: item.boQty || 0,
-                totalBoQty: item.totalBoQty || 0,
-                rim: item.rim || "",
-                remark: item.remark
+                priority: item.priority === "none" ? "" : item.priority,
+                codeNo: String(item.size || ""),
+                size: String(item.size || ""),
+                qty: item.qty || 0,
+                boQty: item.boQty !== null && item.boQty !== undefined ? String(item.boQty) : "0",
+                remainingBoQty: item.remainingBoQty !== null && item.remainingBoQty !== undefined ? String(item.remainingBoQty) : "0",
+                buildAchQty: item.buildAchQty || 0,
+                isBuildAch: item.isBuildAch || false,
+                totalBoQty: "0",
+                qtyPpl: item.qtyPpl || 0,
+                remark: item.remark || ""
             });
         });
 

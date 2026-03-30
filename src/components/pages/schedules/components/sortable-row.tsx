@@ -28,7 +28,7 @@ export function StaticRow({
     return (
         <div className="flex items-center gap-2 p-2 bg-white border rounded shadow-sm">
             <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs border border-primary/20 shrink-0">
-                {item.prioritas}
+                {item.priority}
             </div>
             <div className="flex-1 min-w-0">
                 <div className="font-bold text-sm truncate">
@@ -86,7 +86,7 @@ export function SortableRow({
 
                 {/* Priority Circle */}
                 <div className="w-8 h-8 mt-5 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0 border border-primary/20">
-                    {item.prioritas}
+                    {item.priority}
                 </div>
 
                 {/* Main Content */}
@@ -100,7 +100,7 @@ export function SortableRow({
 
                             {!item.isManual ? (
                                 <div className="h-8 flex items-center justify-center bg-muted/30 rounded text-xs font-medium border">
-                                    {item.codeNo}
+                                    {item.size}
                                 </div>
                             ) : (
                                 <FormCombobox

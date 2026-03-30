@@ -107,7 +107,7 @@ export default function ScheduleDetails({
                                     {machine.rows.map((row: ScheduleLineDetailToday, rowIdx: number) => (
                                         <TableRow key={`${machine.machine}-${row.code}-${rowIdx}`}>
                                             <TableCell className="text-center font-mono text-xs">
-                                                {row.rim ? (parseInt(row.rim) / 10) : "-"}
+                                                {row.rim || "-"}
                                             </TableCell>
                                             <TableCell className="font-bold">{row.code}</TableCell>
                                             <TableCell className="text-center">{row.rcStock || 0}</TableCell>
@@ -115,7 +115,15 @@ export default function ScheduleDetails({
                                             <TableCell className="text-center">{row.balanceOut || 0}</TableCell>
 
                                             {/* Shift 1 */}
-                                            <TableCell className="text-center text-[11px] bg-blue-50/10 font-mono">{row.buildTime1 || "-"}</TableCell>
+                                            <TableCell className="text-center text-[11px] bg-blue-50/10 font-mono">
+                                                {row.buildTimes?.shift1?.length ? (
+                                                    <div className="flex flex-col gap-0.5">
+                                                        {row.buildTimes.shift1.map((t, i) => (
+                                                            <span key={i} className="whitespace-nowrap">{t}</span>
+                                                        ))}
+                                                    </div>
+                                                ) : "-"}
+                                            </TableCell>
                                             <TableCell className="text-center bg-blue-50/10">
                                                 {row.priority1 && (
                                                     <Badge className="h-5 w-5 p-0 justify-center rounded-full bg-blue-600 text-[10px]">{row.priority1}</Badge>
@@ -124,7 +132,15 @@ export default function ScheduleDetails({
                                             <TableCell className="text-center font-bold bg-blue-50/10">{row.shift1Qty || 0}</TableCell>
 
                                             {/* Shift 2 */}
-                                            <TableCell className="text-center text-[11px] bg-orange-50/10 font-mono">{row.buildTime2 || "-"}</TableCell>
+                                            <TableCell className="text-center text-[11px] bg-orange-50/10 font-mono">
+                                                {row.buildTimes?.shift2?.length ? (
+                                                    <div className="flex flex-col gap-0.5">
+                                                        {row.buildTimes.shift2.map((t, i) => (
+                                                            <span key={i} className="whitespace-nowrap">{t}</span>
+                                                        ))}
+                                                    </div>
+                                                ) : "-"}
+                                            </TableCell>
                                             <TableCell className="text-center bg-orange-50/10">
                                                 {row.priority2 && (
                                                     <Badge className="h-5 w-5 p-0 justify-center rounded-full bg-orange-500 text-[10px]">{row.priority2}</Badge>
@@ -133,7 +149,15 @@ export default function ScheduleDetails({
                                             <TableCell className="text-center font-bold bg-orange-50/10">{row.shift2Qty || 0}</TableCell>
 
                                             {/* Shift 3 */}
-                                            <TableCell className="text-center text-[11px] bg-emerald-50/10 font-mono">{row.buildTime3 || "-"}</TableCell>
+                                            <TableCell className="text-center text-[11px] bg-emerald-50/10 font-mono">
+                                                {row.buildTimes?.shift3?.length ? (
+                                                    <div className="flex flex-col gap-0.5">
+                                                        {row.buildTimes.shift3.map((t, i) => (
+                                                            <span key={i} className="whitespace-nowrap">{t}</span>
+                                                        ))}
+                                                    </div>
+                                                ) : "-"}
+                                            </TableCell>
                                             <TableCell className="text-center bg-emerald-50/10">
                                                 {row.priority3 && (
                                                     <Badge className="h-5 w-5 p-0 justify-center rounded-full bg-emerald-600 text-[10px]">{row.priority3}</Badge>

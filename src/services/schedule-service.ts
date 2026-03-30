@@ -31,8 +31,8 @@ class ScheduleService {
         await api.delete(`${this.endpoint}/${id}`);
     }
 
-    async getTodayLineSchedule(lineNo: number): Promise<ApiResponse<TodayLineSchedule[]>> {
-        const response = await api.get<ApiResponse<TodayLineSchedule[]>>(`${this.endpoint}/${lineNo}/today-line`);
+    async getTodayLineSchedule(lineNo: number, date: string): Promise<ApiResponse<TodayLineSchedule[]>> {
+        const response = await api.get<ApiResponse<TodayLineSchedule[]>>(`${this.endpoint}/${lineNo}/${date}`);
         return response.data;
     }
 }
