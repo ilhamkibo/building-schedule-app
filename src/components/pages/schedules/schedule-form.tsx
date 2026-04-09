@@ -72,6 +72,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
         lineNoForFetching,
         { enabled: !!selectedLineId && !!date && !!lineNoForFetching }
     );
+    console.log("🚀 ~ ScheduleForm ~ ppcData:", ppcData)
 
     useEffect(() => {
         if (!ppcData || !("details" in ppcData) || !selectedLineId || !date) {
@@ -86,7 +87,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                     machineNo: String(m.machine),
                     shiftNo: s.shiftNo,
                     qty: d.qty || 0,
-                    remark: "",
+                    remark: d.remark || "",
                     stockRc: d.stockRc || 0,
                     isManual: false,
                     size: d.size,

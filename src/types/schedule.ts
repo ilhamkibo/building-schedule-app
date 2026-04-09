@@ -73,6 +73,7 @@ export interface PpcDetailItem {
     qty: number;
     mold: number;
     stockRc: number;
+    remark: string;
     boQty: number | string | null;
     remainingBoQty: number | string | null;
     buildAchQty: number | null;
