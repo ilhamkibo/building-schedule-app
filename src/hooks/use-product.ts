@@ -11,7 +11,7 @@ import { ApiError } from "../types/api-response";
 import { toast } from "sonner";
 import { PaginatedResponse, PaginationParams } from "../types/pagination";
 import { productService } from "@/services/product-service";
-import { Product, CreateProductRequest, UpdateProductRequest } from "@/types/product";
+import { Product, CreateProductRequest, UpdateProductRequest, RealtimeBO } from "@/types/product";
 
 /**
  * Hook to fetch all Products with pagination
@@ -141,7 +141,7 @@ export function useDeleteProduct(options?: {
 export function useRealtimeBO(
     codes: string[],
     date: string,
-    options?: Omit<UseQueryOptions<any[]>, "queryKey" | "queryFn">
+    options?: Omit<UseQueryOptions<RealtimeBO[]>, "queryKey" | "queryFn">
 ) {
     return useQuery({
         queryKey: ["products", "bo-realtime", codes, date],

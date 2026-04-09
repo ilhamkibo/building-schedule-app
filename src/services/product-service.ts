@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import { Product, CreateProductRequest, UpdateProductRequest } from "@/types/product";
+import { Product, CreateProductRequest, UpdateProductRequest, RealtimeBO } from "@/types/product";
 import { PaginatedResponse, PaginationParams } from "@/types/pagination";
 
 class ProductService {
@@ -31,8 +31,8 @@ class ProductService {
         await api.delete(`${this.endpoint}/${id}`);
     }
 
-    async getRealtimeBO(codes: string[], date: string): Promise<any[]> {
-        const response = await api.get<{status: boolean, message: string, data: any[]}>(`${this.endpoint}/bo-realtime`, {
+    async getRealtimeBO(codes: string[], date: string): Promise<RealtimeBO[]> {
+        const response = await api.get<{ status: boolean, message: string, data: RealtimeBO[] }>(`${this.endpoint}/bo-realtime`, {
             params: { codes, date }
         });
         return response.data.data;

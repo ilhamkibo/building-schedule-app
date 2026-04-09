@@ -145,19 +145,19 @@ export interface FormItem {
     priority: string;
     codeNo?: string;
     size?: number | string;
-    machineNo: string;
-    shiftNo: number;
     qty: number;
-    remark: string;
+    mold?: number | null;
     stockRc?: number;
-    isManual?: boolean;
     rim?: string | null;
     boQty?: number | string | null;
-    qtyPpl?: number | null;
     remainingBoQty?: number | string | null;
     buildAchQty?: number | null;
     isBuildAch?: boolean;
-    mold?: number | null;
+    qtyPpl?: number | null;
     rcStockDuration?: string | null;
     rcStockDurationType?: string | null;
+    remark: string;
+    machineNo: string;
+    shiftNo: number;
+    isManual?: boolean;
 }
