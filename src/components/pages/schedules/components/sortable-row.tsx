@@ -2,14 +2,14 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, Trash2 } from "lucide-react";
+import { CheckCheckIcon, GripVertical, Trash2, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormCombobox } from "@/components/ui/form-combobox";
 import { FormItem } from "@/types/schedule";
 import { Product } from "@/types/product";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface SortableRowProps {
     item: FormItem;
@@ -53,6 +53,37 @@ export function SortableRow({
     setSearch,
 }: SortableRowProps) {
     const [isBoFocused, setIsBoFocused] = useState(false);
+    const [isQtyFocused, setIsQtyFocused] = useState(false);
+
+    const [highlightQty, setHighlightQty] = useState(false);
+    const [highlightBo, setHighlightBo] = useState(false);
+
+    const prevQtyRef = useRef(item.qty);
+    const prevBoRef = useRef(item.boQty);
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (item.qty !== prevQtyRef.current) {
+            if (!isQtyFocused) {
+                setHighlightQty(true);
+                timer = setTimeout(() => setHighlightQty(false), 2000);
+            }
+            prevQtyRef.current = item.qty;
+        }
+        return () => clearTimeout(timer);
+    }, [item.qty, isQtyFocused]);
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (item.boQty !== prevBoRef.current) {
+            if (!isBoFocused) {
+                setHighlightBo(true);
+                timer = setTimeout(() => setHighlightBo(false), 2000);
+            }
+            prevBoRef.current = item.boQty;
+        }
+        return () => clearTimeout(timer);
+    }, [item.boQty, isBoFocused]);
 
     const {
         attributes,
@@ -94,7 +125,7 @@ export function SortableRow({
 
                 {/* Main Content */}
                 <div className="flex-1 min-w-0">
-                    <div className="grid grid-cols-6 gap-3 items-end">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 items-end pb-1">
                         {/* Code No */}
                         <div className="flex flex-col justify-end h-[60px]">
                             <Label className="text-[10px] uppercase text-muted-foreground mb-1">
@@ -164,6 +195,22 @@ export function SortableRow({
                             </div>
                         </div>
 
+                        {/* Is Build Ach */}
+                        <div className="flex flex-col justify-end h-[60px]">
+                            <Label className="text-[10px] uppercase text-muted-foreground mb-1">
+                                Is Build Ach
+                            </Label>
+                            <div className="h-8 flex items-center justify-center bg-muted/30 rounded text-xs font-medium border">
+                                {item.isBuildAch ?
+                                    (<>
+                                        <CheckCheckIcon className="h-4 w-4 text-green-500" />
+                                        <span className="ml-1">{item.buildAchQty || 0}</span>
+                                    </>) : (<>
+                                        <XIcon className="h-4 w-4 text-red-500" />
+                                    </>)}
+                            </div>
+                        </div>
+
                         {/* BO Quantity */}
                         <div className="flex flex-col justify-end h-[60px]">
                             <Label className="text-[10px] uppercase text-muted-foreground mb-1">
@@ -171,7 +218,7 @@ export function SortableRow({
                             </Label>
                             <Input
                                 type="text"
-                                className="h-8 text-center bg-white"
+                                className={`h-8 text-center transition-colors duration-500 ${highlightBo ? 'bg-amber-100 border-amber-500 ring-1 ring-amber-500 font-bold text-amber-900' : 'bg-white'}`}
                                 value={isBoFocused ? (item.boQty || 0) : (Number(item.boQty) <= 10 ? "F" : (item.boQty || "F"))}
                                 onFocus={() => setIsBoFocused(true)}
                                 onBlur={() => setIsBoFocused(false)}
@@ -193,8 +240,10 @@ export function SortableRow({
                             </Label>
                             <Input
                                 type="number"
-                                className="h-8 text-center bg-white number-to-text"
+                                className={`h-8 text-center number-to-text transition-all ease-in-out duration-200 ${highlightQty ? 'bg-amber-100 border-amber-500 ring-1 ring-amber-500 font-bold text-amber-900' : 'bg-white'}`}
                                 value={item.qty}
+                                onFocus={() => setIsQtyFocused(true)}
+                                onBlur={() => setIsQtyFocused(false)}
                                 onChange={(e) =>
                                     updateItem(index, {
                                         qty: parseInt(e.target.value) || 0,
@@ -204,7 +253,7 @@ export function SortableRow({
                         </div>
 
                         {/* Remark */}
-                        <div className="flex flex-col justify-end h-[60px]">
+                        <div className="flex flex-col justify-end h-[60px] col-span-2 lg:col-span-1">
                             <Label className="text-[10px] uppercase text-muted-foreground mb-1">
                                 Remark
                             </Label>

@@ -16,6 +16,7 @@ import {
   Clock,
   Tags,
   CalendarCheck,
+  Activity,
 } from "lucide-react";
 
 
@@ -138,6 +139,11 @@ const navMain: NavGroup[] = [
         subtitle: "Shift Time",
         url: "/admin/shifts",
         icon: Clock,
+      },
+      {
+        subtitle: "Curing Efficiencies",
+        url: "/admin/curing-efficiencies",
+        icon: Activity,
       },
     ]
   }

@@ -76,6 +76,7 @@ export function ScheduleBlock({ block, shiftTime }: { block: TodayLineSchedule; 
                                 <th className="border dark:border-slate-800 p-2 font-bold" rowSpan={2}>RIM</th>
                                 <th className="border dark:border-slate-800 p-2 font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider" rowSpan={2}>Code</th>
                                 <th className="border dark:border-slate-800 p-1 font-medium" rowSpan={2}>Cure /shift</th>
+                                <th className="border dark:border-slate-800 p-1 font-medium" rowSpan={2}>Mold Qty</th>
                                 <th className="border dark:border-slate-800 p-1 font-medium" rowSpan={2}>Stock R/C</th>
                                 <th className="border dark:border-slate-800 p-1 font-medium" rowSpan={2}>Cure est.</th>
                                 <th className="border dark:border-slate-800 p-1 font-medium" rowSpan={2}>B.O</th>
@@ -106,6 +107,7 @@ export function ScheduleBlock({ block, shiftTime }: { block: TodayLineSchedule; 
                                         <td className="border dark:border-slate-800 p-1 font-mono text-slate-500">{r.rim || "-"}</td>
                                         <td className="border dark:border-slate-800 p-1 font-bold text-slate-900 dark:text-slate-100">{r.code}</td>
                                         <td className="border dark:border-slate-800 p-1">{r.cureShift || "-"}</td>
+                                        <td className="border dark:border-slate-800 p-1">{r.qtyMold || "-"}</td>
                                         <td className="border dark:border-slate-800 p-1">{r.rcStock || 0}</td>
                                         <td className="border dark:border-slate-800 p-1 font-medium">{r.cureEst || "-"}</td>
                                         <td className="border dark:border-slate-800 p-1">{r.balanceOut === 0 ? "F" : r.balanceOut}</td>
@@ -120,19 +122,19 @@ export function ScheduleBlock({ block, shiftTime }: { block: TodayLineSchedule; 
                                                 <span className="whitespace-nowrap">-</span>
                                             )}
                                         </td>
-                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.priority1 || "-"}</td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.s1Priority || "-"}</td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.shift1Qty ?? 0}</td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>
-                                            {r.remark && r.remark !== "-" ? (
+                                            {r.shift1Remark && r.shift1Remark !== "-" ? (
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
                                                         <div className="whitespace-nowrap w-[30px] mx-auto overflow-hidden text-ellipsis text-red-600 dark:text-red-400 font-medium">
-                                                            {r.remark}
+                                                            {r.shift1Remark}
                                                         </div>
                                                     </TooltipTrigger>
                                                     <TooltipContent side="left" className="bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900 shadow-xl p-3">
                                                         <p className="font-semibold mb-1 border-b border-red-200 pb-1">Remark</p>
-                                                        <p className="font-medium max-w-[300px] wrap-break-word">{r.remark}</p>
+                                                        <p className="font-medium max-w-[300px] wrap-break-word">{r.shift1Remark}</p>
                                                     </TooltipContent>
                                                 </Tooltip>
                                             ) : (
@@ -151,19 +153,19 @@ export function ScheduleBlock({ block, shiftTime }: { block: TodayLineSchedule; 
                                                 <span className="whitespace-nowrap">-</span>
                                             )}
                                         </td>
-                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.priority2 || "-"}</td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.s2Priority || "-"}</td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.shift2Qty ?? 0}</td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>
-                                            {r.remark && r.remark !== "-" ? (
+                                            {r.shift2Remark && r.shift2Remark !== "-" ? (
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
                                                         <div className="whitespace-nowrap w-[30px] mx-auto overflow-hidden text-ellipsis text-red-600 dark:text-red-400 font-medium">
-                                                            {r.remark}
+                                                            {r.shift2Remark}
                                                         </div>
                                                     </TooltipTrigger>
                                                     <TooltipContent side="left" className="bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900 shadow-xl p-3">
                                                         <p className="font-semibold mb-1 border-b border-red-200 pb-1">Remark</p>
-                                                        <p className="font-medium max-w-[300px] wrap-break-word">{r.remark}</p>
+                                                        <p className="font-medium max-w-[300px] wrap-break-word">{r.shift2Remark}</p>
                                                     </TooltipContent>
                                                 </Tooltip>
                                             ) : (
@@ -182,19 +184,19 @@ export function ScheduleBlock({ block, shiftTime }: { block: TodayLineSchedule; 
                                                 <span className="whitespace-nowrap">-</span>
                                             )}
                                         </td>
-                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.priority3 || "-"}</td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.s3Priority || "-"}</td>
                                         <td className={`border dark:border-slate-800 p-1 border-r-2 border-r-slate-200 dark:border-r-slate-800 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.shift3Qty ?? 0}</td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>
-                                            {r.remark && r.remark !== "-" ? (
+                                            {r.shift3Remark && r.shift3Remark !== "-" ? (
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
                                                         <div className="whitespace-nowrap w-[30px] mx-auto overflow-hidden text-ellipsis text-red-600 dark:text-red-400 font-medium">
-                                                            {r.remark}
+                                                            {r.shift3Remark}
                                                         </div>
                                                     </TooltipTrigger>
                                                     <TooltipContent side="left" className="bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900 shadow-xl p-3">
                                                         <p className="font-semibold mb-1 border-b border-red-200 pb-1">Remark</p>
-                                                        <p className="font-medium max-w-[300px] wrap-break-word">{r.remark}</p>
+                                                        <p className="font-medium max-w-[300px] wrap-break-word">{r.shift3Remark}</p>
                                                     </TooltipContent>
                                                 </Tooltip>
                                             ) : (

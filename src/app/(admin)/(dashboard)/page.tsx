@@ -12,11 +12,12 @@ import {
 import { useSidebar } from "@/components/ui/sidebar";
 import { useLines } from "@/hooks/use-line";
 import { useTodayLineSchedule } from "@/hooks/use-schedule";
-import Link from "next/link";
 import { useShiftContext } from "@/context/shift-context";
 import { TodayLineSchedule, ScheduleLineDetailToday, SchedulePhase } from "@/types/schedule";
 import { DashboardFilterBar } from "@/components/pages/dashboard/components/DashboardFilterBar";
 import { DashboardSkeleton } from "@/components/pages/dashboard/components/DashboardSkeleton";
+import { useRealtimeBO } from "@/hooks/use-product";
+import Link from "next/link";
 
 const STORAGE_KEY = "selected-line-no";
 
@@ -26,7 +27,7 @@ export default function Page() {
     new Date().toLocaleDateString('en-CA')
   );
   const { open } = useSidebar();
-  const { activeShift, shifts: shiftTime, isLoading: isLoadingShiftTime } = useShiftContext();
+  const { shifts: shiftTime, isLoading: isLoadingShiftTime } = useShiftContext();
 
   const { data: linesData = [], isLoading: isLoadingLines } = useLines({ limit: 100 });
   // Removed local shift fetching as it's now handled by useShiftContext
@@ -54,7 +55,6 @@ export default function Page() {
   );
 
   const scheduleData = scheduleResponse?.data;
-  console.log("🚀 ~ Page ~ scheduleData:", scheduleData)
 
   const timeToDecimal = (dateStr: string | null) => {
     if (!dateStr) return 0;
@@ -69,29 +69,72 @@ export default function Page() {
 
   // Removed unused and broken shiftTimeDecimal mapper that caused type errors
 
-  const dashboardData = useMemo(() => {
+  const baseDashboardData = useMemo(() => {
     if (!scheduleData || !Array.isArray(scheduleData)) return [];
+
+    const shift1 = shiftTime?.find((s) => s.shiftNo === 1);
+    const shift1StartStr = shift1?.startTime || "08:00:00";
+    const validStart = new Date(`${selectedDate}T${shift1StartStr}`);
+    const validEnd = new Date(validStart.getTime() + 24 * 60 * 60 * 1000);
 
     return (scheduleData as TodayLineSchedule[]).map((m: TodayLineSchedule) => ({
       id: m.machine || m.id?.toString(),
       machine: m.machine,
       shift: m.shift || "All Shifts",
-      rows: (m.rows || []).map((row: ScheduleLineDetailToday) => ({
-        ...row,
-        totalQty: (row.shift1Qty || 0) + (row.shift2Qty || 0) + (row.shift3Qty || 0),
-        phases: (row.phases || []).map((p: SchedulePhase) => ({
-          ...p,
-          start: typeof p.start === "string" ? timeToDecimal(p.start) : p.start,
-          end: typeof p.end === "string" ? timeToDecimal(p.end) : p.end,
-        })),
-      })),
+      rows: (m.rows || []).map((row: ScheduleLineDetailToday) => {
+        const validPhases = (row.phases || []).filter((p: SchedulePhase) => {
+          if (!p.start || typeof p.start !== "string") return true;
+
+          const phaseDate = new Date(p.start);
+          if (isNaN(phaseDate.getTime())) return true;
+
+          return phaseDate.getTime() >= validStart.getTime() && phaseDate.getTime() <= validEnd.getTime();
+        });
+
+        return {
+          ...row,
+          totalQty: (row.shift1Qty || 0) + (row.shift2Qty || 0) + (row.shift3Qty || 0),
+          phases: validPhases.map((p: SchedulePhase) => ({
+            ...p,
+            start: typeof p.start === "string" ? timeToDecimal(p.start) : p.start,
+            end: typeof p.end === "string" ? timeToDecimal(p.end) : p.end,
+          })),
+        };
+      }),
     }));
-  }, [scheduleData, scheduleResponse]);
+  }, [scheduleData, scheduleResponse, selectedDate, shiftTime]);
+
+  const uniqueCodes = useMemo(() => {
+    const codes = new Set<string>();
+    baseDashboardData.forEach(m => {
+      m.rows.forEach(r => {
+        if (r.code) codes.add(r.code);
+      });
+    });
+    return Array.from(codes);
+  }, [baseDashboardData]);
+
+  const { data: realtimeBOData } = useRealtimeBO(uniqueCodes, selectedDate);
+
+  const dashboardData = useMemo(() => {
+    if (!realtimeBOData || realtimeBOData.length === 0) return baseDashboardData;
+
+    return baseDashboardData.map(m => ({
+      ...m,
+      rows: m.rows.map(r => {
+        const boData = realtimeBOData.find(bo => bo.sizeCode === r.code);
+        return {
+          ...r,
+          balanceOut: boData?.realtimeBo !== null && boData?.realtimeBo !== undefined ? boData.realtimeBo : r.balanceOut,
+        };
+      })
+    }));
+  }, [baseDashboardData, realtimeBOData]);
 
   return (
     <div
       className={`p-4 ${open
-        ? "max-w-[calc(100vw-20rem)]"
+        ? "md:max-w-[calc(100vw-19rem)] max-w-full"
         : "max-w-full"
         }`}
     >

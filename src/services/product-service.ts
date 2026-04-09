@@ -30,6 +30,13 @@ class ProductService {
     async delete(id: number): Promise<void> {
         await api.delete(`${this.endpoint}/${id}`);
     }
+
+    async getRealtimeBO(codes: string[], date: string): Promise<any[]> {
+        const response = await api.get<{status: boolean, message: string, data: any[]}>(`${this.endpoint}/bo-realtime`, {
+            params: { codes, date }
+        });
+        return response.data.data;
+    }
 }
 
 export const productService = new ProductService();

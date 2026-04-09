@@ -18,6 +18,15 @@ export interface Product {
     rim: number;
 }
 
+export interface RealtimeBO {
+    sizeCode: string;
+    date: string;
+    shift: number;
+    initialBo: string | null;
+    realtimeBo: string | null;
+    totalAchievement: number;
+}
+
 export interface CreateProductRequest {
     codeNo: string;
     sizeName: string;

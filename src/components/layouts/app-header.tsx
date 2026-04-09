@@ -44,34 +44,35 @@ export default function AppHeader({ title = "Dashboard" }: { title: string }) {
   }, []);
 
   return (
-    <header className="bg-background sticky top-0 z-50 flex h-16 shrink-0 items-center gap-3 border-b px-4">
+    <header className="bg-background sticky top-0 z-50 flex h-14 md:h-16 shrink-0 items-center gap-2 md:gap-3 border-b px-3 md:px-4">
       {/* LEFT */}
       <SidebarTrigger className="-ml-1" />
       <Separator
         orientation="vertical"
-        className="mr-2 data-[orientation=vertical]:h-4"
+        className="hidden sm:block mr-2 data-[orientation=vertical]:h-4"
       />
 
       {/* PAGE TITLE */}
-      <h1 className="text-lg font-sans font-semibold tracking-tight">
+      <h1 className="text-base md:text-lg font-sans font-semibold tracking-tight truncate max-w-[140px] sm:max-w-none">
         {title}
       </h1>
 
       {/* RIGHT */}
-      <div className="ml-auto flex items-center gap-4">
+      <div className="ml-auto flex items-center gap-2 md:gap-4">
         {/* REALTIME CLOCK */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           {activeShift && (
-            <div className="flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs animate-pulse font-semibold">
-              <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-              <span>Shift {activeShift}</span>
+            <div className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-[10px] md:text-xs animate-pulse font-semibold whitespace-nowrap">
+              <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-blue-500"></div>
+              <span className="hidden sm:inline">Shift {activeShift}</span>
+              <span className="sm:hidden">S{activeShift}</span>
             </div>
           )}
-          <h1 className="m-0 p-0 flex flex-col items-start min-w-[100px]">
-            <span className="text-md font-mono text-muted-foreground tabular-nums">
+          <h1 className="hidden sm:flex m-0 p-0 flex-col items-end min-w-[80px] md:min-w-[100px]">
+            <span className="text-sm md:text-md font-mono text-muted-foreground tabular-nums">
               {time}
             </span>
-            <span className="text-sm font-semibold font-sans">{date}</span>
+            <span className="text-xs md:text-sm font-semibold font-sans">{date}</span>
           </h1>
         </div>
 

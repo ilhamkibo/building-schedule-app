@@ -134,3 +134,20 @@ export function useDeleteProduct(options?: {
         },
     });
 }
+
+/**
+ * Hook to fetch realtime BO for a list of size codes
+ */
+export function useRealtimeBO(
+    codes: string[],
+    date: string,
+    options?: Omit<UseQueryOptions<any[]>, "queryKey" | "queryFn">
+) {
+    return useQuery({
+        queryKey: ["products", "bo-realtime", codes, date],
+        queryFn: () => productService.getRealtimeBO(codes, date),
+        enabled: codes.length > 0 && !!date,
+        refetchInterval: 60000, // Refresh every minute
+        ...options,
+    });
+}

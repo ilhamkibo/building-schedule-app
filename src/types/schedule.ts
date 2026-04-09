@@ -111,22 +111,25 @@ export interface ScheduleLineDetailToday {
     code: string;
     rim?: string;
     rcStock?: number;
-    cureShift?: number;
     cureEst?: string;
     balanceOut?: string | number;
+    cureShift?: number;
     buildTimes?: {
         shift1?: string[];
         shift2?: string[];
         shift3?: string[];
     };
-    priority1?: string;
-    priority2?: string;
-    priority3?: string;
+    qtyMold: number;
+    shift1Remark: string;
+    shift2Remark: string;
+    shift3Remark: string;
+    s1Priority: string;
+    s2Priority: string;
+    s3Priority: string;
     shift1Qty: number;
     shift2Qty: number;
     shift3Qty: number;
     totalQty?: number;
-    remark: string;
     phases: SchedulePhase[];
 }
 

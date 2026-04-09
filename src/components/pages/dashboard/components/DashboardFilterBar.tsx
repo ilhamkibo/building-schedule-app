@@ -31,7 +31,7 @@ export function DashboardFilterBar({
         <div className="px-4 mb-4 rounded-md py-2 font-semibold bg-sidebar border-b dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
                 <Select value={selectedLineNo} onValueChange={onLineNoChange}>
-                    <SelectTrigger className="w-[180px] h-8 font-semibold bg-background dark:border-slate-700">
+                    <SelectTrigger className="md:w-[180px] w-full h-8 font-semibold bg-background dark:border-slate-700">
                         <SelectValue placeholder="Select Line" />
                     </SelectTrigger>
                     <SelectContent>
@@ -46,7 +46,7 @@ export function DashboardFilterBar({
                     type="date"
                     value={selectedDate}
                     onChange={(e) => onDateChange(e.target.value)}
-                    className="w-[160px] h-8 font-semibold bg-background dark:border-slate-700"
+                    className="md:w-[160px] w-full h-9 font-semibold bg-background dark:border-slate-700"
                 />
             </div>
 

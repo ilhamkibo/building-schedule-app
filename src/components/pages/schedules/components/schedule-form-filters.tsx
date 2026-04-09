@@ -25,10 +25,10 @@ export function ScheduleFormFilters({
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-muted/20 border p-4 rounded-xl">
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
                 <Label htmlFor="code">Schedule Code</Label>
                 <Input id="code" className="bg-white" disabled value={code} />
-            </div>
+            </div> */}
             <div className="space-y-2">
                 <Label htmlFor="lineId">Production Line</Label>
                 <FormCombobox
