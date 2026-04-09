@@ -84,6 +84,16 @@
   --sidebar-ring: oklch(0.707 0.022 261.325);
 }
 
+input.number-to-text::-webkit-outer-spin-button,
+input.number-to-text::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number].number-to-text {
+  -moz-appearance: textfield;
+}
+
 .dark {
   --background: oklch(0.13 0.028 261.692);
   --foreground: oklch(0.985 0.002 247.839);

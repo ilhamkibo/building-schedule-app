@@ -72,8 +72,6 @@ export default function Page() {
   const dashboardData = useMemo(() => {
     if (!scheduleData || !Array.isArray(scheduleData)) return [];
 
-    const scheduleDate = new Date().toISOString();
-
     return (scheduleData as TodayLineSchedule[]).map((m: TodayLineSchedule) => ({
       id: m.machine || m.id?.toString(),
       machine: m.machine,

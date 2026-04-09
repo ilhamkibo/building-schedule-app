@@ -21,7 +21,6 @@ class ProductScheduleService {
                 lineNo,
             },
         });
-        console.log("🚀 ~ ProductScheduleService ~ getByDateAndLineNo ~ response:", response)
         return response.data;
     }
 }

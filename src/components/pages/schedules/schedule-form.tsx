@@ -96,6 +96,9 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                     remainingBoQty: d.remainingBoQty || 0,
                     buildAchQty: d.buildAchQty || 0,
                     isBuildAch: d.isBuildAch || false,
+                    mold: d.mold || 0,
+                    rcStockDuration: d.rcStockDuration || "",
+                    rcStockDurationType: d.rcStockDurationType || "",
                 }))
             )
         );
@@ -115,7 +118,78 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
 
     const updateItem = (index: number, updates: Partial<FormItem>) => {
         const newItems = [...items];
+        const oldItem = newItems[index];
+
+        const oldIdentifier = String(oldItem.codeNo || oldItem.size || "").trim();
+
+        const isQtyChanged = updates.qty !== undefined && updates.qty !== oldItem.qty;
+        const isBoQtyChanged = updates.boQty !== undefined && updates.boQty !== oldItem.boQty;
+
+        // Auto-calculate subsequent shifts qty if qty changes
+        if (isQtyChanged && oldIdentifier) {
+            const diff = updates.qty! - oldItem.qty;
+            const distributionTotal = -diff;
+
+            const subsequentTargetIndices = newItems
+                .map((item, idx) => ({ item, idx }))
+                .filter(({ item }) => {
+                    const itemIdentifier = String(item.codeNo || item.size || "").trim();
+                    return String(item.machineNo) === String(oldItem.machineNo)
+                        && itemIdentifier === oldIdentifier
+                        && Number(item.shiftNo) > Number(oldItem.shiftNo);
+                })
+                .map(({ idx }) => idx);
+
+            if (subsequentTargetIndices.length > 0) {
+                const baseDist = Math.trunc(distributionTotal / subsequentTargetIndices.length);
+                const isNegative = distributionTotal < 0;
+                let absRemainder = Math.abs(distributionTotal) % subsequentTargetIndices.length;
+
+                subsequentTargetIndices.forEach((targetIdx) => {
+                    let amountToAdd = baseDist;
+                    if (absRemainder > 0) {
+                        amountToAdd += isNegative ? -1 : 1;
+                        absRemainder--;
+                    }
+                    newItems[targetIdx] = {
+                        ...newItems[targetIdx],
+                        qty: newItems[targetIdx].qty + amountToAdd
+                    };
+                });
+            }
+        }
+
         newItems[index] = { ...newItems[index], ...updates };
+
+        // Cascade recalculate boQty for the whole sequence if qty or boQty changed
+        if ((isQtyChanged || isBoQtyChanged) && oldIdentifier) {
+            const sequenceIndices = newItems
+                .map((item, idx) => ({ item, idx }))
+                .filter(({ item }) => {
+                    const itemIdentifier = String(item.codeNo || item.size || "").trim();
+                    return String(item.machineNo) === String(oldItem.machineNo)
+                        && itemIdentifier === oldIdentifier;
+                })
+                .sort((a, b) => Number(a.item.shiftNo) - Number(b.item.shiftNo))
+                .map(({ idx }) => idx);
+
+            for (let i = 1; i < sequenceIndices.length; i++) {
+                const prevIdx = sequenceIndices[i - 1];
+                const currIdx = sequenceIndices[i];
+
+                const prevBO = Number(newItems[prevIdx].boQty) || 0;
+
+                const prevSubtractAmount = newItems[prevIdx].isBuildAch
+                    ? (Number(newItems[prevIdx].buildAchQty) || 0)
+                    : (Number(newItems[prevIdx].qty) || 0);
+
+                newItems[currIdx] = {
+                    ...newItems[currIdx],
+                    boQty: prevBO - prevSubtractAmount
+                };
+            }
+        }
+
         setItems(newItems);
     };
 
@@ -252,21 +326,22 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                 codeNo: String(item.size || ""),
                 size: String(item.size || ""),
                 qty: item.qty || 0,
+                mold: item.mold || 0,
+                stockRc: item.stockRc || 0,
+                rim: item.rim || "",
                 boQty: item.boQty !== null && item.boQty !== undefined ? String(item.boQty) : "0",
                 remainingBoQty: item.remainingBoQty !== null && item.remainingBoQty !== undefined ? String(item.remainingBoQty) : "0",
                 buildAchQty: item.buildAchQty || 0,
                 isBuildAch: item.isBuildAch || false,
                 totalBoQty: "0",
                 qtyPpl: item.qtyPpl || 0,
+                rcStockDuration: item.rcStockDuration || "",
+                rcStockDurationType: item.rcStockDurationType || "",
                 remark: item.remark || ""
             });
         });
 
-        const today = new Date();
-        const formattedDate = today.toISOString().split('T')[0];
-
         const payload: CreateScheduleRequest = {
-            // date: formattedDate,
             date,
             lineNo: Number(lineNoForFetching),
             machines: Array.from(machinesMap.values())

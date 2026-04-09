@@ -108,7 +108,7 @@ export function ScheduleBlock({ block, shiftTime }: { block: TodayLineSchedule; 
                                         <td className="border dark:border-slate-800 p-1">{r.cureShift || "-"}</td>
                                         <td className="border dark:border-slate-800 p-1">{r.rcStock || 0}</td>
                                         <td className="border dark:border-slate-800 p-1 font-medium">{r.cureEst || "-"}</td>
-                                        <td className="border dark:border-slate-800 p-1">{r.balanceOut || 0}</td>
+                                        <td className="border dark:border-slate-800 p-1">{r.balanceOut === 0 ? "F" : r.balanceOut}</td>
                                         <td className={`border dark:border-slate-800 p-1 border-l-2 border-l-blue-200 dark:border-l-blue-900 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>
                                             {r.buildTimes?.shift1?.length ? (
                                                 <div className="flex flex-col gap-0.5">

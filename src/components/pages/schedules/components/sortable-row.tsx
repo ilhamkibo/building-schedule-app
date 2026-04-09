@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { FormCombobox } from "@/components/ui/form-combobox";
 import { FormItem } from "@/types/schedule";
 import { Product } from "@/types/product";
+import { useState } from "react";
 
 interface SortableRowProps {
     item: FormItem;
@@ -51,6 +52,8 @@ export function SortableRow({
     isProductsLoading,
     setSearch,
 }: SortableRowProps) {
+    const [isBoFocused, setIsBoFocused] = useState(false);
+
     const {
         attributes,
         listeners,
@@ -167,9 +170,11 @@ export function SortableRow({
                                 B.O
                             </Label>
                             <Input
-                                type="number"
+                                type="text"
                                 className="h-8 text-center bg-white"
-                                value={item.boQty || 0}
+                                value={isBoFocused ? (item.boQty || 0) : (Number(item.boQty) <= 10 ? "F" : (item.boQty || "F"))}
+                                onFocus={() => setIsBoFocused(true)}
+                                onBlur={() => setIsBoFocused(false)}
                                 onChange={(e) =>
                                     updateItem(index, {
                                         boQty: parseInt(e.target.value) || 0,
@@ -188,7 +193,7 @@ export function SortableRow({
                             </Label>
                             <Input
                                 type="number"
-                                className="h-8 text-center bg-white"
+                                className="h-8 text-center bg-white number-to-text"
                                 value={item.qty}
                                 onChange={(e) =>
                                     updateItem(index, {

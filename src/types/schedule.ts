@@ -29,12 +29,17 @@ export interface CreateScheduleDetail {
     codeNo: string;
     size: string;
     qty: number;
+    mold: number;
+    stockRc: number;
+    rim: string;
     boQty: string;
     remainingBoQty: string;
     buildAchQty: number;
     isBuildAch: boolean;
     totalBoQty: string;
     qtyPpl: number;
+    rcStockDuration: string;
+    rcStockDurationType: string;
     remark: string;
 }
 
@@ -74,8 +79,8 @@ export interface PpcDetailItem {
     isBuildAch: boolean;
     rim: string | null;
     qtyPpl: number | null;
-    buildingStart: string | null;
-    buildingFinish: string | null;
+    rcStockDuration: string | null;
+    rcStockDurationType: string | null;
 }
 
 // SCHEDULE DETAIL
@@ -148,4 +153,7 @@ export interface FormItem {
     remainingBoQty?: number | string | null;
     buildAchQty?: number | null;
     isBuildAch?: boolean;
+    mold?: number | null;
+    rcStockDuration?: string | null;
+    rcStockDurationType?: string | null;
 }
