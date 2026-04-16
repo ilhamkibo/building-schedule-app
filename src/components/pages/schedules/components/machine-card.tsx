@@ -37,7 +37,7 @@ export function MachineCard({
                     <div className="w-2 h-6 bg-primary rounded-full" />
                     Machine: <span className="text-primary">{machineNo}</span>
                 </h3>
-                <Button
+                {/* <Button
                     variant="outline"
                     size="sm"
                     className="h-8 gap-2 border-primary/20 hover:bg-primary/5 hover:text-primary transition-colors px-3 font-semibold text-xs uppercase tracking-wider"
@@ -45,7 +45,7 @@ export function MachineCard({
                 >
                     <Plus className="w-3.5 h-3.5" />
                     Add to All Shifts
-                </Button>
+                </Button> */}
             </div>
 
             <div className="flex flex-col gap-3">

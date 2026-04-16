@@ -72,7 +72,6 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
         lineNoForFetching,
         { enabled: !!selectedLineId && !!date && !!lineNoForFetching }
     );
-    console.log("🚀 ~ ScheduleForm ~ ppcData:", ppcData)
 
     useEffect(() => {
         if (!ppcData || !("details" in ppcData) || !selectedLineId || !date) {
@@ -154,7 +153,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                     }
                     newItems[targetIdx] = {
                         ...newItems[targetIdx],
-                        qty: newItems[targetIdx].qty + amountToAdd
+                        qty: Math.max(0, newItems[targetIdx].qty + amountToAdd)
                     };
                 });
             }
@@ -162,32 +161,52 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
 
         newItems[index] = { ...newItems[index], ...updates };
 
+        const isQtyAffectsBo = isQtyChanged && !oldItem.isBuildAch;
+
         // Cascade recalculate boQty for the whole sequence if qty or boQty changed
-        if ((isQtyChanged || isBoQtyChanged) && oldIdentifier) {
-            const sequenceIndices = newItems
+        if ((isQtyAffectsBo || isBoQtyChanged) && oldIdentifier) {
+            const allItemsForCode = newItems
                 .map((item, idx) => ({ item, idx }))
                 .filter(({ item }) => {
                     const itemIdentifier = String(item.codeNo || item.size || "").trim();
-                    return String(item.machineNo) === String(oldItem.machineNo)
-                        && itemIdentifier === oldIdentifier;
-                })
-                .sort((a, b) => Number(a.item.shiftNo) - Number(b.item.shiftNo))
-                .map(({ idx }) => idx);
+                    return itemIdentifier === oldIdentifier;
+                });
 
-            for (let i = 1; i < sequenceIndices.length; i++) {
-                const prevIdx = sequenceIndices[i - 1];
-                const currIdx = sequenceIndices[i];
+            if (isBoQtyChanged && updates.boQty !== undefined) {
+                const changedShift = Number(oldItem.shiftNo);
+                const changedBO = updates.boQty;
+                allItemsForCode.forEach(x => {
+                    if (Number(x.item.shiftNo) === changedShift) {
+                        newItems[x.idx] = { ...newItems[x.idx], boQty: changedBO };
+                    }
+                });
+            }
 
-                const prevBO = Number(newItems[prevIdx].boQty) || 0;
+            const shifts = Array.from(new Set(allItemsForCode.map(x => Number(x.item.shiftNo)))).sort((a, b) => a - b);
+            let currentBO = 0;
 
-                const prevSubtractAmount = newItems[prevIdx].isBuildAch
-                    ? (Number(newItems[prevIdx].buildAchQty) || 0)
-                    : (Number(newItems[prevIdx].qty) || 0);
+            for (let i = 0; i < shifts.length; i++) {
+                const shift = shifts[i];
+                const shiftItems = allItemsForCode.filter(x => Number(x.item.shiftNo) === shift);
 
-                newItems[currIdx] = {
-                    ...newItems[currIdx],
-                    boQty: prevBO - prevSubtractAmount
-                };
+                if (i === 0 || (shift === Number(oldItem.shiftNo) && isBoQtyChanged)) {
+                    currentBO = Number(newItems[shiftItems[0].idx].boQty) || 0;
+                }
+
+                shiftItems.forEach(x => {
+                    newItems[x.idx] = { ...newItems[x.idx], boQty: currentBO };
+                });
+
+                let shiftDeduction = 0;
+                shiftItems.forEach(x => {
+                    const item = newItems[x.idx];
+                    const subtractAmount = item.isBuildAch
+                        ? (Number(item.buildAchQty) || 0)
+                        : (Number(item.qty) || 0);
+                    shiftDeduction += subtractAmount;
+                });
+
+                currentBO -= shiftDeduction;
             }
         }
 
@@ -272,6 +291,9 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
             stockRc: 0,
             priority: nextPriority,
             isManual: true,
+            isBuildAch: false,
+            buildAchQty: 0,
+            boQty: 0,
         }]);
     };
 
