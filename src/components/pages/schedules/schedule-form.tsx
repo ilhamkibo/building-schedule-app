@@ -198,12 +198,17 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                 });
 
                 let shiftDeduction = 0;
+                let hasAppliedBuildAchForShift = false;
                 shiftItems.forEach(x => {
                     const item = newItems[x.idx];
-                    const subtractAmount = item.isBuildAch
-                        ? (Number(item.buildAchQty) || 0)
-                        : (Number(item.qty) || 0);
-                    shiftDeduction += subtractAmount;
+                    if (item.isBuildAch) {
+                        if (!hasAppliedBuildAchForShift) {
+                            shiftDeduction += (Number(item.buildAchQty) || 0);
+                            hasAppliedBuildAchForShift = true;
+                        }
+                    } else {
+                        shiftDeduction += (Number(item.qty) || 0);
+                    }
                 });
 
                 currentBO -= shiftDeduction;
@@ -276,6 +281,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
         const taken = items
             .filter(i => i.machineNo === machineNo && i.shiftNo === shiftNo)
             .map(i => i.priority);
+        console.log("🚀 ~ getNextPriority ~ taken:", taken)
         return priorities.find(p => !taken.includes(p)) || "none";
     };
 
