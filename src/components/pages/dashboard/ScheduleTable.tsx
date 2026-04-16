@@ -113,7 +113,7 @@ export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; 
                                         <td className="border dark:border-slate-800 p-1">{r.balanceOut === 0 ? "F" : r.balanceOut}</td>
                                         <td className={`border dark:border-slate-800 p-1 border-l-2 border-l-blue-200 dark:border-l-blue-900 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>
                                             {r.buildTimes?.shift1?.length ? (
-                                                <div className="flex flex-col gap-0.5">
+                                                <div className="flex flex-col">
                                                     {r.buildTimes.shift1.map((time, idx) => (
                                                         <span key={idx} className={r.buildTimes!.shift1!.length > 1 ? "text-[8.5px] leading-tight" : "whitespace-nowrap"}>{time}</span>
                                                     ))}
@@ -124,7 +124,7 @@ export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; 
                                         </td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>
                                             {r.s1Priority.length > 0 ? (
-                                                <div className="flex flex-col gap-0.5">
+                                                <div className="flex flex-col">
                                                     {r.s1Priority.map((priority, idx) => (
                                                         <span key={idx} className={r.s1Priority.length > 1 ? "text-[8.5px] leading-tight" : "whitespace-nowrap"}>{priority}</span>
                                                     ))}
@@ -135,7 +135,7 @@ export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; 
                                         </td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>
                                             {r.shift1Qty.length > 0 ? (
-                                                <div className="flex flex-col gap-0.5">
+                                                <div className="flex flex-col">
                                                     {r.shift1Qty.map((qty, idx) => (
                                                         <span key={idx} className={r.shift1Qty.length > 1 ? "text-[8.5px] leading-tight" : "whitespace-nowrap"}>{qty}</span>
                                                     ))}
@@ -164,7 +164,7 @@ export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; 
 
                                         <td className={`border dark:border-slate-800 border-l-2 border-l-orange-200 dark:border-l-orange-900 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>
                                             {r.buildTimes?.shift2?.length ? (
-                                                <div className="flex flex-col gap-0.5">
+                                                <div className="flex flex-col">
                                                     {r.buildTimes.shift2.map((time, idx) => (
                                                         <span key={idx} className={r.buildTimes!.shift2!.length > 1 ? "text-[8.5px] leading-tight" : "whitespace-nowrap"}>{time}</span>
                                                     ))}
@@ -175,7 +175,7 @@ export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; 
                                         </td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>
                                             {r.s2Priority.length > 0 ? (
-                                                <div className="flex flex-col gap-0.5">
+                                                <div className="flex flex-col">
                                                     {r.s2Priority.map((priority, idx) => (
                                                         <span key={idx} className={r.s2Priority.length > 1 ? "text-[8.5px] leading-tight" : "whitespace-nowrap"}>{priority}</span>
                                                     ))}
@@ -186,7 +186,7 @@ export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; 
                                         </td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>
                                             {r.shift2Qty.length > 0 ? (
-                                                <div className="flex flex-col gap-0.5">
+                                                <div className="flex flex-col">
                                                     {r.shift2Qty.map((qty, idx) => (
                                                         <span key={idx} className={r.shift2Qty.length > 1 ? "text-[8.5px] leading-tight" : "whitespace-nowrap"}>{qty}</span>
                                                     ))}
@@ -215,7 +215,7 @@ export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; 
 
                                         <td className={`border dark:border-slate-800 border-l-2 border-l-emerald-200 dark:border-l-emerald-900 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>
                                             {r.buildTimes?.shift3?.length ? (
-                                                <div className="flex flex-col gap-0.5">
+                                                <div className="flex flex-col">
                                                     {r.buildTimes.shift3.map((time, idx) => (
                                                         <span key={idx} className={r.buildTimes!.shift3!.length > 1 ? "text-[8.5px] leading-tight" : "whitespace-nowrap"}>{time}</span>
                                                     ))}
@@ -226,7 +226,7 @@ export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; 
                                         </td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>
                                             {r.s3Priority.length > 0 ? (
-                                                <div className="flex flex-col gap-0.5">
+                                                <div className="flex flex-col">
                                                     {r.s3Priority.map((priority, idx) => (
                                                         <span key={idx} className={r.s3Priority.length > 1 ? "text-[8.5px] leading-tight" : "whitespace-nowrap"}>{priority}</span>
                                                     ))}
@@ -237,7 +237,7 @@ export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; 
                                         </td>
                                         <td className={`border dark:border-slate-800 p-1 border-r-2 border-r-slate-200 dark:border-r-slate-800 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>
                                             {r.shift3Qty.length > 0 ? (
-                                                <div className="flex flex-col gap-0.5">
+                                                <div className="flex flex-col">
                                                     {r.shift3Qty.map((qty, idx) => (
                                                         <span key={idx} className={r.shift3Qty.length > 1 ? "text-[8.5px] leading-tight" : "whitespace-nowrap"}>{qty}</span>
                                                     ))}
