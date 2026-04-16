@@ -38,7 +38,7 @@ export function MachineCard({ machine }: { machine: MachineInfo }) {
     );
 }
 
-export function ScheduleBlock({ block, shiftTime }: { block: TodayLineSchedule; shiftTime: Shift[] }) {
+export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; shiftTime: Shift[] }) {
     /* const { setNodeRef, attributes, listeners, transform, transition } =
         useSortable({ id: block.id });
 
@@ -122,8 +122,28 @@ export function ScheduleBlock({ block, shiftTime }: { block: TodayLineSchedule; 
                                                 <span className="whitespace-nowrap">-</span>
                                             )}
                                         </td>
-                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.s1Priority || "-"}</td>
-                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>{r.shift1Qty ?? 0}</td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>
+                                            {r.s1Priority.length > 0 ? (
+                                                <div className="flex flex-col gap-0.5">
+                                                    {r.s1Priority.map((priority, idx) => (
+                                                        <span key={idx} className={r.s1Priority.length > 1 ? "text-[8.5px] leading-tight" : "whitespace-nowrap"}>{priority}</span>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <span className="whitespace-nowrap">-</span>
+                                            )}
+                                        </td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>
+                                            {r.shift1Qty.length > 0 ? (
+                                                <div className="flex flex-col gap-0.5">
+                                                    {r.shift1Qty.map((qty, idx) => (
+                                                        <span key={idx} className={r.shift1Qty.length > 1 ? "text-[8.5px] leading-tight" : "whitespace-nowrap"}>{qty}</span>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <span className="whitespace-nowrap">-</span>
+                                            )}
+                                        </td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>
                                             {r.shift1Remark && r.shift1Remark !== "-" ? (
                                                 <Tooltip>
@@ -153,8 +173,28 @@ export function ScheduleBlock({ block, shiftTime }: { block: TodayLineSchedule; 
                                                 <span className="whitespace-nowrap">-</span>
                                             )}
                                         </td>
-                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.s2Priority || "-"}</td>
-                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>{r.shift2Qty ?? 0}</td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>
+                                            {r.s2Priority.length > 0 ? (
+                                                <div className="flex flex-col gap-0.5">
+                                                    {r.s2Priority.map((priority, idx) => (
+                                                        <span key={idx} className={r.s2Priority.length > 1 ? "text-[8.5px] leading-tight" : "whitespace-nowrap"}>{priority}</span>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <span className="whitespace-nowrap">-</span>
+                                            )}
+                                        </td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>
+                                            {r.shift2Qty.length > 0 ? (
+                                                <div className="flex flex-col gap-0.5">
+                                                    {r.shift2Qty.map((qty, idx) => (
+                                                        <span key={idx} className={r.shift2Qty.length > 1 ? "text-[8.5px] leading-tight" : "whitespace-nowrap"}>{qty}</span>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <span className="whitespace-nowrap">-</span>
+                                            )}
+                                        </td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 2 ? 'bg-orange-50/40 dark:bg-orange-950/10 font-bold text-orange-700 dark:text-orange-400' : ''}`}>
                                             {r.shift2Remark && r.shift2Remark !== "-" ? (
                                                 <Tooltip>
@@ -184,8 +224,28 @@ export function ScheduleBlock({ block, shiftTime }: { block: TodayLineSchedule; 
                                                 <span className="whitespace-nowrap">-</span>
                                             )}
                                         </td>
-                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.s3Priority || "-"}</td>
-                                        <td className={`border dark:border-slate-800 p-1 border-r-2 border-r-slate-200 dark:border-r-slate-800 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>{r.shift3Qty ?? 0}</td>
+                                        <td className={`border dark:border-slate-800 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>
+                                            {r.s3Priority.length > 0 ? (
+                                                <div className="flex flex-col gap-0.5">
+                                                    {r.s3Priority.map((priority, idx) => (
+                                                        <span key={idx} className={r.s3Priority.length > 1 ? "text-[8.5px] leading-tight" : "whitespace-nowrap"}>{priority}</span>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <span className="whitespace-nowrap">-</span>
+                                            )}
+                                        </td>
+                                        <td className={`border dark:border-slate-800 p-1 border-r-2 border-r-slate-200 dark:border-r-slate-800 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>
+                                            {r.shift3Qty.length > 0 ? (
+                                                <div className="flex flex-col gap-0.5">
+                                                    {r.shift3Qty.map((qty, idx) => (
+                                                        <span key={idx} className={r.shift3Qty.length > 1 ? "text-[8.5px] leading-tight" : "whitespace-nowrap"}>{qty}</span>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <span className="whitespace-nowrap">-</span>
+                                            )}
+                                        </td>
                                         <td className={`border dark:border-slate-800 p-1 ${currentShift === 3 ? 'bg-emerald-50/40 dark:bg-emerald-950/10 font-bold text-emerald-700 dark:text-emerald-400' : ''}`}>
                                             {r.shift3Remark && r.shift3Remark !== "-" ? (
                                                 <Tooltip>
@@ -357,12 +417,12 @@ function GanttRow({ row, shiftTime }: { row: ScheduleLineDetailToday; shiftTime:
                                 <span className="text-slate-500">Code:</span>
                                 <span className="font-semibold">{row.code}</span>
                             </div>
-                            {(row.totalQty ?? 0) > 0 && (
+                            {/* {(row.totalQty ?? 0) > 0 && (
                                 <div className="flex justify-between">
                                     <span className="text-slate-500">Total Qty:</span>
                                     <span className="font-semibold text-blue-600">{row.totalQty} PCS</span>
                                 </div>
-                            )}
+                            )} */}
                         </TooltipContent>
                     </Tooltip>
                 );

@@ -14,6 +14,7 @@ class ScheduleService {
 
     async getById(id: number): Promise<ApiResponse<ScheduleBoard>> {
         const response = await api.get<ApiResponse<ScheduleBoard>>(`${this.endpoint}/${id}`);
+        console.log("🚀 ~ ScheduleService ~ getById ~ response:", response)
         return response.data;
     }
 
@@ -27,12 +28,22 @@ class ScheduleService {
         return response.data;
     }
 
+    async updateScheduleByLineAndDate(lineNo: number, date: string, data: CreateScheduleRequest): Promise<any> {
+        const response = await api.put(`${this.endpoint}/${lineNo}/${date}`, data);
+        return response.data;
+    }
+
     async delete(id: number): Promise<void> {
         await api.delete(`${this.endpoint}/${id}`);
     }
 
     async getTodayLineSchedule(lineNo: number, date: string): Promise<ApiResponse<TodayLineSchedule[]>> {
         const response = await api.get<ApiResponse<TodayLineSchedule[]>>(`${this.endpoint}/${lineNo}/${date}`);
+        return response.data;
+    }
+
+    async updateTimeline(scheduleId: number, shiftNo: number): Promise<any> {
+        const response = await api.post(`${this.endpoint}/timeline/update`, { scheduleId, shiftNo });
         return response.data;
     }
 }

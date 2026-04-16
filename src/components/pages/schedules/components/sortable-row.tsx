@@ -145,9 +145,9 @@ export function SortableRow({
                                             (p) => p.codeNo === val
                                         );
                                         updateItem(index, {
-                                            codeNo: val,
+                                            codeNo: product?.codeNo,
                                             stockRc: product?.faStock || 0,
-                                            size: product?.sizeName || "",
+                                            size: product?.codeNo || "",
                                             rim: product?.rim
                                                 ? String(product.rim)
                                                 : "",

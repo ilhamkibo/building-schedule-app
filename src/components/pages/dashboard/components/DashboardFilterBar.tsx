@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
     Select,
     SelectContent,
@@ -11,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { DashboardLegend } from "./DashboardLegend";
 import { Line } from "@/types/line";
+import { RefreshCw } from "lucide-react";
 
 interface DashboardFilterBarProps {
     selectedLineNo: string;
@@ -18,6 +20,10 @@ interface DashboardFilterBarProps {
     selectedDate: string;
     onDateChange: (value: string) => void;
     lines: Line[];
+    onEditClick?: () => void;
+    onRefreshClick?: () => void;
+    isRefreshing?: boolean;
+    canRefresh?: boolean;
 }
 
 export function DashboardFilterBar({
@@ -26,6 +32,10 @@ export function DashboardFilterBar({
     selectedDate,
     onDateChange,
     lines,
+    onEditClick,
+    onRefreshClick,
+    isRefreshing,
+    canRefresh,
 }: DashboardFilterBarProps) {
     return (
         <div className="px-4 mb-4 rounded-md py-2 font-semibold bg-sidebar border-b dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -48,6 +58,30 @@ export function DashboardFilterBar({
                     onChange={(e) => onDateChange(e.target.value)}
                     className="md:w-[160px] w-full h-9 font-semibold bg-background dark:border-slate-700"
                 />
+                {onEditClick && (
+                    <Button
+                        variant="outline"
+                        onClick={onEditClick}
+                        className="h-9 gap-2"
+                    >
+                        Edit Schedule
+                    </Button>
+                )}
+
+                {onRefreshClick && (
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={onRefreshClick}
+                        disabled={!canRefresh || isRefreshing}
+                        className="h-9 gap-2"
+                    >
+                        <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                        Refresh
+                    </Button>
+                )}
+
+
             </div>
 
             <DashboardLegend />

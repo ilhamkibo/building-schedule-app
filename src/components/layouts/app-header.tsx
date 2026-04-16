@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { SidebarTrigger } from "../ui/sidebar";
 import { Separator } from "../ui/separator";
 import { useShiftContext } from "@/context/shift-context";
+import { isManualRefreshWindow } from "@/lib/shift-utils";
 
 function formatTime(date: Date) {
   const hh = String(date.getHours()).padStart(2, "0");
@@ -15,12 +16,17 @@ function formatTime(date: Date) {
 }
 
 export default function AppHeader({ title = "Dashboard" }: { title: string }) {
-  const { activeShift } = useShiftContext();
+  const { activeShift, shifts } = useShiftContext();
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
+  const [showRefreshBadge, setShowRefreshBadge] = useState(false);
 
   useEffect(() => {
-    const tick = () => setTime(formatTime(new Date()));
+    const tick = () => {
+      const now = new Date();
+      setTime(formatTime(now));
+      setShowRefreshBadge(isManualRefreshWindow(shifts));
+    };
 
     const updateDate = () => {
       const now = new Date();
@@ -41,7 +47,7 @@ export default function AppHeader({ title = "Dashboard" }: { title: string }) {
       tick();
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [shifts]);
 
   return (
     <header className="bg-background sticky top-0 z-50 flex h-14 md:h-16 shrink-0 items-center gap-2 md:gap-3 border-b px-3 md:px-4">
@@ -61,6 +67,12 @@ export default function AppHeader({ title = "Dashboard" }: { title: string }) {
       <div className="ml-auto flex items-center gap-2 md:gap-4">
         {/* REALTIME CLOCK */}
         <div className="flex items-center gap-2 md:gap-4">
+          {showRefreshBadge && (
+            <div className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-[10px] md:text-xs animate-pulse font-semibold whitespace-nowrap border border-green-200 dark:border-green-800">
+              <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]"></div>
+              <span>Cut Off Time</span>
+            </div>
+          )}
           {activeShift && (
             <div className="flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-[10px] md:text-xs animate-pulse font-semibold whitespace-nowrap">
               <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-blue-500"></div>

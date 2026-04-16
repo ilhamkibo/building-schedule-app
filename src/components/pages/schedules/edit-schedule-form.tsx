@@ -1,14 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useCreateSchedule } from "@/hooks/use-schedule";
+import { useUpdateScheduleByLineAndDate } from "@/hooks/use-schedule";
 import { useProducts } from "@/hooks/use-product";
-import { CreateScheduleRequest, CreateScheduleMachine, PpcMachine, PpcShift, PpcDetailItem, FormItem } from "@/types/schedule";
+import { CreateScheduleRequest, CreateScheduleMachine, CreateScheduleShift, CreateScheduleDetail, FormItem, ScheduleBoard } from "@/types/schedule";
 import { useState, useEffect } from "react";
-import { Plus, Search, AlertCircle, Database, Loader2 } from "lucide-react";
+import { Database, Loader2, PencilLine, X } from "lucide-react";
 import { toast } from "sonner";
-import { useProductScheduleByDateAndLineNo } from "@/hooks/use-product-schedule";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
     DndContext,
     closestCorners,
@@ -24,19 +22,65 @@ import {
     sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 
-import { ScheduleFormFilters } from "./components/schedule-form-filters";
 import { MachineCard } from "./components/machine-card";
 import { StaticRow } from "./components/sortable-row";
-import { useLines } from "@/hooks/use-line";
 
-export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => void, onSuccess: () => void }) {
-    const [selectedLineId, setSelectedLineId] = useState<string | undefined>(undefined);
-    const [code] = useState(`SCH-${new Date().toISOString().slice(0, 10)}`);
-    const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+/**
+ * Convert ScheduleBoard (from GET /api/schedules/{id}) into FormItem[] for editing.
+ * API response format: machines[].shifts[].details[]
+ */
+function boardToFormItems(board: ScheduleBoard): FormItem[] {
+    const items: FormItem[] = [];
+    const machines = board.machines || [];
+
+    machines.forEach((machine: CreateScheduleMachine) => {
+        const machineNo = String(machine.machine);
+
+        (machine.shifts || []).forEach((shift: CreateScheduleShift) => {
+            (shift.details || []).forEach((detail: CreateScheduleDetail, detailIdx: number) => {
+                items.push({
+                    id: `edit-${machineNo}-s${shift.shiftNo}-${detailIdx}-${Math.random().toString(36).substr(2, 4)}`,
+                    priority: detail.priority || "none",
+                    codeNo: detail.codeNo,
+                    size: detail.size || detail.codeNo,
+                    qty: detail.qty || 0,
+                    mold: detail.mold || 0,
+                    stockRc: detail.stockRc || 0,
+                    rim: detail.rim || "",
+                    boQty: detail.boQty || 0,
+                    remainingBoQty: detail.remainingBoQty || 0,
+                    buildAchQty: detail.buildAchQty || 0,
+                    isBuildAch: detail.isBuildAch || false,
+                    qtyPpl: detail.qtyPpl || 0,
+                    rcStockDuration: detail.rcStockDuration || "",
+                    rcStockDurationType: detail.rcStockDurationType || "",
+                    remark: detail.remark || "",
+                    machineNo,
+                    shiftNo: shift.shiftNo,
+                    isManual: false,
+                });
+            });
+        });
+    });
+
+    return items;
+}
+
+interface EditScheduleFormProps {
+    board: ScheduleBoard;
+    lineNo: number;
+    onCancel: () => void;
+    onSuccess: () => void;
+}
+
+export default function EditScheduleForm({ board, lineNo, onCancel, onSuccess }: EditScheduleFormProps) {
+    const [date] = useState(board.date);
+
     const [items, setItems] = useState<FormItem[]>([]);
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [activeId, setActiveId] = useState<string | null>(null);
+    const [isInitialized, setIsInitialized] = useState(false);
 
     // Sensors for DND
     const sensors = useSensors(
@@ -50,7 +94,6 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
         })
     );
 
-    const { data: lines = [] } = useLines();
     // Debounce search
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -64,49 +107,16 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
         limit: 10,
     });
 
-    const selectedLine = lines.find(l => String(l.id) === selectedLineId);
-    const lineNoForFetching = selectedLine?.lineNo ? String(selectedLine.lineNo) : "";
-
-    const { data: ppcData, isLoading: isPpcLoading, isError } = useProductScheduleByDateAndLineNo(
-        date,
-        lineNoForFetching,
-        { enabled: !!selectedLineId && !!date && !!lineNoForFetching }
-    );
-
+    // Initialize items from board data directly
     useEffect(() => {
-        if (!ppcData || !("details" in ppcData) || !selectedLineId || !date) {
-            return;
+        if (board && board.machines && !isInitialized) {
+            const mapped = boardToFormItems(board);
+            setItems(updatePriorities(mapped));
+            setIsInitialized(true);
         }
+    }, [board, isInitialized]);
 
-        const mapped: FormItem[] = ppcData.details.flatMap((m: PpcMachine) =>
-            m.shifts.flatMap((s: PpcShift) =>
-                s.details.map((d: PpcDetailItem, idx: number) => ({
-                    id: `ppc-${m.machine}-s${s.shiftNo}-${idx}-${Math.random().toString(36).substr(2, 4)}`,
-                    priority: d.priority || "none",
-                    machineNo: String(m.machine),
-                    shiftNo: s.shiftNo,
-                    qty: d.qty || 0,
-                    remark: d.remark || "",
-                    stockRc: d.stockRc || 0,
-                    isManual: false,
-                    size: d.size,
-                    rim: d.rim,
-                    qtyPpl: d.qtyPpl || 0,
-                    boQty: d.boQty || 0,
-                    remainingBoQty: d.remainingBoQty || 0,
-                    buildAchQty: d.buildAchQty || 0,
-                    isBuildAch: d.isBuildAch || false,
-                    mold: d.mold || 0,
-                    rcStockDuration: d.rcStockDuration || "",
-                    rcStockDurationType: d.rcStockDurationType || "",
-                }))
-            )
-        );
-
-        setItems(updatePriorities(mapped));
-    }, [ppcData, selectedLineId, date]);
-
-    const createMutation = useCreateSchedule({
+    const updateMutation = useUpdateScheduleByLineAndDate({
         onSuccess: () => {
             onSuccess();
         }
@@ -125,7 +135,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
         const isQtyChanged = updates.qty !== undefined && updates.qty !== oldItem.qty;
         const isBoQtyChanged = updates.boQty !== undefined && updates.boQty !== oldItem.boQty;
 
-        // Auto-calculate subsequent shifts qty if qty changes
+        // Auto-calculate subsequent shifts qty if qty changes (within same machine only)
         if (isQtyChanged && oldIdentifier) {
             const diff = updates.qty! - oldItem.qty;
             const distributionTotal = -diff;
@@ -163,7 +173,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
 
         const isQtyAffectsBo = isQtyChanged && !oldItem.isBuildAch;
 
-        // Cascade recalculate boQty for the whole sequence if qty or boQty changed
+        // Cascade recalculate boQty for the whole sequence if qty or boQty changed (global across machines)
         if ((isQtyAffectsBo || isBoQtyChanged) && oldIdentifier) {
             const allItemsForCode = newItems
                 .map((item, idx) => ({ item, idx }))
@@ -290,7 +300,6 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
             id: `manual-${mNo}-s${sNo}-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
             size: "",
             machineNo: mNo,
-            codeNo: "",
             shiftNo: sNo,
             qty: 0,
             remark: "",
@@ -314,19 +323,21 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
             stockRc: 0,
             priority: getNextPriority(mNo, sNo),
             isManual: true,
+            isBuildAch: false,
+            buildAchQty: 0,
+            boQty: 0,
         }));
         setItems([...items, ...newItems]);
     };
 
-    const handleReset = () => {
-        setSelectedLineId(undefined);
-        setItems([]);
-        toast.success("Form has been reset.");
-    };
-
     const handleSubmit = () => {
         if (!date || items.length === 0) {
-            toast.error("Please fill in date and at least one item.");
+            toast.error("Please ensure you have items.");
+            return;
+        }
+
+        if (!lineNo) {
+            toast.error("Line number is missing. Cannot update.");
             return;
         }
 
@@ -352,8 +363,8 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
 
             shift.details.push({
                 priority: item.priority === "none" ? "" : item.priority,
-                codeNo: String(item.codeNo || item.size || "").replace(" ", ""),
-                size: String(item.codeNo || item.size || "").replace(" ", ""),
+                codeNo: String(item.codeNo || item.size || ""),
+                size: String(item.size || item.codeNo || ""),
                 qty: item.qty || 0,
                 mold: item.mold || 0,
                 stockRc: item.stockRc || 0,
@@ -372,18 +383,15 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
 
         const payload: CreateScheduleRequest = {
             date,
-            lineNo: Number(lineNoForFetching),
+            lineNo: Number(lineNo),
             machines: Array.from(machinesMap.values())
         };
-        // console.log("🚀 ~ handleSubmit ~ payload:", payload)
-        // toast.success("Schedule has been created.");
 
-        createMutation.mutate(payload);
+        updateMutation.mutate({ lineNo: Number(lineNo), date, data: payload });
     };
 
-    const machineNumbers = ppcData && "details" in ppcData
-        ? ppcData.details.map(m => m.machine)
-        : Array.from(new Set(items.map(i => i.machineNo)));
+    // Get machine numbers from board data directly
+    const machineNumbers = (board.machines || []).map(m => m.machine);
 
     return (
         <DndContext
@@ -392,62 +400,40 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
         >
-            <div className="flex flex-col h-full relative">
-                <div className="flex-1 overflow-y-auto space-y-6 px-2">
-                    <ScheduleFormFilters
-                        code={code}
-                        date={date}
-                        onDateChange={setDate}
-                        onLineIdChange={setSelectedLineId}
-                        selectedLineId={selectedLineId}
-                        lines={lines}
-                    />
+            <div className="flex flex-col h-full relative border rounded-xl shadow-sm bg-background/50 backdrop-blur">
+                {/* Header */}
+                <div className="flex flex-wrap items-center justify-between p-4 border-b bg-muted/20">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <PencilLine className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold">Edit Schedule</h2>
+                            <p className="text-sm text-muted-foreground">
+                                {new Date(date).toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+                                {" · "}Line {lineNo}
+                            </p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Button variant="outline" onClick={onCancel}>
+                            <X className="h-4 w-4" />
+                        </Button>
+                    </div>
+                </div>
 
+                <div className="flex-1 overflow-y-auto space-y-6 p-4">
                     <div className="space-y-6">
-                        {!selectedLineId ? (
-                            <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed rounded-lg bg-muted/20 text-muted-foreground">
-                                <Search className="h-12 w-12 mb-4 opacity-20" />
-                                <p className="text-lg font-medium">Please select a Line first</p>
-                                <p className="text-sm">Machines will be automatically displayed based on your selection</p>
-                            </div>
-                        ) : isPpcLoading ? (
-                            <div className="space-y-4">
-                                {Array.from({ length: 2 }).map((_, i) => (
-                                    <div key={i} className="border rounded-lg p-6 bg-background shadow-sm space-y-4">
-                                        <div className="flex items-center justify-between border-b pb-2">
-                                            <Skeleton className="h-7 w-48" />
-                                            <Skeleton className="h-8 w-32" />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Skeleton className="h-10 w-full" />
-                                            <Skeleton className="h-10 w-full" />
-                                        </div>
-                                    </div>
-                                ))}
-                                <div className="flex items-center justify-center py-4 text-muted-foreground gap-2">
-                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                    <p className="text-sm">Fetching PPC data...</p>
-                                </div>
-                            </div>
-                        ) : isError ? (
-                            <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed border-red-200 rounded-lg bg-red-50 text-red-600">
-                                <AlertCircle className="h-12 w-12 mb-4 opacity-50" />
-                                <p className="text-lg font-medium">Failed to fetch PPC data</p>
-                                <p className="text-sm">There was an error connecting to the server. Please try again.</p>
+                        {!isInitialized ? (
+                            <div className="flex items-center justify-center py-12 text-muted-foreground gap-2">
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                <p className="text-sm">Initializing schedule data...</p>
                             </div>
                         ) : items.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed rounded-lg bg-muted/20 text-muted-foreground">
                                 <Database className="h-12 w-12 mb-4 opacity-20" />
                                 <p className="text-lg font-medium">No schedule items found</p>
-                                <p className="text-sm">No production data available for this category and date.</p>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="mt-4"
-                                    onClick={() => handleAddItem("New MC", 1)}
-                                >
-                                    <Plus className="mr-2 h-4 w-4" /> Add Manually
-                                </Button>
+                                <p className="text-sm">This schedule has no data to edit.</p>
                             </div>
                         ) : (
                             machineNumbers.map((mNo) => (
@@ -470,14 +456,14 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                 </div>
 
                 <div className="sticky bottom-0 z-20 flex justify-end gap-2 p-4 border-t bg-background shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-                    <Button variant="outline" onClick={handleReset}>
-                        Reset
+                    <Button variant="outline" onClick={onCancel}>
+                        Cancel
                     </Button>
                     <Button
                         onClick={handleSubmit}
-                        disabled={createMutation.isPending}
+                        disabled={updateMutation.isPending}
                     >
-                        {createMutation.isPending ? "Adjusting..." : "Adjust Schedule"}
+                        {updateMutation.isPending ? "Updating..." : "Save Changes"}
                     </Button>
                 </div>
             </div>

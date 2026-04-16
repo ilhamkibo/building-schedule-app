@@ -84,18 +84,19 @@ export interface PpcDetailItem {
     rcStockDurationType: string | null;
 }
 
-// SCHEDULE DETAIL
+// SCHEDULE DETAIL (from GET /api/schedules/{id})
 export interface ScheduleBoard {
-    scheduleId: number;
     date: string;
-    machineCount: number;
-    machines: TodayLineSchedule[];
+    lineNo: number;
+    machines: CreateScheduleMachine[];
 }
 
 //NEW DASHBOARD
 export interface TodayLineSchedule {
     id: string | number;
     machine: string;
+    scheduleId: number;
+    scheduleCode: string;
     shift: string;
     rows: ScheduleLineDetailToday[];
 }
@@ -124,12 +125,12 @@ export interface ScheduleLineDetailToday {
     shift1Remark: string;
     shift2Remark: string;
     shift3Remark: string;
-    s1Priority: string;
-    s2Priority: string;
-    s3Priority: string;
-    shift1Qty: number;
-    shift2Qty: number;
-    shift3Qty: number;
+    s1Priority: string[];
+    s2Priority: string[];
+    s3Priority: string[];
+    shift1Qty: number[];
+    shift2Qty: number[];
+    shift3Qty: number[];
     totalQty?: number;
     phases: SchedulePhase[];
 }

@@ -88,7 +88,7 @@ export default function ScheduleList() {
                     />
                 </div>
 
-                <Button onClick={() => router.push("/schedules/create")} className="cursor-pointer">
+                <Button onClick={() => router.push("/schedules/adjust")} className="cursor-pointer">
                     <Plus className="mr-2 h-4 w-4" />
                     New Schedule
                 </Button>

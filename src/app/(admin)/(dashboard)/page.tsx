@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 
 import ScheduleBoard from "@/components/pages/dashboard/ScheduleBoard";
 import {
@@ -11,13 +11,15 @@ import {
 } from "@/components/ui/select";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useLines } from "@/hooks/use-line";
-import { useTodayLineSchedule } from "@/hooks/use-schedule";
+import { useTodayLineSchedule, useUpdateTimeline } from "@/hooks/use-schedule";
 import { useShiftContext } from "@/context/shift-context";
 import { TodayLineSchedule, ScheduleLineDetailToday, SchedulePhase } from "@/types/schedule";
 import { DashboardFilterBar } from "@/components/pages/dashboard/components/DashboardFilterBar";
 import { DashboardSkeleton } from "@/components/pages/dashboard/components/DashboardSkeleton";
 import { useRealtimeBO } from "@/hooks/use-product";
+import { DashboardEditScheduleModal } from "@/components/pages/dashboard/components/DashboardEditScheduleModal";
 import Link from "next/link";
+import { getNextShiftInfo, getCurrentShift, isManualRefreshWindow } from "@/lib/shift-utils";
 
 const STORAGE_KEY = "selected-line-no";
 
@@ -26,11 +28,15 @@ export default function Page() {
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toLocaleDateString('en-CA')
   );
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [lastAutoRefresh, setLastAutoRefresh] = useState<string | null>(null);
+
   const { open } = useSidebar();
   const { shifts: shiftTime, isLoading: isLoadingShiftTime } = useShiftContext();
 
   const { data: linesData = [], isLoading: isLoadingLines } = useLines({ limit: 100 });
-  // Removed local shift fetching as it's now handled by useShiftContext
+
+  const { mutate: updateTimeline, isPending: isUpdatingTimeline } = useUpdateTimeline();
 
   useEffect(() => {
     const savedLineNo = localStorage.getItem(STORAGE_KEY);
@@ -48,13 +54,69 @@ export default function Page() {
     }
   }, [selectedLineNo]);
 
-  const { data: scheduleResponse, isLoading: isLoadingSchedules } = useTodayLineSchedule(
+  const { data: scheduleResponse, isLoading: isLoadingSchedules, refetch: refetchSchedules } = useTodayLineSchedule(
     parseInt(selectedLineNo),
     selectedDate,
     { enabled: !!selectedLineNo && !!selectedDate }
   );
 
   const scheduleData = scheduleResponse?.data;
+
+  // Refresh Logic
+  const handleRefresh = useCallback((targetShiftNo?: number) => {
+    if (!scheduleData || scheduleData.length === 0) return;
+
+    let shiftNo = targetShiftNo;
+    if (!shiftNo) {
+      const nextInfo = getNextShiftInfo(shiftTime);
+      if (nextInfo) shiftNo = nextInfo.nextShift.shiftNo;
+    }
+
+    if (!shiftNo) return;
+
+    const scheduleId = scheduleData[0].scheduleId;
+
+    updateTimeline(
+      { scheduleId, shiftNo },
+      {
+        onSuccess: () => {
+          refetchSchedules();
+        }
+      }
+    );
+  }, [scheduleData, shiftTime, updateTimeline, refetchSchedules]);
+
+  useEffect(() => {
+    if (!shiftTime || shiftTime.length === 0 || !scheduleData || scheduleData.length === 0) return;
+
+    const interval = setInterval(() => {
+      const now = new Date();
+      const nextInfo = getNextShiftInfo(shiftTime);
+      if (!nextInfo) return;
+
+      const { nextShift, startTime } = nextInfo;
+      const diffMinutes = (startTime.getTime() - now.getTime()) / (1000 * 60);
+
+      // Auto Refresh Trigger: 15, 30, 45, 60 minutes before shift starts
+      const triggerPoints = [15, 30, 45, 60];
+      const matchingPoint = triggerPoints.find(p => Math.abs(diffMinutes - p) < 0.25); // 15 seconds tolerance
+
+      if (matchingPoint) {
+        const triggerId = `${nextShift.shiftNo}-${matchingPoint}-${now.getHours()}:${now.getMinutes()}`;
+        if (lastAutoRefresh !== triggerId) {
+          console.log(`Auto Refresh Triggered at ${matchingPoint} minutes before Shift ${nextShift.shiftNo}`);
+          handleRefresh(nextShift.shiftNo);
+          setLastAutoRefresh(triggerId);
+        }
+      }
+    }, 15000); // Check every 15 seconds for more precision
+
+    return () => clearInterval(interval);
+  }, [shiftTime, scheduleData, lastAutoRefresh, handleRefresh]);
+
+  const canManualRefresh = useMemo(() => {
+    return isManualRefreshWindow(shiftTime);
+  }, [shiftTime]);
 
   const timeToDecimal = (dateStr: string | null) => {
     if (!dateStr) return 0;
@@ -80,6 +142,8 @@ export default function Page() {
     return (scheduleData as TodayLineSchedule[]).map((m: TodayLineSchedule) => ({
       id: m.machine || m.id?.toString(),
       machine: m.machine,
+      scheduleId: m.scheduleId,
+      scheduleCode: m.scheduleCode,
       shift: m.shift || "All Shifts",
       rows: (m.rows || []).map((row: ScheduleLineDetailToday) => {
         const validPhases = (row.phases || []).filter((p: SchedulePhase) => {
@@ -93,7 +157,7 @@ export default function Page() {
 
         return {
           ...row,
-          totalQty: (row.shift1Qty || 0) + (row.shift2Qty || 0) + (row.shift3Qty || 0),
+          totalQty: (row.shift1Qty.reduce((a, b) => a + b, 0) || 0) + (row.shift2Qty.reduce((a, b) => a + b, 0) || 0) + (row.shift3Qty.reduce((a, b) => a + b, 0) || 0),
           phases: validPhases.map((p: SchedulePhase) => ({
             ...p,
             start: typeof p.start === "string" ? timeToDecimal(p.start) : p.start,
@@ -144,6 +208,17 @@ export default function Page() {
         selectedDate={selectedDate}
         onDateChange={setSelectedDate}
         lines={linesData}
+        onEditClick={dashboardData.length > 0 ? () => setIsEditModalOpen(true) : undefined}
+        onRefreshClick={() => handleRefresh()}
+        isRefreshing={isUpdatingTimeline}
+        canRefresh={canManualRefresh && dashboardData.length > 0}
+      />
+
+      <DashboardEditScheduleModal
+        open={isEditModalOpen}
+        onOpenChange={setIsEditModalOpen}
+        lineNo={selectedLineNo}
+        date={selectedDate}
       />
 
       {/* CONTENT */}

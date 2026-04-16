@@ -110,6 +110,37 @@ export function useUpdateSchedule(options?: {
 }
 
 /**
+ * Hook to update an existing Schedule by lineNo and date
+ */
+export function useUpdateScheduleByLineAndDate(options?: {
+    onSuccess?: (data: any) => void;
+    onError?: (error: unknown) => void;
+}) {
+    const queryClient = useQueryClient();
+
+    return useMutation<
+        any,
+        AxiosError<ApiError>,
+        { lineNo: number; date: string; data: CreateScheduleRequest }
+    >({
+        mutationKey: ["schedules", "update-by-line-date"],
+        mutationFn: ({ lineNo, date, data }) => scheduleService.updateScheduleByLineAndDate(lineNo, date, data),
+        onSuccess: (data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ["schedules"] });
+            toast.success("Schedule updated successfully.");
+            options?.onSuccess?.(data);
+        },
+        onError: (error) => {
+            console.log("🚀 ~ useUpdateScheduleByLineAndDate ~ error:", error);
+            const errorMessage =
+                error.response?.data?.message || error.message || "Failed to update schedule.";
+            toast.error(errorMessage);
+            options?.onError?.(error);
+        },
+    });
+}
+
+/**
  * Hook to delete a Schedule
  */
 export function useDeleteSchedule(options?: {
@@ -149,5 +180,30 @@ export function useTodayLineSchedule(
         queryFn: () => scheduleService.getTodayLineSchedule(lineNo, date),
         enabled: !!lineNo && !!date,
         ...options,
+    });
+}
+
+/**
+ * Hook to update schedule timeline (shift change)
+ */
+export function useUpdateTimeline(options?: {
+    onSuccess?: (data: any) => void;
+    onError?: (error: unknown) => void;
+}) {
+    const queryClient = useQueryClient();
+
+    return useMutation<any, AxiosError<ApiError>, { scheduleId: number; shiftNo: number }>({
+        mutationKey: ["schedules", "update-timeline"],
+        mutationFn: ({ scheduleId, shiftNo }) => scheduleService.updateTimeline(scheduleId, shiftNo),
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ["schedules", "today-line"] });
+            toast.success("Timeline updated successfully.");
+            options?.onSuccess?.(data);
+        },
+        onError: (error) => {
+            const errorMessage = error.response?.data?.message || error.message || "Failed to update timeline.";
+            toast.error(errorMessage);
+            options?.onError?.(error);
+        },
     });
 }
