@@ -108,9 +108,10 @@ export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; 
                                         <td className="border dark:border-slate-800 p-1 font-bold text-slate-900 dark:text-slate-100">{r.code}</td>
                                         <td className="border dark:border-slate-800 p-1">{r.cureShift || "-"}</td>
                                         <td className="border dark:border-slate-800 p-1">{r.qtyMold || "-"}</td>
-                                        <td className="border dark:border-slate-800 p-1">{r.rcStock || 0}</td>
+                                        {/* <td className="border dark:border-slate-800 p-1">{r.rcStock   0}</td> */}
+                                        <td className="border dark:border-slate-800 p-1">{r.rcStock ? (r.rcStock <= 0 ? 0 : r.rcStock) : 0}</td>
                                         <td className="border dark:border-slate-800 p-1 font-medium">{r.cureEst || "-"}</td>
-                                        <td className="border dark:border-slate-800 p-1">{r.balanceOut === 0 ? "F" : r.balanceOut}</td>
+                                        <td className="border dark:border-slate-800 p-1">{Number(r.balanceOut) ?? (Number(r.balanceOut) <= 0 ? "F" : Number(r.balanceOut))}</td>
                                         <td className={`border dark:border-slate-800 p-1 border-l-2 border-l-blue-200 dark:border-l-blue-900 ${currentShift === 1 ? 'bg-blue-50/40 dark:bg-blue-950/10 font-bold text-blue-700 dark:text-blue-400' : ''}`}>
                                             {r.buildTimes?.shift1?.length ? (
                                                 <div className="flex flex-col">
@@ -298,7 +299,7 @@ const PHASE_CONFIG: Record<string, {
         top: ""
     },
     curing: {
-        priority: 1,
+        priority: 3,
         color: "bg-orange-400",
         height: "h-2",
         top: "top-3"
@@ -310,7 +311,7 @@ const PHASE_CONFIG: Record<string, {
         top: "top-3"
     },
     achievement: {
-        priority: 3,
+        priority: 1,
         color: "bg-emerald-300",
         height: "h-2",
         top: "top-3"
@@ -374,10 +375,8 @@ function GanttRow({ row, shiftTime }: { row: ScheduleLineDetailToday; shiftTime:
                 );
             })}
 
-
             {/* Production Phases (Building & Curing) */}
             {[...phases].sort((a, b) => PHASE_CONFIG[a.type].priority - PHASE_CONFIG[b.type].priority).map((p: SchedulePhase, i: number) => {
-
                 const config = PHASE_CONFIG[p.type] || {
                     color: "bg-slate-300 dark:bg-slate-600",
                     height: "h-2",
