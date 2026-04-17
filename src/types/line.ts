@@ -4,6 +4,7 @@ export interface Line {
     id: number;
     name: string | null;
     lineNo: number;
+    code: string;
     description: string | null;
     machines: Machine[];
     createdAt: string;

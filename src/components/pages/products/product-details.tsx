@@ -135,8 +135,8 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
             </div>
 
             <div className="pt-4 border-t flex justify-between text-[10px] text-muted-foreground uppercase font-medium bg-background sticky bottom-0 py-2">
-                <span>ID: {product.id}</span>
-                <span>Created: {new Date(product.createdAt).toLocaleDateString()}</span>
+                <span>Code No: {product.codeNo}</span>
+                <span>Size Name: {product.sizeName}</span>
             </div>
         </div>
     );
