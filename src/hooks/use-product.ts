@@ -11,7 +11,7 @@ import { ApiError } from "../types/api-response";
 import { toast } from "sonner";
 import { PaginatedResponse, PaginationParams } from "../types/pagination";
 import { productService } from "@/services/product-service";
-import { Product, CreateProductRequest, UpdateProductRequest, RealtimeBO } from "@/types/product";
+import { Product, CreateProductRequest, UpdateProductRequest, RealtimeBO, RealtimeRCStock } from "@/types/product";
 
 /**
  * Hook to fetch all Products with pagination
@@ -147,6 +147,19 @@ export function useRealtimeBO(
         queryKey: ["products", "bo-realtime", codes, date],
         queryFn: () => productService.getRealtimeBO(codes, date),
         enabled: codes.length > 0 && !!date,
+        refetchInterval: 60000, // Refresh every minute
+        ...options,
+    });
+}
+
+export function useRealtimeRCStock(
+    codes: string[],
+    options?: Omit<UseQueryOptions<RealtimeRCStock[]>, "queryKey" | "queryFn">
+) {
+    return useQuery({
+        queryKey: ["products", "rc-stock-realtime", codes],
+        queryFn: () => productService.getRealtimeRCStock(codes),
+        enabled: codes.length > 0,
         refetchInterval: 60000, // Refresh every minute
         ...options,
     });

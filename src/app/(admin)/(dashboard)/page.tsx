@@ -2,24 +2,17 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 
 import ScheduleBoard from "@/components/pages/dashboard/ScheduleBoard";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useLines } from "@/hooks/use-line";
 import { useTodayLineSchedule, useUpdateTimeline } from "@/hooks/use-schedule";
+import { useRealtimeBO, useRealtimeRCStock } from "@/hooks/use-product";
 import { useShiftContext } from "@/context/shift-context";
 import { TodayLineSchedule, ScheduleLineDetailToday, SchedulePhase } from "@/types/schedule";
 import { DashboardFilterBar } from "@/components/pages/dashboard/components/DashboardFilterBar";
 import { DashboardSkeleton } from "@/components/pages/dashboard/components/DashboardSkeleton";
-import { useRealtimeBO } from "@/hooks/use-product";
 import { DashboardEditScheduleModal } from "@/components/pages/dashboard/components/DashboardEditScheduleModal";
 import Link from "next/link";
-import { getNextShiftInfo, getCurrentShift, isManualRefreshWindow } from "@/lib/shift-utils";
+import { getNextShiftInfo, isManualRefreshWindow } from "@/lib/shift-utils";
 
 const STORAGE_KEY = "selected-line-no";
 
@@ -179,21 +172,26 @@ export default function Page() {
   }, [baseDashboardData]);
 
   const { data: realtimeBOData } = useRealtimeBO(uniqueCodes, selectedDate);
+  const { data: realtimeRCStockData } = useRealtimeRCStock(uniqueCodes);
 
   const dashboardData = useMemo(() => {
-    if (!realtimeBOData || realtimeBOData.length === 0) return baseDashboardData;
+    if ((!realtimeBOData || realtimeBOData.length === 0) && (!realtimeRCStockData || realtimeRCStockData.length === 0)) {
+      return baseDashboardData;
+    }
 
     return baseDashboardData.map(m => ({
       ...m,
       rows: m.rows.map(r => {
-        const boData = realtimeBOData.find(bo => bo.sizeCode === r.code);
+        const boData = realtimeBOData?.find(bo => bo.sizeCode === r.code);
+        const rcStockData = realtimeRCStockData?.find(rc => rc.sizeCode === r.code);
         return {
           ...r,
           balanceOut: boData?.realtimeBo !== null && boData?.realtimeBo !== undefined ? boData.realtimeBo : r.balanceOut,
+          rcStock: rcStockData?.stockRcQty ?? r.rcStock,
         };
       })
     }));
-  }, [baseDashboardData, realtimeBOData]);
+  }, [baseDashboardData, realtimeBOData, realtimeRCStockData]);
 
   return (
     <div
@@ -231,7 +229,7 @@ export default function Page() {
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-sidebar/50 rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-800">
             <p className="text-lg font-medium">Tidak ada schedule untuk line ini</p>
             <p className="text-sm">Silahkan pilih line lain atau buat schedule baru.</p>
-            <Link href="/schedules/adjust" className="mt-2 text-md px-4 py-2 bg-primary text-white rounded-md cursor-pointer">
+            <Link href="/schedules/adjust" className="mt-2 text-md px-4 py-2 bg-primary text-white dark:text-black rounded-md cursor-pointer">
               Buat Schedule
             </Link>
           </div>

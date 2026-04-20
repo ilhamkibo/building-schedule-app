@@ -27,6 +27,11 @@ export interface RealtimeBO {
     totalAchievement: number;
 }
 
+export interface RealtimeRCStock {
+    sizeCode: string;
+    stockRcQty: number;
+}
+
 export interface CreateProductRequest {
     codeNo: string;
     sizeName: string;

@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import { Product, CreateProductRequest, UpdateProductRequest, RealtimeBO } from "@/types/product";
+import { Product, CreateProductRequest, UpdateProductRequest, RealtimeBO, RealtimeRCStock } from "@/types/product";
 import { PaginatedResponse, PaginationParams } from "@/types/pagination";
 
 class ProductService {
@@ -32,8 +32,22 @@ class ProductService {
     }
 
     async getRealtimeBO(codes: string[], date: string): Promise<RealtimeBO[]> {
-        const response = await api.get<{ status: boolean, message: string, data: RealtimeBO[] }>(`${this.endpoint}/bo-realtime`, {
-            params: { codes, date }
+        const params = new URLSearchParams();
+        params.append("date", date);
+        codes.forEach(code => params.append("codes", code));
+
+        const response = await api.get<{ status: boolean, message: string, data: RealtimeBO[] }>(`${this.endpoint}/bo`, {
+            params
+        });
+        return response.data.data;
+    }
+
+    async getRealtimeRCStock(codes: string[]): Promise<RealtimeRCStock[]> {
+        const params = new URLSearchParams();
+        codes.forEach(code => params.append("codes", code));
+
+        const response = await api.get<{ status: boolean, message: string, data: RealtimeRCStock[] }>(`${this.endpoint}/stock-rc`, {
+            params
         });
         return response.data.data;
     }
