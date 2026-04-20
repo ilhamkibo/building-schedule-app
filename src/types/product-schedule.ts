@@ -1,17 +1,21 @@
 import { PaginationParams } from "./pagination";
 
 export interface ProductSchedule {
-    cat: number;
-    date: string; // "20260125"
-    mc: number;
+    factoryKbn: string;
+    datePlan: string; // "20260125"
+    lineNo: number;
+    machineNo: number;
     sizeCode: number;
-    qty: number;
-    mold: number;
+    qtyPlan: number;
+    qtyMold: number;
+    remark: string;
+    updatedAt: string;
 }
 
 export interface ProductScheduleParams extends PaginationParams {
-    date?: string;
-    categoryNo?: number;
+    Date?: string;
+    LineNo?: number;
+    Paginate?: boolean;
 }
 
 export interface MachineDetailItem {

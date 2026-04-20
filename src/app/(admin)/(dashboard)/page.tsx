@@ -26,9 +26,7 @@ export default function Page() {
 
   const { open } = useSidebar();
   const { shifts: shiftTime, isLoading: isLoadingShiftTime } = useShiftContext();
-
   const { data: linesData = [], isLoading: isLoadingLines } = useLines({ limit: 100 });
-
   const { mutate: updateTimeline, isPending: isUpdatingTimeline } = useUpdateTimeline();
 
   useEffect(() => {

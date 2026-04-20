@@ -13,6 +13,7 @@ import {
 import { DashboardLegend } from "./DashboardLegend";
 import { Line } from "@/types/line";
 import { RefreshCw } from "lucide-react";
+import { useAuthContext } from "@/context/auth-context";
 
 interface DashboardFilterBarProps {
     selectedLineNo: string;
@@ -37,6 +38,9 @@ export function DashboardFilterBar({
     isRefreshing,
     canRefresh,
 }: DashboardFilterBarProps) {
+
+    const { user } = useAuthContext();
+
     return (
         <div className="px-4 mb-4 rounded-md py-2 font-semibold bg-sidebar border-b dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -58,7 +62,8 @@ export function DashboardFilterBar({
                     onChange={(e) => onDateChange(e.target.value)}
                     className="md:w-[160px] w-full h-9 font-semibold bg-background dark:border-slate-700"
                 />
-                {onEditClick && (
+
+                {user?.role === "Admin" && onEditClick && (
                     <Button
                         variant="outline"
                         onClick={onEditClick}

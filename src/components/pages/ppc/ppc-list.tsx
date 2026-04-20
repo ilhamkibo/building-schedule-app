@@ -20,10 +20,10 @@ import {
 } from "@/components/ui/select";
 import { Search, Package, Calendar as CalendarIcon, FilterX } from "lucide-react";
 import { useProductSchedules } from "@/hooks/use-product-schedule";
-import { useCategories } from "@/hooks/use-category";
 import DataTablePagination from "@/components/common/data-table-pagination";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLines } from "@/hooks/use-line";
 
 export default function PPCList() {
     const [page, setPage] = useState(1);
@@ -31,9 +31,9 @@ export default function PPCList() {
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [dateFilter, setDateFilter] = useState("");
-    const [categoryNoFilter, setLineIdFilter] = useState<string>("0");
+    const [lineNoFilter, setLineNoFilter] = useState<string>("0");
 
-    const { data: categories = [] } = useCategories({ paginate: false });
+    const { data: lines = [] } = useLines({ paginate: false });
 
     /* debounce search */
     useEffect(() => {
@@ -47,7 +47,7 @@ export default function PPCList() {
     const handleReset = () => {
         setSearch("");
         setDateFilter("");
-        setLineIdFilter("0");
+        setLineNoFilter("0");
         setPage(1);
     };
 
@@ -55,8 +55,9 @@ export default function PPCList() {
         page,
         limit,
         search: debouncedSearch || undefined,
-        date: dateFilter ? dateFilter : undefined,
-        categoryNo: categoryNoFilter !== "0" ? parseInt(categoryNoFilter) : undefined,
+        Date: dateFilter ? dateFilter : undefined,
+        LineNo: lineNoFilter !== "0" ? parseInt(lineNoFilter) : undefined,
+        Paginate: true,
     });
 
     const formatDateString = (dateStr: string) => {
@@ -111,9 +112,9 @@ export default function PPCList() {
                     </div>
 
                     <Select
-                        value={categoryNoFilter}
+                        value={lineNoFilter}
                         onValueChange={(val) => {
-                            setLineIdFilter(val);
+                            setLineNoFilter(val);
                             setPage(1);
                         }}
                     >
@@ -122,16 +123,16 @@ export default function PPCList() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="0">All Category</SelectItem>
-                            {categories.map((category) => (
-                                <SelectItem key={category.id} value={category.categoryNo.toString()}>
-                                    {category.name}
+                            {lines.map((line) => (
+                                <SelectItem key={line.id} value={line.lineNo.toString()}>
+                                    {line.name}
                                 </SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
                 </div>
 
-                {(search || dateFilter || categoryNoFilter !== "0") && (
+                {(search || dateFilter || lineNoFilter !== "0") && (
                     <Button
                         variant="ghost"
                         size="sm"
@@ -186,15 +187,15 @@ export default function PPCList() {
                             <TableRow key={`${schedule.sizeCode}-${index}`} className="hover:bg-muted/50 transition-colors">
                                 <TableCell className="px-4 py-4">
                                     <Badge variant="secondary" className="font-bold">
-                                        {schedule.cat}
+                                        {schedule.lineNo}
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="">
-                                    {formatDateString(schedule.date)}
+                                    {formatDateString(schedule.datePlan)}
                                 </TableCell>
                                 <TableCell className="">
                                     <span className="px-2 py-0.5 bg-muted rounded text-xs">
-                                        {schedule.mc}
+                                        {schedule.machineNo}
                                     </span>
                                 </TableCell>
                                 <TableCell>
@@ -203,10 +204,10 @@ export default function PPCList() {
                                     </span>
                                 </TableCell>
                                 <TableCell className="">
-                                    {schedule.qty.toLocaleString()}
+                                    {schedule.qtyPlan.toLocaleString()}
                                 </TableCell>
                                 <TableCell className="">
-                                    {schedule.mold}
+                                    {schedule.qtyMold}
                                 </TableCell>
                                 {/* <TableCell className="">
                                     <div className="flex flex-col">

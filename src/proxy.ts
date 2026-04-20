@@ -46,7 +46,7 @@ export function proxy(req: NextRequest) {
     /**
      * PROTECTED ADMIN ROUTES
      */
-    if (pathname.startsWith("/admin")) {
+    if (pathname !== "/") {
         if (!isAuthenticated) {
             const loginURL = new URL("/", req.url);
             loginURL.searchParams.set("returnTo", pathname);

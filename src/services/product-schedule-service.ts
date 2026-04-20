@@ -9,7 +9,10 @@ class ProductScheduleService {
 
     async getAll(params?: ProductScheduleParams): Promise<PaginatedResponse<ProductSchedule>> {
         const response = await api.get<PaginatedResponse<ProductSchedule>>(this.endpoint, {
-            params,
+            params: {
+                ...params,
+                paginate: params?.paginate ?? true,
+            },
         });
         return response.data;
     }
