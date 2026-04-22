@@ -85,7 +85,7 @@ export default function RouteGuard({ children }: { children: React.ReactNode }) 
         });
 
         if (!isAuthorized) {
-            router.replace("/login"); // lebih aman pakai replace
+            router.replace(`/login?callbackUrl=${encodeURIComponent(pathname)}`);
         } else {
             setAuthorized(true);
         }

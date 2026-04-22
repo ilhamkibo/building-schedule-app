@@ -17,6 +17,7 @@ import {
   Tags,
   CalendarCheck,
   Activity,
+  Settings,
 } from "lucide-react";
 
 
@@ -144,6 +145,11 @@ const navMain: NavGroup[] = [
         subtitle: "Curing Efficiencies",
         url: "/admin/curing-efficiencies",
         icon: Activity,
+      },
+      {
+        subtitle: "Configurations",
+        url: "/admin/config",
+        icon: Settings,
       },
     ]
   }

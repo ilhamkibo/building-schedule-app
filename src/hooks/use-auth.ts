@@ -37,7 +37,11 @@ export function useAuth() {
             setUser(res.data.user);
 
             toast.success("Login berhasil");
-            router.replace("/");
+            
+            // Redirect based on callbackUrl or default to dashboard
+            const params = new URLSearchParams(window.location.search);
+            const callbackUrl = params.get("callbackUrl") || "/";
+            router.replace(callbackUrl);
         },
         onError: (err) => {
             toast.error(

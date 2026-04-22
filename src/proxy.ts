@@ -46,10 +46,11 @@ export function proxy(req: NextRequest) {
     /**
      * PROTECTED ADMIN ROUTES
      */
+    // Membiarkan / bisa diakses tanpa login (Dashboard public)
     if (pathname !== "/") {
         if (!isAuthenticated) {
-            const loginURL = new URL("/", req.url);
-            loginURL.searchParams.set("returnTo", pathname);
+            const loginURL = new URL("/login", req.url);
+            loginURL.searchParams.set("callbackUrl", pathname);
             return NextResponse.redirect(loginURL);
         }
     }
