@@ -9,34 +9,37 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+// import {
+//     AlertDialog,
+//     AlertDialogAction,
+//     AlertDialogCancel,
+//     AlertDialogContent,
+//     AlertDialogDescription,
+//     AlertDialogFooter,
+//     AlertDialogHeader,
+//     AlertDialogTitle,
+// } from "@/components/ui/alert-dialog";
+// import {
+//     Dialog,
+//     DialogContent,
+//     DialogHeader,
+//     DialogTitle,
+//     DialogDescription,
+// } from "@/components/ui/dialog";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-} from "@/components/ui/dialog";
-import { Plus, Search, Trash2, Pencil } from "lucide-react";
+    Search,
+    // Plus, Trash2, Pencil
+} from "lucide-react";
 import {
     useScheduleSizeColors,
-    useDeleteScheduleSizeColor,
-    useCreateScheduleSizeColor,
-    useUpdateScheduleSizeColor,
+    // useDeleteScheduleSizeColor,
+    // useCreateScheduleSizeColor,
+    // useUpdateScheduleSizeColor,
 } from "@/hooks/use-schedule-size-color";
-import { ScheduleSizeColor } from "@/types/schedule-size-color";
-import ScheduleSizeColorForm from "./schedule-size-color-form";
+// import { ScheduleSizeColor } from "@/types/schedule-size-color";
+// import ScheduleSizeColorForm from "./schedule-size-color-form";
 import DataTablePagination from "@/components/common/data-table-pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -46,9 +49,9 @@ export default function ScheduleSizeColorList() {
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
 
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [selectedColor, setSelectedColor] = useState<ScheduleSizeColor | null>(null);
-    const [deleteColor, setDeleteColor] = useState<ScheduleSizeColor | null>(null);
+    // const [dialogOpen, setDialogOpen] = useState(false);
+    // const [selectedColor, setSelectedColor] = useState<ScheduleSizeColor | null>(null);
+    // const [deleteColor, setDeleteColor] = useState<ScheduleSizeColor | null>(null);
 
     /* debounce search */
     useEffect(() => {
@@ -65,47 +68,47 @@ export default function ScheduleSizeColorList() {
         search: debouncedSearch,
     });
 
-    const createMutation = useCreateScheduleSizeColor({
-        onSuccess: () => {
-            setDialogOpen(false);
-        },
-    });
+    // const createMutation = useCreateScheduleSizeColor({
+    //     onSuccess: () => {
+    //         setDialogOpen(false);
+    //     },
+    // });
 
-    const updateMutation = useUpdateScheduleSizeColor({
-        onSuccess: () => {
-            setDialogOpen(false);
-        },
-    });
+    // const updateMutation = useUpdateScheduleSizeColor({
+    //     onSuccess: () => {
+    //         setDialogOpen(false);
+    //     },
+    // });
 
-    const deleteMutation = useDeleteScheduleSizeColor({
-        onSuccess: () => {
-            setDeleteColor(null);
-        },
-    });
+    // const deleteMutation = useDeleteScheduleSizeColor({
+    //     onSuccess: () => {
+    //         setDeleteColor(null);
+    //     },
+    // });
 
-    const openCreate = () => {
-        setSelectedColor(null);
-        setDialogOpen(true);
-    };
+    // const openCreate = () => {
+    //     setSelectedColor(null);
+    //     setDialogOpen(true);
+    // };
 
-    const openEdit = (color: ScheduleSizeColor) => {
-        setSelectedColor(color);
-        setDialogOpen(true);
-    };
+    // const openEdit = (color: ScheduleSizeColor) => {
+    //     setSelectedColor(color);
+    //     setDialogOpen(true);
+    // };
 
-    const handleDelete = async () => {
-        if (deleteColor) {
-            deleteMutation.mutate(deleteColor.id);
-        }
-    };
+    // const handleDelete = async () => {
+    //     if (deleteColor) {
+    //         deleteMutation.mutate(deleteColor.id);
+    //     }
+    // };
 
-    const handleSubmit = (payload: any) => {
-        if (selectedColor) {
-            updateMutation.mutate({ id: selectedColor.id, data: payload });
-        } else {
-            createMutation.mutate(payload);
-        }
-    };
+    // const handleSubmit = (payload: any) => {
+    //     if (selectedColor) {
+    //         updateMutation.mutate({ id: selectedColor.id, data: payload });
+    //     } else {
+    //         createMutation.mutate(payload);
+    //     }
+    // };
 
     return (
         <div className="space-y-4 max-w-5xl mx-auto">
@@ -121,10 +124,10 @@ export default function ScheduleSizeColorList() {
                     />
                 </div>
 
-                <Button onClick={openCreate} className="cursor-pointer">
+                {/* <Button onClick={openCreate} className="cursor-pointer">
                     <Plus className="mr-2 h-4 w-4" />
                     Add Color
-                </Button>
+                </Button> */}
             </div>
 
             {/* Table */}
@@ -137,10 +140,9 @@ export default function ScheduleSizeColorList() {
                             <TableHead>Type Name</TableHead>
                             <TableHead>Description</TableHead>
                             <TableHead>Color Preview</TableHead>
-                            <TableHead className="w-[100px]">Actions</TableHead>
+                            {/* <TableHead className="w-[100px]">Actions</TableHead> */}
                         </TableRow>
                     </TableHeader>
-
                     <TableBody>
                         {isLoading && (
                             Array.from({ length: 5 }).map((_, i) => (
@@ -196,7 +198,7 @@ export default function ScheduleSizeColorList() {
                                         </span>
                                     </div>
                                 </TableCell>
-                                <TableCell className="flex gap-1">
+                                {/* <TableCell className="flex gap-1">
                                     <Button
                                         size="icon"
                                         variant="ghost"
@@ -211,7 +213,7 @@ export default function ScheduleSizeColorList() {
                                     >
                                         <Trash2 className="h-4 w-4 text-red-500" />
                                     </Button>
-                                </TableCell>
+                                </TableCell> */}
                             </TableRow>
                         ))}
                     </TableBody>
@@ -226,7 +228,7 @@ export default function ScheduleSizeColorList() {
             />
 
             {/* Dialog Create / Update */}
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            {/* <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogContent className="sm:max-w-[500px]">
                     <DialogHeader>
                         <DialogTitle>
@@ -246,10 +248,10 @@ export default function ScheduleSizeColorList() {
                         isLoading={createMutation.isPending || updateMutation.isPending}
                     />
                 </DialogContent>
-            </Dialog>
+            </Dialog> */}
 
             {/* Delete Confirmation */}
-            <AlertDialog open={!!deleteColor} onOpenChange={() => setDeleteColor(null)}>
+            {/* <AlertDialog open={!!deleteColor} onOpenChange={() => setDeleteColor(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete color?</AlertDialogTitle>
@@ -269,7 +271,7 @@ export default function ScheduleSizeColorList() {
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
-            </AlertDialog>
+            </AlertDialog> */}
         </div>
     );
 }
