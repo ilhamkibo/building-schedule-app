@@ -18,6 +18,7 @@ import {
   CalendarCheck,
   Activity,
   Settings,
+  Palette,
 } from "lucide-react";
 
 
@@ -150,6 +151,11 @@ const navMain: NavGroup[] = [
         subtitle: "Configurations",
         url: "/admin/config",
         icon: Settings,
+      },
+      {
+        subtitle: "Size Colors",
+        url: "/admin/schedule-size-colors",
+        icon: Palette,
       },
     ]
   }
