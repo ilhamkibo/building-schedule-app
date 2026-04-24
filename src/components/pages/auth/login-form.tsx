@@ -59,6 +59,7 @@ export function LoginForm({
           width={70}
           height={70}
           className="rounded-lg"
+          unoptimized
         />
         <div className="">
           <h1 className="text-2xl font-bold">Building Schedule App</h1>

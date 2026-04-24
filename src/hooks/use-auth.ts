@@ -39,9 +39,11 @@ export function useAuth() {
             toast.success("Login berhasil");
             
             // Redirect based on callbackUrl or default to dashboard
+            // Use window.location.href for a full reload so the auth state
+            // (cookie + context) is consistently picked up by all layouts/guards.
             const params = new URLSearchParams(window.location.search);
             const callbackUrl = params.get("callbackUrl") || "/";
-            router.replace(callbackUrl);
+            window.location.href = callbackUrl;
         },
         onError: (err) => {
             toast.error(

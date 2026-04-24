@@ -15,6 +15,7 @@ export function CompanyLogo() {
             width={40}
             height={40}
             className="rounded-lg"
+            unoptimized
           />
 
           <div className="flex flex-col leading-tight">
