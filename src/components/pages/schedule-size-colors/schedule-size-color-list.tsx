@@ -135,7 +135,7 @@ export default function ScheduleSizeColorList() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[60px]">Order</TableHead>
+                            <TableHead className="w-[60px]">Priority</TableHead>
                             <TableHead>Type Code</TableHead>
                             <TableHead>Type Name</TableHead>
                             <TableHead>Description</TableHead>
@@ -166,9 +166,9 @@ export default function ScheduleSizeColorList() {
                             </TableRow>
                         )}
 
-                        {colors.map((color) => (
-                            <TableRow key={color.id}>
-                                <TableCell className="text-center">{color.sortOrder}</TableCell>
+                        {colors.sort((a, b) => a.priority - b.priority).map((color, i) => (
+                            <TableRow key={i}>
+                                <TableCell className="text-center">{color.priority}</TableCell>
                                 <TableCell>
                                     <span className="font-mono bg-muted px-1.5 py-0.5 rounded text-xs">
                                         {color.typeCode}

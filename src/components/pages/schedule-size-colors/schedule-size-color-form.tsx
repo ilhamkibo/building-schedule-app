@@ -14,7 +14,7 @@ interface ScheduleSizeColorFormProps {
         typeCode: string;
         typeName: string;
         description: string;
-        sortOrder: number;
+        priority: number;
         textColorHex: string;
         backgroundColorHex: string;
     }) => void;
@@ -30,7 +30,7 @@ export default function ScheduleSizeColorForm({
     const [typeCode, setTypeCode] = useState(color?.typeCode ?? "");
     const [typeName, setTypeName] = useState(color?.typeName ?? "");
     const [description, setDescription] = useState(color?.description ?? "");
-    const [sortOrder, setSortOrder] = useState(color?.sortOrder?.toString() ?? "0");
+    const [priority, setPriority] = useState(color?.priority?.toString() ?? "0");
     const [textColorHex, setTextColorHex] = useState(color?.textColorHex ?? "#000000");
     const [backgroundColorHex, setBackgroundColorHex] = useState(color?.backgroundColorHex ?? "#FFFFFF");
 
@@ -39,7 +39,7 @@ export default function ScheduleSizeColorForm({
             typeCode,
             typeName,
             description,
-            sortOrder: parseInt(sortOrder) || 0,
+            priority: parseInt(priority) || 0,
             textColorHex,
             backgroundColorHex,
         });
@@ -77,12 +77,12 @@ export default function ScheduleSizeColorForm({
             </div>
 
             <div className="flex flex-col gap-2">
-                <Label>Sort Order</Label>
+                <Label>Priority</Label>
                 <Input
                     type="number"
                     placeholder="e.g. 1"
-                    value={sortOrder}
-                    onChange={(e) => setSortOrder(e.target.value)}
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
                 />
             </div>
 

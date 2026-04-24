@@ -19,6 +19,7 @@ import {
   Activity,
   Settings,
   Palette,
+  Ruler,
 } from "lucide-react";
 
 
@@ -156,6 +157,11 @@ const navMain: NavGroup[] = [
         subtitle: "Size Colors",
         url: "/admin/schedule-size-colors",
         icon: Palette,
+      },
+      {
+        subtitle: "Size Types",
+        url: "/admin/schedule-size-types",
+        icon: Ruler,
       },
     ]
   }

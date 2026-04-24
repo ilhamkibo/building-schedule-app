@@ -189,7 +189,10 @@ export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; 
                             {block.rows.map((r, i) => (
                                 <tr key={i} className="text-center h-8 border-b">
                                     <td className="border p-1">{r.rim || "-"}</td>
-                                    <td className="border p-1 font-bold">{r.code}</td>
+                                    <td className="border p-1 font-bold " style={{
+                                        color: r.colors.textColor,
+                                        backgroundColor: r.colors.bgColor,
+                                    }}>{r.code}</td>
                                     <td className="border p-1">{r.cureShift || "-"}</td>
                                     <td className="border p-1">{r.qtyMold || "-"}</td>
 

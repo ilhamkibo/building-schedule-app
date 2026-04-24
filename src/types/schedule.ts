@@ -114,6 +114,10 @@ export interface ScheduleLineDetailToday {
     rim?: string;
     rcStock?: number;
     cureEst?: string;
+    colors: {
+        textColor: string;
+        bgColor: string;
+    }
     balanceOut?: string | number;
     cureShift?: number;
     buildTimes?: {
