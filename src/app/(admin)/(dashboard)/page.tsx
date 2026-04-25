@@ -77,7 +77,14 @@ export default function Page() {
     );
   }, [scheduleData, shiftTime, updateTimeline, refetchSchedules]);
 
+  // Only allow auto-refresh when selectedDate is today
+  const isSelectedDateToday = useMemo(() => {
+    const today = new Date().toLocaleDateString('en-CA');
+    return selectedDate === today;
+  }, [selectedDate]);
+
   useEffect(() => {
+    if (!isSelectedDateToday) return; // Only auto-refresh for today's schedule
     if (!shiftTime || shiftTime.length === 0 || !scheduleData || scheduleData.length === 0) return;
 
     const interval = setInterval(() => {
@@ -103,11 +110,12 @@ export default function Page() {
     }, 15000); // Check every 15 seconds for more precision
 
     return () => clearInterval(interval);
-  }, [shiftTime, scheduleData, lastAutoRefresh, handleRefresh]);
+  }, [shiftTime, scheduleData, lastAutoRefresh, handleRefresh, isSelectedDateToday]);
 
   const canManualRefresh = useMemo(() => {
+    if (!isSelectedDateToday) return false; // Only allow manual refresh for today's schedule
     return isManualRefreshWindow(shiftTime);
-  }, [shiftTime]);
+  }, [shiftTime, isSelectedDateToday]);
 
   const timeToDecimal = (dateStr: string | null) => {
     if (!dateStr) return 0;
@@ -121,7 +129,6 @@ export default function Page() {
   };
 
   // Removed unused and broken shiftTimeDecimal mapper that caused type errors
-
   const baseDashboardData = useMemo(() => {
     if (!scheduleData || !Array.isArray(scheduleData)) return [];
 
@@ -205,7 +212,7 @@ export default function Page() {
         onDateChange={setSelectedDate}
         lines={linesData}
         onEditClick={dashboardData.length > 0 ? () => setIsEditModalOpen(true) : undefined}
-        onRefreshClick={() => handleRefresh()}
+        onRefreshClick={isSelectedDateToday ? () => handleRefresh() : undefined}
         isRefreshing={isUpdatingTimeline}
         canRefresh={canManualRefresh && dashboardData.length > 0}
       />
