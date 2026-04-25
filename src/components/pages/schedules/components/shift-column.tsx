@@ -18,6 +18,7 @@ interface ShiftColumnProps {
     onUpdateItem: (index: number, updates: Partial<FormItem>) => void;
     onSearchChange: (search: string) => void;
     findItemIndex: (id: string) => number;
+    canEditBO?: boolean;
 }
 
 export function ShiftColumn({
@@ -31,6 +32,7 @@ export function ShiftColumn({
     onUpdateItem,
     onSearchChange,
     findItemIndex,
+    canEditBO = true,
 }: ShiftColumnProps) {
     const { setNodeRef } = useDroppable({
         id: `container-${machineNo}-${shiftNo}`,
@@ -73,6 +75,7 @@ export function ShiftColumn({
                             products={allProducts}
                             isProductsLoading={isProductsLoading}
                             setSearch={onSearchChange}
+                            canEditBO={canEditBO}
                         />
                     ))}
                     {items.length === 0 && (

@@ -20,7 +20,6 @@ import { toast } from "sonner";
 import { LoginSchema, loginSchema } from "@/validators/login-validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { CompanyLogo } from "@/components/common/company-logo";
 import Image from "next/image";
 
 export function LoginForm({
@@ -35,6 +34,10 @@ export function LoginForm({
     formState: { errors, isSubmitting },
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "admin",
+      password: "password",
+    },
   });
 
   const onSubmit = (data: LoginSchema) => {
@@ -79,13 +82,13 @@ export function LoginForm({
             <FieldGroup>
               <Field>
                 <FieldLabel>Username</FieldLabel>
-                <Input placeholder="Username" {...register("username")} value={"admin"} />
+                <Input placeholder="Username" {...register("username")} />
               </Field>
 
 
               <Field>
                 <FieldLabel>Password</FieldLabel>
-                <Input type="password" placeholder="Password" {...register("password")} value={"password"} />
+                <Input type="password" placeholder="Password" {...register("password")} />
               </Field>
 
               <Field>

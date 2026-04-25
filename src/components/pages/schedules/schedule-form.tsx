@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { Plus, Search, AlertCircle, Database, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useProductScheduleByDateAndLineNo } from "@/hooks/use-product-schedule";
+import { useAuthContext } from "@/context/auth-context";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     DndContext,
@@ -37,6 +38,9 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [activeId, setActiveId] = useState<string | null>(null);
+
+    const { user } = useAuthContext();
+    const canEditBO = user?.role?.toLowerCase() !== "editor";
 
     // Sensors for DND
     const sensors = useSensors(
@@ -463,6 +467,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                                     onUpdateItem={updateItem}
                                     onSearchChange={setSearch}
                                     findItemIndex={(id) => items.findIndex(i => i.id === id)}
+                                    canEditBO={canEditBO}
                                 />
                             ))
                         )}

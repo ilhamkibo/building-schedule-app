@@ -186,6 +186,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             const allowedPaths = ["/", "/ppl", "/schedules"];
             return allowedPaths.includes(item.url);
           }
+          // Creator
+          if (role === "editor") {
+            const allowedPaths = ["/", "/ppl", "/schedules"];
+            return allowedPaths.includes(item.url);
+          }
 
           // Viewer (default termasuk belum login)
           if (role === "viewer") {

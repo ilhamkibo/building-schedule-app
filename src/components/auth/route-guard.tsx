@@ -58,7 +58,8 @@ import { useEffect, useState } from "react";
 
 const ROLE_PERMISSIONS: Record<string, string[]> = {
     viewer: ["/"],
-    creator: ["/", "/ppl", "/schedules", "/new-schedule"],
+    editor: ["/", "/ppl", "/schedules", "/new-schedule", "/ppc"],
+    creator: ["/", "/ppl", "/schedules", "/new-schedule", "/ppc"],
     admin: ["*"], // allow all
 };
 

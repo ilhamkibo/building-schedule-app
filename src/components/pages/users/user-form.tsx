@@ -14,6 +14,7 @@ import {
 import { useRoles } from "@/hooks/use-role";
 import { User } from "@/types/user";
 import { useEffect, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 function UserForm({
     user,
@@ -26,6 +27,8 @@ function UserForm({
         name: string;
         username: string;
         roleId: number;
+        password?: string;
+        passwordConfirmation?: string;
     }) => void;
 }) {
     const { data: roles = [], isLoading } = useRoles();
@@ -37,6 +40,8 @@ function UserForm({
     );
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
 
     useEffect(() => {
         if (user?.role?.name && roles.length > 0) {
@@ -98,22 +103,52 @@ function UserForm({
             {/* Password */}
             <div className="flex flex-col gap-2">
                 <Label>Password</Label>
-                <Input
-                    placeholder="Enter password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+                <div className="relative">
+                    <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="pr-10"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none"
+                    >
+                        {showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                        ) : (
+                            <Eye className="h-4 w-4" />
+                        )}
+                    </button>
+                </div>
             </div>
 
 
             {/* Confirm Password */}
             <div className="flex flex-col gap-2">
                 <Label>Confirm Password</Label>
-                <Input
-                    placeholder="Enter confirm password"
-                    value={passwordConfirmation}
-                    onChange={(e) => setPasswordConfirmation(e.target.value)}
-                />
+                <div className="relative">
+                    <Input
+                        type={showPasswordConfirmation ? "text" : "password"}
+                        placeholder="Enter confirm password"
+                        value={passwordConfirmation}
+                        onChange={(e) => setPasswordConfirmation(e.target.value)}
+                        className="pr-10"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPasswordConfirmation(!showPasswordConfirmation)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus:outline-none"
+                    >
+                        {showPasswordConfirmation ? (
+                            <EyeOff className="h-4 w-4" />
+                        ) : (
+                            <Eye className="h-4 w-4" />
+                        )}
+                    </button>
+                </div>
             </div>
 
 
@@ -128,6 +163,8 @@ function UserForm({
                             name,
                             username,
                             roleId: roleId!,
+                            password,
+                            passwordConfirmation,
                         })
                     }
                     disabled={!name || !username || !roleId}

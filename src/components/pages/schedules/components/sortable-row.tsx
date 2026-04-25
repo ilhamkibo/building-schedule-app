@@ -19,6 +19,7 @@ interface SortableRowProps {
     products: Product[];
     isProductsLoading: boolean;
     setSearch: (search: string) => void;
+    canEditBO?: boolean;
 }
 
 export function StaticRow({
@@ -51,6 +52,7 @@ export function SortableRow({
     products,
     isProductsLoading,
     setSearch,
+    canEditBO = true,
 }: SortableRowProps) {
     const [isBoFocused, setIsBoFocused] = useState(false);
     const [isQtyFocused, setIsQtyFocused] = useState(false);
@@ -218,15 +220,17 @@ export function SortableRow({
                             </Label>
                             <Input
                                 type="text"
-                                className={`h-8 text-center transition-colors duration-500 ${highlightBo ? 'bg-amber-100 border-amber-500 ring-1 ring-amber-500 font-bold text-amber-900' : 'bg-white'}`}
+                                className={`h-8 text-center transition-colors duration-500 ${highlightBo ? 'bg-amber-100 border-amber-500 ring-1 ring-amber-500 font-bold text-amber-900' : 'bg-white'} ${!canEditBO ? 'cursor-not-allowed bg-gray-100 opacity-70' : ''}`}
                                 value={isBoFocused ? (item.boQty || 0) : (Number(item.boQty) <= 10 ? "F" : (item.boQty || "F"))}
                                 onFocus={() => setIsBoFocused(true)}
                                 onBlur={() => setIsBoFocused(false)}
-                                onChange={(e) =>
+                                onChange={(e) => {
+                                    if (!canEditBO) return;
                                     updateItem(index, {
                                         boQty: parseInt(e.target.value) || 0,
                                     })
-                                }
+                                }}
+                                readOnly={!canEditBO}
                             />
                             {/* <div className="h-8 flex items-center justify-center bg-muted/30 rounded text-xs font-medium border">
                                 {item.boQty || 0}

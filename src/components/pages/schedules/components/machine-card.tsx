@@ -16,6 +16,7 @@ interface MachineCardProps {
     onSearchChange: (search: string) => void;
     findItemIndex: (id: string) => number;
     onAddMachineItem?: (machineNo: string) => void;
+    canEditBO?: boolean;
 }
 
 export function MachineCard({
@@ -29,6 +30,7 @@ export function MachineCard({
     onSearchChange,
     findItemIndex,
     onAddMachineItem,
+    canEditBO = true,
 }: MachineCardProps) {
     return (
         <div className="space-y-4 border rounded-lg p-3 bg-muted/5 shadow-sm">
@@ -62,6 +64,7 @@ export function MachineCard({
                         onUpdateItem={onUpdateItem}
                         onSearchChange={onSearchChange}
                         findItemIndex={findItemIndex}
+                        canEditBO={canEditBO}
                     />
                 ))}
             </div>

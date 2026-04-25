@@ -7,6 +7,7 @@ import { CreateScheduleRequest, CreateScheduleMachine, CreateScheduleShift, Crea
 import { useState, useEffect } from "react";
 import { Database, Loader2, PencilLine, X } from "lucide-react";
 import { toast } from "sonner";
+import { useAuthContext } from "@/context/auth-context";
 import {
     DndContext,
     closestCorners,
@@ -81,6 +82,9 @@ export default function EditScheduleForm({ board, lineNo, onCancel, onSuccess }:
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [activeId, setActiveId] = useState<string | null>(null);
     const [isInitialized, setIsInitialized] = useState(false);
+
+    const { user } = useAuthContext();
+    const canEditBO = user?.role?.toLowerCase() !== "editor";
 
     // Sensors for DND
     const sensors = useSensors(
@@ -449,6 +453,7 @@ export default function EditScheduleForm({ board, lineNo, onCancel, onSuccess }:
                                     onUpdateItem={updateItem}
                                     onSearchChange={setSearch}
                                     findItemIndex={(id) => items.findIndex(i => i.id === id)}
+                                    canEditBO={canEditBO}
                                 />
                             ))
                         )}

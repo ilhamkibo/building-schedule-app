@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { Plus, Search, Trash2, Pencil } from "lucide-react";
-import { useUsers } from "@/hooks/use-user";
+import { useUsers, useCreateUser, useUpdateUser, useDeleteUser } from "@/hooks/use-user";
 import { toast } from "sonner";
 import { User } from "@/types/user";
 import UserForm from "./user-form";
@@ -76,13 +76,27 @@ export default function UserList() {
         setDrawerOpen(true);
     };
 
-    const handleDelete = async () => {
-        try {
-            // await deleteUserApi(deleteUser!.id)
-            toast.success("User deleted");
+    const createMutation = useCreateUser({
+        onSuccess: () => {
+            setDrawerOpen(false);
+        },
+    });
+
+    const updateMutation = useUpdateUser({
+        onSuccess: () => {
+            setDrawerOpen(false);
+        },
+    });
+
+    const deleteMutation = useDeleteUser({
+        onSuccess: () => {
             setDeleteUser(null);
-        } catch {
-            toast.error("Failed to delete user");
+        },
+    });
+
+    const handleDelete = async () => {
+        if (deleteUser) {
+            deleteMutation.mutate(deleteUser.id);
         }
     };
 
@@ -190,11 +204,16 @@ export default function UserList() {
                     <UserForm
                         user={selectedUser}
                         onCancel={() => setDrawerOpen(false)}
-                        onSubmit={() => {
-                            toast.success(
-                                selectedUser ? "User updated" : "User created"
-                            );
-                            setDrawerOpen(false);
+                        onSubmit={(payload) => {
+                            if (selectedUser) {
+                                updateMutation.mutate({ id: selectedUser.id, data: payload });
+                            } else {
+                                createMutation.mutate({
+                                    ...payload,
+                                    password: payload.password || "",
+                                    passwordConfirmation: payload.passwordConfirmation || "",
+                                });
+                            }
                         }}
                     />
                 </DialogContent>

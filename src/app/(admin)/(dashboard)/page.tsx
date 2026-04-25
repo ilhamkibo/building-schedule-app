@@ -13,6 +13,7 @@ import { DashboardSkeleton } from "@/components/pages/dashboard/components/Dashb
 import { DashboardEditScheduleModal } from "@/components/pages/dashboard/components/DashboardEditScheduleModal";
 import Link from "next/link";
 import { getNextShiftInfo, isManualRefreshWindow } from "@/lib/shift-utils";
+import { useAuthContext } from "@/context/auth-context";
 
 const STORAGE_KEY = "selected-line-no";
 
@@ -23,6 +24,9 @@ export default function Page() {
   );
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [lastAutoRefresh, setLastAutoRefresh] = useState<string | null>(null);
+
+  const { user } = useAuthContext();
+  const isGuest = !user || user.role?.toLowerCase() === "viewer";
 
   const { open } = useSidebar();
   const { shifts: shiftTime, isLoading: isLoadingShiftTime } = useShiftContext();
@@ -211,7 +215,7 @@ export default function Page() {
         selectedDate={selectedDate}
         onDateChange={setSelectedDate}
         lines={linesData}
-        onEditClick={dashboardData.length > 0 ? () => setIsEditModalOpen(true) : undefined}
+        onEditClick={!isGuest && dashboardData.length > 0 ? () => setIsEditModalOpen(true) : undefined}
         onRefreshClick={isSelectedDateToday ? () => handleRefresh() : undefined}
         isRefreshing={isUpdatingTimeline}
         canRefresh={canManualRefresh && dashboardData.length > 0}

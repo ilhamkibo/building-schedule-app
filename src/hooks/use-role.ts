@@ -60,7 +60,7 @@ export function useCreateRole(options?: {
 }) {
     const queryClient = useQueryClient();
 
-    return useMutation<Role, AxiosError<ApiError>, CreateRoleRequest>({
+    return useMutation<Role, AxiosError<ApiError>, string>({
         mutationKey: ["roles", "create"],
         mutationFn: (payload) => roleService.create(payload),
         onSuccess: (data) => {

@@ -33,7 +33,7 @@ import {
 
 import { Label } from "@/components/ui/label";
 import { Plus, Search, Trash2, Pencil } from "lucide-react";
-import { useRoles } from "@/hooks/use-role";
+import { useCreateRole, useDeleteRole, useRoles, useUpdateRole } from "@/hooks/use-role";
 import { toast } from "sonner";
 import { Role } from "@/types/role";
 import RoleForm from "./role-form";
@@ -78,15 +78,30 @@ export default function RoleList() {
         setDrawerOpen(true);
     };
 
-    const handleDelete = async () => {
-        try {
-            // await deleteRoleApi(deleteRole!.id)
-            toast.success("Role deleted");
+    const createMutation = useCreateRole({
+        onSuccess: () => {
+            setDrawerOpen(false);
+        },
+    });
+
+    const updateMutation = useUpdateRole({
+        onSuccess: () => {
+            setDrawerOpen(false);
+        },
+    });
+
+    const deleteMutation = useDeleteRole({
+        onSuccess: () => {
             setDeleteRole(null);
-        } catch {
-            toast.error("Failed to delete role");
+        },
+    });
+
+    const handleDelete = () => {
+        if (deleteRole) {
+            deleteMutation.mutate(deleteRole.id);
         }
     };
+
 
     return (
         <div className="space-y-4 max-w-5xl mx-auto">
@@ -114,7 +129,6 @@ export default function RoleList() {
                     <TableHeader>
                         <TableRow>
                             <TableHead>Role Name</TableHead>
-                            <TableHead>Description</TableHead>
                             <TableHead className="w-[120px]">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -124,7 +138,6 @@ export default function RoleList() {
                             Array.from({ length: 5 }).map((_, i) => (
                                 <TableRow key={i}>
                                     <TableCell><Skeleton className="h-6 w-32" /></TableCell>
-                                    <TableCell><Skeleton className="h-6 w-64" /></TableCell>
                                     <TableCell className="flex gap-1">
                                         <Skeleton className="h-8 w-8 rounded-md" />
                                         <Skeleton className="h-8 w-8 rounded-md" />
@@ -142,7 +155,6 @@ export default function RoleList() {
                         {roles.map((role) => (
                             <TableRow key={role.id}>
                                 <TableCell className="font-medium">{role.name}</TableCell>
-                                <TableCell>{role.description ?? "-"}</TableCell>
                                 <TableCell className="flex gap-1">
                                     <Button
                                         size="icon"
@@ -189,11 +201,12 @@ export default function RoleList() {
                     <RoleForm
                         role={selectedRole}
                         onCancel={() => setDrawerOpen(false)}
-                        onSubmit={() => {
-                            toast.success(
-                                selectedRole ? "Role updated" : "Role created"
-                            );
-                            setDrawerOpen(false);
+                        onSubmit={(name) => {
+                            if (selectedRole) {
+                                updateMutation.mutate({ id: selectedRole.id, data: { name } });
+                            } else {
+                                createMutation.mutate(name);
+                            }
                         }}
                     />
                 </DialogContent>
