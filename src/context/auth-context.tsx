@@ -24,7 +24,7 @@ export function AuthProvider({
         import("js-cookie").then(({ default: Cookies }) => {
             Cookies.remove("access_token");
             setUser(null);
-            window.location.href = "/";
+            window.location.href = process.env.NEXT_PUBLIC_BASE_PATH || "/";
         });
     };
 

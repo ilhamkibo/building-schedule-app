@@ -5,12 +5,14 @@ import Link from "next/link";
 import { SidebarMenu, SidebarMenuItem } from "../ui/sidebar";
 
 export function CompanyLogo() {
+  const path = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <Link href="/" className="flex items-center gap-3 px-3 py-2">
           <Image
-            src="/images/dunlop-logo.jpg"
+            src={`${path}/images/dunlop-logo.jpg`}
             alt="Sumi Rubber Indonesia Logo"
             width={40}
             height={40}

@@ -54,7 +54,7 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex items-center gap-2">
         <Image
-          src="/images/dunlop-logo.jpg"
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/images/dunlop-logo.jpg`}
           alt="Sumi Rubber Indonesia Logo"
           width={70}
           height={70}
