@@ -38,7 +38,8 @@ export function proxy(req: NextRequest) {
      */
     if (pathname === "/login") {
         if (isAuthenticated) {
-            return NextResponse.redirect(new URL("/", req.url));
+            const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+            return NextResponse.redirect(new URL(`${basePath}/`, req.url));
         }
         return response;
     }
@@ -49,8 +50,9 @@ export function proxy(req: NextRequest) {
     // Membiarkan / bisa diakses tanpa login (Dashboard public)
     if (pathname !== "/") {
         if (!isAuthenticated) {
-            const loginURL = new URL("/login", req.url);
-            loginURL.searchParams.set("callbackUrl", pathname);
+            const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+            const loginURL = new URL(`${basePath}/login`, req.url);
+            loginURL.searchParams.set("callbackUrl", `${basePath}${pathname}`);
             return NextResponse.redirect(loginURL);
         }
     }
