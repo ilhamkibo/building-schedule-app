@@ -30,7 +30,7 @@ export function useAuth() {
             // CLIENT COOKIE (non-HttpOnly)
             Cookies.set("access_token", token, {
                 path: "/",
-                sameSite: "Lax",
+                sameSite: "none",
                 secure: false,
             });
 
