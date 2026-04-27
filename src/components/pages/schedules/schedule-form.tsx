@@ -76,6 +76,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
         lineNoForFetching,
         { enabled: !!selectedLineId && !!date && !!lineNoForFetching }
     );
+    console.log("🚀 ~ ScheduleForm ~ ppcData:", ppcData)
 
     useEffect(() => {
         if (!ppcData || !("details" in ppcData) || !selectedLineId || !date) {
@@ -444,14 +445,6 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                                 <Database className="h-12 w-12 mb-4 opacity-20" />
                                 <p className="text-lg font-medium">No schedule items found</p>
                                 <p className="text-sm">No production data available for this category and date.</p>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="mt-4"
-                                    onClick={() => handleAddItem("New MC", 1)}
-                                >
-                                    <Plus className="mr-2 h-4 w-4" /> Add Manually
-                                </Button>
                             </div>
                         ) : (
                             machineNumbers.map((mNo) => (

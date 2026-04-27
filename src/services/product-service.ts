@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import { Product, CreateProductRequest, UpdateProductRequest, RealtimeBO, RealtimeRCStock } from "@/types/product";
+import { Product, CreateProductRequest, UpdateProductRequest, RealtimeBO, RealtimeRCStock, SizeColor } from "@/types/product";
 import { PaginatedResponse, PaginationParams } from "@/types/pagination";
 
 class ProductService {
@@ -47,6 +47,16 @@ class ProductService {
         codes.forEach(code => params.append("codes", code));
 
         const response = await api.get<{ status: boolean, message: string, data: RealtimeRCStock[] }>(`${this.endpoint}/stock-rc`, {
+            params
+        });
+        return response.data.data;
+    }
+
+    async getSizeColors(codes: string[]): Promise<SizeColor[]> {
+        const params = new URLSearchParams();
+        codes.forEach(code => params.append("codes", code));
+
+        const response = await api.get<{ status: boolean, message: string, data: SizeColor[] }>(`${this.endpoint}/size-colors`, {
             params
         });
         return response.data.data;

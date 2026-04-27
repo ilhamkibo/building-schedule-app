@@ -64,4 +64,9 @@ export interface UpdateProductRequest {
     curingTimeSeconds?: number;
 }
 
-
+export interface SizeColor {
+    sizeCode: string;
+    textColorHex: string;
+    backgroundColorHex: string;
+    typeCode: string;
+}

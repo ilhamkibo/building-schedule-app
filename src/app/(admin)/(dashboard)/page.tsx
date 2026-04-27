@@ -5,7 +5,7 @@ import ScheduleBoard from "@/components/pages/dashboard/ScheduleBoard";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useLines } from "@/hooks/use-line";
 import { useTodayLineSchedule, useUpdateTimeline } from "@/hooks/use-schedule";
-import { useRealtimeBO, useRealtimeRCStock } from "@/hooks/use-product";
+import { useRealtimeBO, useRealtimeRCStock, useSizeColors } from "@/hooks/use-product";
 import { useShiftContext } from "@/context/shift-context";
 import { TodayLineSchedule, ScheduleLineDetailToday, SchedulePhase } from "@/types/schedule";
 import { DashboardFilterBar } from "@/components/pages/dashboard/components/DashboardFilterBar";
@@ -182,9 +182,10 @@ export default function Page() {
 
   const { data: realtimeBOData } = useRealtimeBO(uniqueCodes, selectedDate);
   const { data: realtimeRCStockData } = useRealtimeRCStock(uniqueCodes);
+  const { data: sizeColorsData } = useSizeColors(uniqueCodes);
 
   const dashboardData = useMemo(() => {
-    if ((!realtimeBOData || realtimeBOData.length === 0) && (!realtimeRCStockData || realtimeRCStockData.length === 0)) {
+    if ((!realtimeBOData || realtimeBOData.length === 0) && (!realtimeRCStockData || realtimeRCStockData.length === 0) && (!sizeColorsData || sizeColorsData.length === 0)) {
       return baseDashboardData;
     }
 
@@ -193,14 +194,18 @@ export default function Page() {
       rows: m.rows.map(r => {
         const boData = realtimeBOData?.find(bo => bo.sizeCode === r.code);
         const rcStockData = realtimeRCStockData?.find(rc => rc.sizeCode === r.code);
+        const colorData = sizeColorsData?.find(c => c.sizeCode === r.code);
         return {
           ...r,
           balanceOut: boData?.realtimeBo !== null && boData?.realtimeBo !== undefined ? boData.realtimeBo : r.balanceOut,
           rcStock: rcStockData?.stockRcQty ?? r.rcStock,
+          colors: colorData
+            ? { textColor: colorData.textColorHex, bgColor: colorData.backgroundColorHex }
+            : { textColor: "transparent", bgColor: "transparent" },
         };
       })
     }));
-  }, [baseDashboardData, realtimeBOData, realtimeRCStockData]);
+  }, [baseDashboardData, realtimeBOData, realtimeRCStockData, sizeColorsData]);
 
   return (
     <div

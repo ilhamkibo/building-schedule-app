@@ -11,7 +11,7 @@ import { ApiError } from "../types/api-response";
 import { toast } from "sonner";
 import { PaginatedResponse, PaginationParams } from "../types/pagination";
 import { productService } from "@/services/product-service";
-import { Product, CreateProductRequest, UpdateProductRequest, RealtimeBO, RealtimeRCStock } from "@/types/product";
+import { Product, CreateProductRequest, UpdateProductRequest, RealtimeBO, RealtimeRCStock, SizeColor } from "@/types/product";
 
 /**
  * Hook to fetch all Products with pagination
@@ -159,6 +159,19 @@ export function useRealtimeRCStock(
     return useQuery({
         queryKey: ["products", "rc-stock-realtime", codes],
         queryFn: () => productService.getRealtimeRCStock(codes),
+        enabled: codes.length > 0,
+        refetchInterval: 60000, // Refresh every minute
+        ...options,
+    });
+}
+
+export function useSizeColors(
+    codes: string[],
+    options?: Omit<UseQueryOptions<SizeColor[]>, "queryKey" | "queryFn">
+) {
+    return useQuery({
+        queryKey: ["products", "size-colors", codes],
+        queryFn: () => productService.getSizeColors(codes),
         enabled: codes.length > 0,
         refetchInterval: 60000, // Refresh every minute
         ...options,

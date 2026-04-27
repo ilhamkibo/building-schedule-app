@@ -23,7 +23,22 @@ class ProductScheduleService {
                 date,
                 lineNo,
             },
+            validateStatus: (status) => status < 400 || status === 404,
         });
+
+        // 404 means no PPC data exists for this line/date — return empty data
+        if (response.status === 404) {
+            return {
+                status: "success",
+                message: "Data tidak ada",
+                data: {
+                    lineNo: Number(lineNo),
+                    scheduleDate: date,
+                    details: [],
+                },
+            };
+        }
+
         return response.data;
     }
 }
