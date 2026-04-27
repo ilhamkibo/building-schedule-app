@@ -75,6 +75,9 @@ export function NavUser({ user, logout }: { user: AuthUser, logout: () => void }
                   <span className="truncate font-medium">
                     {user?.name ?? ""}
                   </span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    {user?.role ?? ""}
+                  </span>
                 </div>
               </div>
             </DropdownMenuLabel>

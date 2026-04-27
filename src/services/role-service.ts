@@ -16,7 +16,7 @@ class RoleService {
     }
 
     async create(role: string): Promise<Role> {
-        const { data } = await api.post<Role>(this.endpoint, { name: role, description: "" });
+        const { data } = await api.post<Role>(this.endpoint, { name: role });
         return data;
     }
 

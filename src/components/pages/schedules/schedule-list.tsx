@@ -154,7 +154,7 @@ export default function ScheduleList() {
                                     >
                                         <Eye className="h-4 w-4" />
                                     </Button> */}
-                                    {/* <Button
+                                    <Button
                                         size="icon"
                                         className="cursor-pointer"
                                         variant="ghost"
@@ -162,7 +162,7 @@ export default function ScheduleList() {
                                         title="Delete"
                                     >
                                         <Trash2 className="h-4 w-4 text-red-500" />
-                                    </Button> */}
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -218,7 +218,7 @@ export default function ScheduleList() {
             </Dialog> */}
 
             {/* Delete Confirmation */}
-            {/* <AlertDialog open={!!deleteSchedule} onOpenChange={() => setDeleteSchedule(null)}>
+            <AlertDialog open={!!deleteSchedule} onOpenChange={() => setDeleteSchedule(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete schedule?</AlertDialogTitle>
@@ -238,7 +238,7 @@ export default function ScheduleList() {
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
-            </AlertDialog> */}
+            </AlertDialog>
         </div>
     );
 }

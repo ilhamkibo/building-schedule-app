@@ -34,10 +34,10 @@ export function LoginForm({
     formState: { errors, isSubmitting },
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      username: "admin",
-      password: "password",
-    },
+    // defaultValues: {
+    //   username: "admin",
+    //   password: "password",
+    // },
   });
 
   const onSubmit = (data: LoginSchema) => {
