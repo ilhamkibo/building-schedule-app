@@ -31,7 +31,7 @@ export function useAuth() {
             Cookies.set("access_token", token, {
                 path: "/",
                 sameSite: "Lax",
-                secure: process.env.NODE_ENV === "production",
+                secure: false,
             });
 
             setUser(res.data.user);
