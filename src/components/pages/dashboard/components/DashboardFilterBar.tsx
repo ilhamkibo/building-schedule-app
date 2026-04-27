@@ -63,7 +63,7 @@ export function DashboardFilterBar({
                     className="md:w-[160px] w-full h-9 font-semibold bg-background dark:border-slate-700"
                 />
 
-                {user?.role === "Admin" && onEditClick && (
+                {user?.role === "admin" || user?.role === "editor" && onEditClick && (
                     <Button
                         variant="outline"
                         onClick={onEditClick}
