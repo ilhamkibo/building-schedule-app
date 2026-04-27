@@ -201,7 +201,7 @@ export default function Page() {
           rcStock: rcStockData?.stockRcQty ?? r.rcStock,
           colors: colorData
             ? { textColor: colorData.textColorHex, bgColor: colorData.backgroundColorHex }
-            : { textColor: "transparent", bgColor: "transparent" },
+            : { textColor: "#000", bgColor: "#fff" },
         };
       })
     }));
