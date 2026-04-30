@@ -204,12 +204,12 @@ export default function Page() {
     return baseDashboardData.map(m => ({
       ...m,
       rows: m.rows.map(r => {
-        const boData = realtimeBOData?.find(bo => bo.sizeCode === r.code);
+        // const boData = realtimeBOData?.find(bo => bo.sizeCode === r.code);
         const rcStockData = realtimeRCStockData?.find(rc => rc.sizeCode === r.code);
         const colorData = sizeColorsData?.find(c => c.sizeCode === r.code);
         return {
           ...r,
-          balanceOut: boData?.realtimeBo !== null && boData?.realtimeBo !== undefined ? boData.realtimeBo : r.balanceOut,
+          // balanceOut: boData?.realtimeBo !== null && boData?.realtimeBo !== undefined ? boData.realtimeBo : r.balanceOut,
           rcStock: rcStockData?.stockRcQty ?? r.rcStock,
           colors: colorData
             ? { textColor: colorData.textColorHex, bgColor: colorData.backgroundColorHex }

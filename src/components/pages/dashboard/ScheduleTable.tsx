@@ -46,13 +46,18 @@ export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; 
     // HELPERS
     // =========================
     function formatBO(value: number | string | null | undefined): string | number {
-        if (value === null || value === undefined || value === "") return ""
-        if (value === "F") return "F"
+        if (value === null || value === undefined) return "";
 
-        const num = Number(value)
-        if (!isNaN(num) && num <= 10) return "F"
+        if (typeof value === "string") {
+            const trimmed = value.trim();
+            if (trimmed === "" || trimmed.toLowerCase() === "null") return "";
+            if (trimmed.toUpperCase() === "F") return "F";
+        }
 
-        return value
+        const num = Number(value);
+        if (!isNaN(num) && num <= 10) return "F";
+
+        return value;
     }
 
     function renderList(data?: (string | number)[]) {

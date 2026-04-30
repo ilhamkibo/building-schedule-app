@@ -163,6 +163,11 @@ const navMain: NavGroup[] = [
         url: "/admin/schedule-size-types",
         icon: Ruler,
       },
+      {
+        subtitle: "Shutdown",
+        url: "/admin/shutdown",
+        icon: Settings,
+      }
     ]
   }
 ]
