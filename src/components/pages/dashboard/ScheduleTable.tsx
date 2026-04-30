@@ -45,14 +45,14 @@ export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; 
     // =========================
     // HELPERS
     // =========================
-    function formatBO(value: any): string | number {
-        if (value === null || value === undefined) return "F"
+    function formatBO(value: number | string | null | undefined): string | number {
+        if (value === null || value === undefined || value === "") return ""
         if (value === "F") return "F"
 
         const num = Number(value)
-        if (isNaN(num) || num <= 0) return "F"
+        if (!isNaN(num) && num <= 10) return "F"
 
-        return num
+        return value
     }
 
     function renderList(data?: any[]) {

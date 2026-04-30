@@ -29,9 +29,9 @@ export function useAuth() {
 
             // CLIENT COOKIE (non-HttpOnly)
             Cookies.set("access_token", token, {
-                path: "/",
-                sameSite: "none",
                 secure: false,
+                path: "/",
+                expires: 1, // 1 hari
             });
 
             setUser(res.data.user);

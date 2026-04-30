@@ -221,7 +221,7 @@ export function SortableRow({
                             <Input
                                 type="text"
                                 className={`h-8 text-center transition-colors duration-500 ${highlightBo ? 'bg-amber-100 border-amber-500 ring-1 ring-amber-500 font-bold text-amber-900' : 'bg-white'} ${!canEditBO ? 'cursor-not-allowed bg-gray-100 opacity-70' : ''}`}
-                                value={isBoFocused ? (item.boQty || 0) : (Number(item.boQty) <= 10 ? "F" : (item.boQty || "F"))}
+                                value={isBoFocused ? (item.boQty ?? "") : (item.boQty === null || item.boQty === undefined || item.boQty === "" ? "" : (Number(item.boQty) <= 10 ? "F" : item.boQty))}
                                 onFocus={() => setIsBoFocused(true)}
                                 onBlur={() => setIsBoFocused(false)}
                                 onChange={(e) => {

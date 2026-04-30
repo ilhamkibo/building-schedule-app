@@ -97,7 +97,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                     size: d.size,
                     rim: d.rim,
                     qtyPpl: d.qtyPpl || 0,
-                    boQty: d.boQty || 0,
+                    boQty: d.boQty ?? null,
                     remainingBoQty: d.remainingBoQty || 0,
                     buildAchQty: d.buildAchQty || 0,
                     isBuildAch: d.isBuildAch || false,
@@ -304,7 +304,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
             isManual: true,
             isBuildAch: false,
             buildAchQty: 0,
-            boQty: 0,
+            boQty: null,
         }]);
     };
 

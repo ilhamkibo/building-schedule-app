@@ -48,7 +48,7 @@ function boardToFormItems(board: ScheduleBoard): FormItem[] {
                     mold: detail.mold || 0,
                     stockRc: detail.stockRc || 0,
                     rim: detail.rim || "",
-                    boQty: detail.boQty || 0,
+                    boQty: detail.boQty ?? null,
                     remainingBoQty: detail.remainingBoQty || 0,
                     buildAchQty: detail.buildAchQty || 0,
                     isBuildAch: detail.isBuildAch || false,
@@ -312,7 +312,7 @@ export default function EditScheduleForm({ board, lineNo, onCancel, onSuccess }:
             isManual: true,
             isBuildAch: false,
             buildAchQty: 0,
-            boQty: 0,
+            boQty: null,
         }]);
     };
 
@@ -329,7 +329,7 @@ export default function EditScheduleForm({ board, lineNo, onCancel, onSuccess }:
             isManual: true,
             isBuildAch: false,
             buildAchQty: 0,
-            boQty: 0,
+            boQty: null,
         }));
         setItems([...items, ...newItems]);
     };

@@ -68,6 +68,16 @@ function buildCodeRows(machine: CreateScheduleMachine): CodeRow[] {
     return codeOrder.map((key) => codeMap.get(key)!);
 }
 
+function formatBO(value: any): string | number {
+    if (value === null || value === undefined || value === "") return ""
+    if (value === "F") return "F"
+
+    const num = Number(value)
+    if (!isNaN(num) && num <= 10) return "F"
+
+    return value
+}
+
 export default function ScheduleDetails({
     board,
 }: ScheduleDetailsProps) {
@@ -174,7 +184,7 @@ export default function ScheduleDetails({
                                                         <TableCell className="font-bold">{row.code}</TableCell>
                                                         <TableCell className="text-center">{row.mold || 0}</TableCell>
                                                         <TableCell className="text-center">{row.stockRc || 0}</TableCell>
-                                                        <TableCell className="text-center">{row.boQty || "-"}</TableCell>
+                                                        <TableCell className="text-center">{formatBO(row.boQty)}</TableCell>
 
                                                         {/* Shift 1 */}
                                                         <TableCell className="text-center bg-blue-50/10">
@@ -225,7 +235,7 @@ export default function ScheduleDetails({
                                                                 <TableCell className="font-bold" rowSpan={maxEntries}>{row.code}</TableCell>
                                                                 <TableCell className="text-center" rowSpan={maxEntries}>{row.mold || 0}</TableCell>
                                                                 <TableCell className="text-center" rowSpan={maxEntries}>{row.stockRc || 0}</TableCell>
-                                                                <TableCell className="text-center" rowSpan={maxEntries}>{row.boQty || "-"}</TableCell>
+                                                                <TableCell className="text-center" rowSpan={maxEntries}>{formatBO(row.boQty)}</TableCell>
                                                             </>
                                                         )}
 

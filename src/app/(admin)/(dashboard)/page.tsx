@@ -170,6 +170,11 @@ export default function Page() {
     }));
   }, [scheduleData, scheduleResponse, selectedDate, shiftTime]);
 
+  const isHistoricalDate = useMemo(() => {
+    const today = new Date().toLocaleDateString('en-CA');
+    return selectedDate < today;
+  }, [selectedDate]);
+
   const uniqueCodes = useMemo(() => {
     const codes = new Set<string>();
     baseDashboardData.forEach(m => {
@@ -180,9 +185,15 @@ export default function Page() {
     return Array.from(codes);
   }, [baseDashboardData]);
 
-  const { data: realtimeBOData } = useRealtimeBO(uniqueCodes, selectedDate);
-  const { data: realtimeRCStockData } = useRealtimeRCStock(uniqueCodes);
-  const { data: sizeColorsData } = useSizeColors(uniqueCodes);
+  const { data: realtimeBOData } = useRealtimeBO(uniqueCodes, selectedDate, {
+    enabled: uniqueCodes.length > 0 && !!selectedDate && !isHistoricalDate
+  });
+  const { data: realtimeRCStockData } = useRealtimeRCStock(uniqueCodes, {
+    enabled: uniqueCodes.length > 0 && !isHistoricalDate
+  });
+  const { data: sizeColorsData } = useSizeColors(uniqueCodes, {
+    enabled: uniqueCodes.length > 0 && !isHistoricalDate
+  });
 
   const dashboardData = useMemo(() => {
     if ((!realtimeBOData || realtimeBOData.length === 0) && (!realtimeRCStockData || realtimeRCStockData.length === 0) && (!sizeColorsData || sizeColorsData.length === 0)) {

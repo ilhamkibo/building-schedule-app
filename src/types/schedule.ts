@@ -118,7 +118,7 @@ export interface ScheduleLineDetailToday {
         textColor: string;
         bgColor: string;
     }
-    balanceOut?: string | number;
+    balanceOut?: string | number | null;
     cureShift?: number;
     buildTimes?: {
         shift1?: string[];
