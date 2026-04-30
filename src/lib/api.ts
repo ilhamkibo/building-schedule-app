@@ -37,6 +37,7 @@ api.interceptors.response.use(
                 window.location.href = `${basePath}/login`;
             }
         }
-        return Promise.reject(error.response?.data as ApiError);
+        return Promise.reject(error);
+        // return Promise.reject(error.response?.data as ApiError);
     }
 );

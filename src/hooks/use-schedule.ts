@@ -126,6 +126,7 @@ export function useUpdateScheduleByLineAndDate(options?: {
         mutationKey: ["schedules", "update-by-line-date"],
         mutationFn: ({ lineNo, date, data }) => scheduleService.updateScheduleByLineAndDate(lineNo, date, data),
         onSuccess: (data, variables) => {
+
             queryClient.invalidateQueries({ queryKey: ["schedules"] });
             toast.success("Schedule updated successfully.");
             options?.onSuccess?.(data);
@@ -175,12 +176,18 @@ export function useTodayLineSchedule(
     date: string,
     options?: Omit<UseQueryOptions<ApiResponse<TodayLineSchedule[]>, AxiosError<ApiError>>, "queryKey" | "queryFn">
 ) {
-    return useQuery<ApiResponse<TodayLineSchedule[]>, AxiosError<ApiError>>({
+    const queryResult = useQuery<ApiResponse<TodayLineSchedule[]>, AxiosError<ApiError>>({
         queryKey: ["schedules", "today-line", lineNo, date],
         queryFn: () => scheduleService.getTodayLineSchedule(lineNo, date),
         enabled: !!lineNo && !!date,
         ...options,
     });
+
+    return {
+        ...queryResult,
+        data: queryResult.data,
+        pagination: queryResult.data?.pagination,
+    };
 }
 
 /**

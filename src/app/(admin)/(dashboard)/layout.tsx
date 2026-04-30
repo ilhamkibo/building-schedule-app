@@ -1,5 +1,10 @@
 import AppHeader from "@/components/layouts/app-header";
 import React from "react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+};
 
 export default function DashboardLayout({
   children,

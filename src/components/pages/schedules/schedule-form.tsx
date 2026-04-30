@@ -379,10 +379,10 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
             lineNo: Number(lineNoForFetching),
             machines: Array.from(machinesMap.values())
         };
-        console.log("🚀 ~ handleSubmit ~ payload:", payload)
-        toast.success("Schedule has been created.");
+        // console.log("🚀 ~ handleSubmit ~ payload:", payload)
+        // toast.success("Schedule has been created.");
 
-        // createMutation.mutate(payload);
+        createMutation.mutate(payload);
     };
 
     const machineNumbers = ppcData && "details" in ppcData

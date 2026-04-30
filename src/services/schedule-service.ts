@@ -1,4 +1,6 @@
 import { api } from "@/lib/api";
+import { fetchWithEmptyFallback } from "@/lib/error-handler";
+import axios from "axios";
 import { Schedule, CreateScheduleRequest, UpdateScheduleRequest, ScheduleBoard, TodayLineSchedule } from "@/types/schedule";
 import { PaginatedResponse, PaginationParams } from "@/types/pagination";
 import { ApiResponse } from "@/types/api-response";
@@ -14,7 +16,6 @@ class ScheduleService {
 
     async getById(id: number): Promise<ApiResponse<ScheduleBoard>> {
         const response = await api.get<ApiResponse<ScheduleBoard>>(`${this.endpoint}/${id}`);
-        console.log("🚀 ~ ScheduleService ~ getById ~ response:", response)
         return response.data;
     }
 
@@ -38,8 +39,13 @@ class ScheduleService {
     }
 
     async getTodayLineSchedule(lineNo: number, date: string): Promise<ApiResponse<TodayLineSchedule[]>> {
-        const response = await api.get<ApiResponse<TodayLineSchedule[]>>(`${this.endpoint}/${lineNo}/${date}`);
-        return response.data;
+        const request = api.get<ApiResponse<TodayLineSchedule[]>>(`${this.endpoint}/${lineNo}/${date}`).then(res => res.data);
+
+        return fetchWithEmptyFallback(request, {
+            status: "success",
+            message: "No schedule found",
+            data: []
+        } as unknown as ApiResponse<TodayLineSchedule[]>);
     }
 
     async updateTimeline(scheduleId: number, shiftNo: number): Promise<any> {
