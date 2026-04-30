@@ -1,6 +1,7 @@
 import { ApiError } from "@/types/api-response";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
 
 export const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -29,7 +30,11 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
-        if (error.response?.status === 401) {
+        if (error.code === 'ERR_NETWORK') {
+            toast.error("Koneksi terputus. Tidak dapat terhubung ke server backend.", {
+                duration: 5000,
+            });
+        } else if (error.response?.status === 401) {
             // optional: global logout
             Cookies.remove("access_token");
             if (typeof window !== "undefined") {

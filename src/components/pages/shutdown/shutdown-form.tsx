@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Shutdown } from "@/types/shutdown";
 
 const shutdownSchema = z.object({
-    lineNo: z.coerce.number().min(1, "Line number is required"),
+    lineNo: z.number().min(1, "Line number is required"),
     machineNo: z.string().min(1, "Machine number is required"),
     startTime: z.string().min(1, "Start time is required"),
     stopTime: z.string().min(1, "Stop time is required"),
@@ -95,7 +95,7 @@ export function ShutdownForm({ open, onOpenChange, initialData, onSubmit }: Shut
                             <Input
                                 id="lineNo"
                                 type="number"
-                                {...register("lineNo")}
+                                {...register("lineNo", { valueAsNumber: true })}
                                 className={errors.lineNo ? "border-red-500" : ""}
                             />
                             {errors.lineNo && <p className="text-xs text-red-500">{errors.lineNo.message}</p>}
