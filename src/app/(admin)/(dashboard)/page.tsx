@@ -14,6 +14,7 @@ import { DashboardEditScheduleModal } from "@/components/pages/dashboard/compone
 import Link from "next/link";
 import { getNextShiftInfo, isManualRefreshWindow } from "@/lib/shift-utils";
 import { useAuthContext } from "@/context/auth-context";
+import { Button } from "@/components/ui/button";
 
 const STORAGE_KEY = "selected-line-no";
 
@@ -49,7 +50,7 @@ export default function Page() {
     }
   }, [selectedLineNo]);
 
-  const { data: scheduleResponse, isLoading: isLoadingSchedules, refetch: refetchSchedules } = useTodayLineSchedule(
+  const { data: scheduleResponse, isLoading: isLoadingSchedules, refetch: refetchSchedules, isError: scheduleIsError } = useTodayLineSchedule(
     parseInt(selectedLineNo),
     selectedDate,
     { enabled: !!selectedLineNo && !!selectedDate }
@@ -251,12 +252,15 @@ export default function Page() {
         <ScheduleBoard data={dashboardData} shiftTime={shiftTime} />
       ) : (
         selectedLineNo && (
-          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground bg-sidebar/50 rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-800">
-            <p className="text-lg font-medium">Tidak ada schedule untuk line ini</p>
-            <p className="text-sm">Silahkan pilih line lain atau buat schedule baru.</p>
-            <Link href="/schedules/adjust" className="mt-2 text-md px-4 py-2 bg-primary text-white dark:text-black rounded-md cursor-pointer">
+          <div className={`${scheduleIsError ? "border-red-500" : "border-slate-200 dark:border-slate-800"} flex flex-col items-center justify-center py-20 text-muted-foreground bg-sidebar/50 rounded-lg border-2 border-dashed`}>
+            <p className="text-lg font-medium">{scheduleIsError ? "Gagal memuat schedule" : "Tidak ada schedule untuk line ini"}</p>
+            {!scheduleIsError && <p className="text-sm">Silahkan pilih line lain atau buat schedule baru.</p>}
+            {!scheduleIsError && <Link href="/schedules/adjust" className="mt-2 text-md px-4 py-2 bg-primary text-white dark:text-black rounded-md cursor-pointer">
               Buat Schedule
-            </Link>
+            </Link>}
+            {scheduleIsError && <Button onClick={() => handleRefresh()} className="mt-2 text-md px-4 py-2 bg-primary text-white dark:text-black rounded-md cursor-pointer">
+              Coba Lagi
+            </Button>}
           </div>
         )
       )}

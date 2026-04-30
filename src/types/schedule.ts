@@ -32,7 +32,7 @@ export interface CreateScheduleDetail {
     mold: number;
     stockRc: number;
     rim: string;
-    boQty: string;
+    boQty: string | null;
     remainingBoQty: string;
     buildAchQty: number;
     isBuildAch: boolean;

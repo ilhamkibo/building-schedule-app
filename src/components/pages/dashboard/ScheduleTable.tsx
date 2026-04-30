@@ -55,7 +55,7 @@ export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; 
         return value
     }
 
-    function renderList(data?: any[]) {
+    function renderList(data?: (string | number)[]) {
         if (!data || data.length === 0) {
             return <span className="whitespace-nowrap">-</span>
         }
@@ -217,17 +217,17 @@ export function ScheduleTable({ block, shiftTime }: { block: TodayLineSchedule; 
 
                                             {/* PRIORITY */}
                                             <td className={`border p-1 ${getShiftClass(s.id, s.color)}`}>
-                                                {renderList((r as any)[s.priorityKey])}
+                                                {renderList(r[s.priorityKey])}
                                             </td>
 
                                             {/* QTY */}
                                             <td className={`border p-1 ${getShiftClass(s.id, s.color)}`}>
-                                                {renderList((r as any)[s.qtyKey])}
+                                                {renderList(r[s.qtyKey])}
                                             </td>
 
                                             {/* REMARK */}
                                             <td className={`border p-1 ${getShiftClass(s.id, s.color)}`}>
-                                                {renderRemark((r as any)[s.remarkKey])}
+                                                {renderRemark(r[s.remarkKey])}
                                             </td>
                                         </React.Fragment>
                                     ))}

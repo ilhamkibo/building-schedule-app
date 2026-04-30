@@ -230,11 +230,8 @@ export function SortableRow({
                                         boQty: parseInt(e.target.value) || 0,
                                     })
                                 }}
-                                readOnly={!canEditBO}
+                                disabled={!canEditBO}
                             />
-                            {/* <div className="h-8 flex items-center justify-center bg-muted/30 rounded text-xs font-medium border">
-                                {item.boQty || 0}
-                            </div> */}
                         </div>
 
                         {/* Quantity */}

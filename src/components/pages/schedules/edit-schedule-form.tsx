@@ -373,7 +373,7 @@ export default function EditScheduleForm({ board, lineNo, onCancel, onSuccess }:
                 mold: item.mold || 0,
                 stockRc: item.stockRc || 0,
                 rim: item.rim || "",
-                boQty: item.boQty !== null && item.boQty !== undefined ? String(item.boQty) : "0",
+                boQty: (item.boQty === null || item.boQty === undefined || item.boQty === "") ? null : (item.boQty === "F" || (!isNaN(Number(item.boQty)) && Number(item.boQty) <= 10) ? "F" : String(item.boQty)),
                 remainingBoQty: item.remainingBoQty !== null && item.remainingBoQty !== undefined ? String(item.remainingBoQty) : "0",
                 buildAchQty: item.buildAchQty || 0,
                 isBuildAch: item.isBuildAch || false,

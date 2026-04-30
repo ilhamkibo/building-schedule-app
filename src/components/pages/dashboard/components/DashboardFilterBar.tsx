@@ -40,6 +40,7 @@ export function DashboardFilterBar({
 }: DashboardFilterBarProps) {
 
     const { user } = useAuthContext();
+    const isAdminOrEditor = user?.role?.toLowerCase() === "admin" || user?.role?.toLowerCase() === "editor";
 
     return (
         <div className="px-4 mb-4 rounded-md py-2 font-semibold bg-sidebar border-b dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -63,7 +64,7 @@ export function DashboardFilterBar({
                     className="md:w-[160px] w-full h-9 font-semibold bg-background dark:border-slate-700"
                 />
 
-                {user?.role === "admin" || user?.role === "editor" && onEditClick && (
+                {isAdminOrEditor && onEditClick && (
                     <Button
                         variant="outline"
                         onClick={onEditClick}

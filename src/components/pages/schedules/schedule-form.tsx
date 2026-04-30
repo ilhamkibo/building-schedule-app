@@ -76,7 +76,6 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
         lineNoForFetching,
         { enabled: !!selectedLineId && !!date && !!lineNoForFetching }
     );
-    console.log("🚀 ~ ScheduleForm ~ ppcData:", ppcData)
 
     useEffect(() => {
         if (!ppcData || !("details" in ppcData) || !selectedLineId || !date) {
@@ -363,7 +362,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
                 mold: item.mold || 0,
                 stockRc: item.stockRc || 0,
                 rim: item.rim || "",
-                boQty: item.boQty !== null && item.boQty !== undefined ? String(item.boQty) : "0",
+                boQty: (item.boQty === null || item.boQty === undefined || item.boQty === "") ? null : (item.boQty === "F" || (!isNaN(Number(item.boQty)) && Number(item.boQty) <= 10) ? "F" : String(item.boQty)),
                 remainingBoQty: item.remainingBoQty !== null && item.remainingBoQty !== undefined ? String(item.remainingBoQty) : "0",
                 buildAchQty: item.buildAchQty || 0,
                 isBuildAch: item.isBuildAch || false,
@@ -380,10 +379,10 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
             lineNo: Number(lineNoForFetching),
             machines: Array.from(machinesMap.values())
         };
-        // console.log("🚀 ~ handleSubmit ~ payload:", payload)
-        // toast.success("Schedule has been created.");
+        console.log("🚀 ~ handleSubmit ~ payload:", payload)
+        toast.success("Schedule has been created.");
 
-        createMutation.mutate(payload);
+        // createMutation.mutate(payload);
     };
 
     const machineNumbers = ppcData && "details" in ppcData
