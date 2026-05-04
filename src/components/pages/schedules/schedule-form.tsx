@@ -165,7 +165,7 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
 
         newItems[index] = { ...newItems[index], ...updates };
 
-        const isQtyAffectsBo = isQtyChanged && !oldItem.isBuildAch;
+        const isQtyAffectsBo = isQtyChanged && !oldItem.isBuildAch && oldItem.boQty !== null;
 
         // Cascade recalculate boQty for the whole sequence if qty or boQty changed
         if ((isQtyAffectsBo || isBoQtyChanged) && oldIdentifier) {
