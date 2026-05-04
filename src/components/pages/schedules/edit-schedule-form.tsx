@@ -75,6 +75,7 @@ interface EditScheduleFormProps {
 }
 
 export default function EditScheduleForm({ board, lineNo, onCancel, onSuccess }: EditScheduleFormProps) {
+    console.log("🚀 ~ EditScheduleForm ~ board:", board)
     const [date] = useState(board.date);
 
     const [items, setItems] = useState<FormItem[]>([]);
@@ -139,6 +140,7 @@ export default function EditScheduleForm({ board, lineNo, onCancel, onSuccess }:
         const isQtyChanged = updates.qty !== undefined && updates.qty !== oldItem.qty;
         const isBoQtyChanged = updates.boQty !== undefined && updates.boQty !== oldItem.boQty;
 
+
         // Auto-calculate subsequent shifts qty if qty changes (within same machine only)
         if (isQtyChanged && oldIdentifier) {
             const diff = updates.qty! - oldItem.qty;
@@ -175,7 +177,7 @@ export default function EditScheduleForm({ board, lineNo, onCancel, onSuccess }:
 
         newItems[index] = { ...newItems[index], ...updates };
 
-        const isQtyAffectsBo = isQtyChanged && !oldItem.isBuildAch;
+        const isQtyAffectsBo = isQtyChanged && !oldItem.isBuildAch && oldItem.boQty !== null;
 
         // Cascade recalculate boQty for the whole sequence if qty or boQty changed (global across machines)
         if ((isQtyAffectsBo || isBoQtyChanged) && oldIdentifier) {
