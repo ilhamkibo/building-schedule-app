@@ -26,7 +26,7 @@ export function ResponsivePPLReference({ ppls }: ResponsivePPLReferenceProps) {
                         size="icon"
                         className="fixed bottom-24 right-6 z-50 rounded-full shadow-2xl w-14 h-14 bg-primary hover:bg-primary/90 transition-all active:scale-90 animate-in fade-in slide-in-from-bottom-10 duration-500"
                     >
-                        <Search className="h-6 w-6 text-white" />
+                        <Search className="h-6 w-6 text-white dark:text-blue-900" />
                         <span className="sr-only">PPL Reference</span>
                     </Button>
                 </SheetTrigger>

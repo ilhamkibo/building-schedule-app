@@ -18,35 +18,35 @@ export default function PPLReferenceSidebar({ ppls }: PPLReferenceSidebarProps) 
     const [filterBuild, setFilterBuild] = useState<string | undefined>();
 
     const machineOptions = Array.from(
-        new Set(ppls?.flatMap(p => p.typeMC) || [])
+        new Set((ppls?.flatMap(p => p.typeMC || []) || []).filter(Boolean))
     ).sort().map(mc => ({
-        id: mc,
-        name: mc
+        id: mc as string,
+        name: mc as string
     }));
 
     const codeOptions = Array.from(
-        new Set(ppls?.map(p => p.tireCode) || [])
+        new Set((ppls?.map(p => p.tireCode) || []).filter(Boolean))
     ).sort().map(code => ({
-        id: code,
-        name: code
+        id: code as string,
+        name: code as string
     }));
 
     const rimOptions = Array.from(
-        new Set(ppls?.map(p => p.rim) || [])
+        new Set((ppls?.map(p => p.rim) || []).filter(Boolean))
     ).sort().map(rim => ({
-        id: rim,
-        name: rim
+        id: rim as string,
+        name: rim as string
     }));
 
     const buildOptions = Array.from(
-        new Set(ppls?.map(p => p.build) || [])
+        new Set((ppls?.map(p => p.build) || []).filter(Boolean))
     ).sort().map(build => ({
-        id: build,
-        name: build
+        id: build as string,
+        name: build as string
     }));
 
     const filteredPPLs = ppls?.filter(p => {
-        if (filterMachine && !p.typeMC.includes(filterMachine)) return false;
+        if (filterMachine && (!p.typeMC || !p.typeMC.includes(filterMachine))) return false;
         if (filterCode && p.tireCode !== filterCode) return false;
         if (filterRim && p.rim !== filterRim) return false;
         if (filterBuild && p.build !== filterBuild) return false;
