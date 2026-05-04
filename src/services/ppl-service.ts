@@ -3,7 +3,7 @@ import { PPL, CreatePPLRequest, UpdatePPLRequest, PPLParams } from "@/types/ppl"
 import { PaginatedResponse } from "@/types/pagination";
 
 class PPLService {
-    private endpoint = "/PPLs";
+    private endpoint = "/ppls";
     async getAll(params?: PPLParams): Promise<PaginatedResponse<PPL>> {
         const response = await api.get<PaginatedResponse<PPL>>(this.endpoint, {
             params,

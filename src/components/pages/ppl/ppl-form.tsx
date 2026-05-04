@@ -27,7 +27,9 @@ export default function PPLForm({
     );
     const [build, setBuild] = useState(ppl?.build ?? "");
     const [rim, setRim] = useState(ppl?.rim ?? "");
-    const [typeMC, setTypeMC] = useState<string[]>(ppl?.typeMC ?? []);
+    const [typeMC, setTypeMC] = useState<string[]>(
+        Array.isArray(ppl?.typeMC) ? ppl.typeMC : (ppl?.typeMC ? [ppl.typeMC as string] : [])
+    );
     const [uph, setUph] = useState(ppl?.uph?.toString() ?? "0");
     const [tireCode, setTireCode] = useState(ppl?.tireCode ?? "");
     const [mold, setMold] = useState(ppl?.mold?.toString() ?? "0");
@@ -46,7 +48,7 @@ export default function PPLForm({
     const handleFormSubmit = () => {
         onSubmit({
             createDateTime,
-            build,
+            build: build || null,
             rim,
             typeMC,
             uph: parseFloat(uph),
@@ -54,7 +56,7 @@ export default function PPLForm({
             mold: parseInt(mold),
             moldStock: parseInt(moldStock),
             qty: parseInt(qty),
-            note,
+            note: note || null,
         });
     };
 
@@ -187,7 +189,7 @@ export default function PPLForm({
                 </Button>
                 <Button
                     onClick={handleFormSubmit}
-                    disabled={isLoading || !build || !tireCode || typeMC.length === 0}
+                    disabled={isLoading || !tireCode || typeMC.length === 0}
                 >
                     {isLoading ? "Saving..." : ppl ? "Update" : "Create"}
                 </Button>

@@ -1,7 +1,6 @@
 import { PaginationParams } from "./pagination";
 
 export interface PPLParams extends PaginationParams {
-    paginate?: boolean;
     month?: number | string;
     year?: number | string;
     isActive?: boolean;
@@ -10,9 +9,9 @@ export interface PPLParams extends PaginationParams {
 export interface PPL {
     id: number;
     createDateTime: string;
-    build: string;
+    build: string | null;
     rim: string;
-    typeMC: string[];
+    typeMC: string[] | null;
     uph: number;
     tireCode: string;
     mold: number;
@@ -25,9 +24,9 @@ export interface PPL {
 
 export interface CreatePPLRequest {
     createDateTime: string;
-    build: string;
+    build: string | null;
     rim: string;
-    typeMC: string[];
+    typeMC: string[] | null;
     uph: number;
     tireCode: string;
     mold: number;
@@ -38,9 +37,9 @@ export interface CreatePPLRequest {
 
 export interface UpdatePPLRequest {
     createDateTime?: string;
-    build?: string;
+    build?: string | null;
     rim?: string;
-    typeMC?: string[];
+    typeMC?: string[] | string | null;
     uph?: number;
     tireCode?: string;
     mold?: number;

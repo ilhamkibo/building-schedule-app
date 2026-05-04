@@ -56,7 +56,7 @@ export default function PPLList() {
 
     const [month, setMonth] = useState<string | undefined>(undefined);
     const [year, setYear] = useState<string | undefined>(new Date().getFullYear().toString());
-    const [paginate, setPaginate] = useState(true);
+    // const [paginate, setPaginate] = useState(true);
     const [isActive, setIsActive] = useState(true);
 
 
@@ -91,7 +91,7 @@ export default function PPLList() {
         search: debouncedSearch,
         month: month && month !== "0" ? parseInt(month) : undefined,
         year: year && year !== "0" ? parseInt(year) : undefined,
-        paginate,
+        //paginate,
         isActive
     });
 
@@ -210,7 +210,7 @@ export default function PPLList() {
                         </SelectContent>
                     </Select>
 
-                    <div className="flex items-center space-x-2 bg-muted/50 px-3 py-1.5 rounded-md border">
+                    {/* <div className="flex items-center space-x-2 bg-muted/50 px-3 py-1.5 rounded-md border">
                         <Switch
                             id="paginate-mode"
                             checked={paginate}
@@ -219,7 +219,7 @@ export default function PPLList() {
                         <Label htmlFor="paginate-mode" className="text-xs font-medium cursor-pointer">
                             Paginate
                         </Label>
-                    </div>
+                    </div> */}
 
                 </div>
 
@@ -282,16 +282,24 @@ export default function PPLList() {
                                 <TableCell className="whitespace-nowrap">
                                     {new Date(ppl.createDateTime).toLocaleString()}
                                 </TableCell>
-                                <TableCell>{ppl.build}</TableCell>
+                                <TableCell>{ppl.build || "-"}</TableCell>
                                 <TableCell>{ppl.rim}</TableCell>
                                 <TableCell className="font-medium">{ppl.tireCode}</TableCell>
                                 <TableCell>
                                     <div className="flex flex-wrap gap-1">
-                                        {ppl.typeMC.map((m) => (
+                                        {Array.isArray(ppl.typeMC) ? (ppl.typeMC.length === 0 ? (
+                                            <span className="px-2 py-0.5 bg-muted rounded text-xs">
+                                                -
+                                            </span>
+                                        ) : ppl.typeMC.map((m) => (
                                             <span key={m} className="px-2 py-0.5 bg-muted rounded text-xs">
                                                 {m}
                                             </span>
-                                        ))}
+                                        ))) : (
+                                            <span className="px-2 py-0.5 bg-muted rounded text-xs">
+                                                {ppl.typeMC || "-"}
+                                            </span>
+                                        )}
                                     </div>
                                 </TableCell>
                                 <TableCell>{ppl.uph}</TableCell>
