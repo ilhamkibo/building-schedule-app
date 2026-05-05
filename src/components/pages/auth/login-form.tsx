@@ -21,6 +21,8 @@ import { LoginSchema, loginSchema } from "@/validators/login-validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
+import { ArrowLeftCircle } from "lucide-react";
+import Link from "next/link";
 
 export function LoginForm({
   className,
@@ -55,6 +57,12 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <div className="">
+        <Link href="/" className="flex items-center gap-2 hover:scale-102 w-fit transition-all duration-200 justify-start group">
+          <ArrowLeftCircle className="text-gray-500 group-hover:-translate-x-1 transition-all duration-200" />
+          <span className="text-gray-500 transition-all duration-200">Back to dashboard</span>
+        </Link>
+      </div>
       <div className="flex items-center gap-2">
         <Image
           src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/images/dunlop-logo.jpg`}

@@ -48,7 +48,7 @@ export function proxy(req: NextRequest) {
      * PROTECTED ADMIN ROUTES
      */
     // Membiarkan / bisa diakses tanpa login (Dashboard public)
-    if (pathname !== "/") {
+    if (pathname !== "/" && pathname !== "/user-guide") {
         if (!isAuthenticated) {
             const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
             const loginURL = new URL(`${basePath}/login`, req.url);

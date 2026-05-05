@@ -20,6 +20,7 @@ import {
   Settings,
   Palette,
   Ruler,
+  BookOpen,
 } from "lucide-react";
 
 
@@ -98,6 +99,11 @@ const navMain: NavGroup[] = [
         url: "/ppc",
         icon: Package,
       },
+      // {
+      //   subtitle: "User Guide",
+      //   url: "/user-guide",
+      //   icon: BookOpen,
+      // },
     ]
   },
   {
@@ -188,18 +194,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
           // Creator
           if (role === "creator") {
-            const allowedPaths = ["/", "/ppl", "/schedules"];
+            const allowedPaths = ["/", "/ppl", "/schedules", "/user-guide"];
             return allowedPaths.includes(item.url);
           }
           // Creator
           if (role === "editor") {
-            const allowedPaths = ["/", "/ppl", "/schedules"];
+            const allowedPaths = ["/", "/ppl", "/schedules", "/user-guide"];
             return allowedPaths.includes(item.url);
           }
 
           // Viewer (default termasuk belum login)
           if (role === "viewer") {
-            return item.url === "/";
+            return item.url === "/" || item.url === "/user-guide";
           }
 
           return false;

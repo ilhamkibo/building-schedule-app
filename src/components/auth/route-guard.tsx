@@ -57,9 +57,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const ROLE_PERMISSIONS: Record<string, string[]> = {
-    viewer: ["/"],
-    editor: ["/", "/ppl", "/schedules", "/new-schedule", "/ppc"],
-    creator: ["/", "/ppl", "/schedules", "/new-schedule", "/ppc"],
+    viewer: ["/", "/user-guide"],
+    editor: ["/", "/ppl", "/schedules", "/new-schedule", "/ppc", "/user-guide"],
+    creator: ["/", "/ppl", "/schedules", "/new-schedule", "/ppc", "/user-guide"],
     admin: ["*"], // allow all
 };
 

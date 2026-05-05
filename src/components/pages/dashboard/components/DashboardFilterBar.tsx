@@ -64,16 +64,7 @@ export function DashboardFilterBar({
                     className="md:w-[160px] w-full h-9 font-semibold bg-background dark:border-slate-700"
                 />
 
-                {/* {isAdminOrEditor && onRefreshClick && onEditClick && (
-                    <Button
-                        variant="outline"
-                        onClick={onEditClick}
-                        className="h-9 gap-2"
-                    >
-                        Edit Schedule
-                    </Button>
-                )} */}
-                {isAdminOrEditor && onEditClick && (
+                {isAdminOrEditor && onRefreshClick && onEditClick && (
                     <Button
                         variant="outline"
                         onClick={onEditClick}

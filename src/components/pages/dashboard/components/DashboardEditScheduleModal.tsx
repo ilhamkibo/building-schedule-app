@@ -39,7 +39,6 @@ export function DashboardEditScheduleModal({
         }
     }, [open, schedulesList, lineNo, date]);
 
-    console.log("🚀 ~ DashboardEditScheduleModal ~ scheduleId:", scheduleId)
     const { data: boardData, isLoading: isLoadingBoard } = useSchedule(scheduleId as number, {
         enabled: !!scheduleId && open
     });

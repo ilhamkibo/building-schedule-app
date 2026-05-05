@@ -47,7 +47,7 @@ export function useAuth() {
         },
         onError: (err) => {
             toast.error(
-                err.message ?? "Login gagal"
+                err.response?.data?.message ?? err.message ?? "Login gagal"
             );
         },
     });
