@@ -46,7 +46,7 @@ function buildCodeRows(machine: CreateScheduleMachine): CodeRow[] {
                     rim: detail.rim || "",
                     mold: detail.mold || 0,
                     stockRc: detail.stockRc || 0,
-                    boQty: detail.boQty || null,
+                    boQty: detail.boQty ?? null,
                     shifts: {},
                 });
                 codeOrder.push(key);

@@ -168,54 +168,58 @@ export default function ScheduleForm({ onCancel, onSuccess }: { onCancel: () => 
         const isQtyAffectsBo = isQtyChanged && !oldItem.isBuildAch && oldItem.boQty !== null;
 
         // Cascade recalculate boQty for the whole sequence if qty or boQty changed
+        // Only process items that have non-null boQty (null means BO data not available from API)
         if ((isQtyAffectsBo || isBoQtyChanged) && oldIdentifier) {
             const allItemsForCode = newItems
                 .map((item, idx) => ({ item, idx }))
                 .filter(({ item }) => {
                     const itemIdentifier = String(item.codeNo || item.size || "").trim();
-                    return itemIdentifier === oldIdentifier;
+                    return itemIdentifier === oldIdentifier && item.boQty !== null;
                 });
 
-            if (isBoQtyChanged && updates.boQty !== undefined) {
-                const changedShift = Number(oldItem.shiftNo);
-                const changedBO = updates.boQty;
-                allItemsForCode.forEach(x => {
-                    if (Number(x.item.shiftNo) === changedShift) {
-                        newItems[x.idx] = { ...newItems[x.idx], boQty: changedBO };
-                    }
-                });
-            }
-
-            const shifts = Array.from(new Set(allItemsForCode.map(x => Number(x.item.shiftNo)))).sort((a, b) => a - b);
-            let currentBO = 0;
-
-            for (let i = 0; i < shifts.length; i++) {
-                const shift = shifts[i];
-                const shiftItems = allItemsForCode.filter(x => Number(x.item.shiftNo) === shift);
-
-                if (i === 0 || (shift === Number(oldItem.shiftNo) && isBoQtyChanged)) {
-                    currentBO = Number(newItems[shiftItems[0].idx].boQty) || 0;
+            // If no items with non-null boQty, skip cascade
+            if (allItemsForCode.length > 0) {
+                if (isBoQtyChanged && updates.boQty !== undefined) {
+                    const changedShift = Number(oldItem.shiftNo);
+                    const changedBO = updates.boQty;
+                    allItemsForCode.forEach(x => {
+                        if (Number(x.item.shiftNo) === changedShift) {
+                            newItems[x.idx] = { ...newItems[x.idx], boQty: changedBO };
+                        }
+                    });
                 }
 
-                shiftItems.forEach(x => {
-                    newItems[x.idx] = { ...newItems[x.idx], boQty: currentBO };
-                });
+                const shifts = Array.from(new Set(allItemsForCode.map(x => Number(x.item.shiftNo)))).sort((a, b) => a - b);
+                let currentBO = 0;
 
-                let shiftDeduction = 0;
-                let hasAppliedBuildAchForShift = false;
-                shiftItems.forEach(x => {
-                    const item = newItems[x.idx];
-                    if (item.isBuildAch) {
-                        if (!hasAppliedBuildAchForShift) {
-                            shiftDeduction += (Number(item.buildAchQty) || 0);
-                            hasAppliedBuildAchForShift = true;
-                        }
-                    } else {
-                        shiftDeduction += (Number(item.qty) || 0);
+                for (let i = 0; i < shifts.length; i++) {
+                    const shift = shifts[i];
+                    const shiftItems = allItemsForCode.filter(x => Number(x.item.shiftNo) === shift);
+
+                    if (i === 0 || (shift === Number(oldItem.shiftNo) && isBoQtyChanged)) {
+                        currentBO = Number(newItems[shiftItems[0].idx].boQty) || 0;
                     }
-                });
 
-                currentBO -= shiftDeduction;
+                    shiftItems.forEach(x => {
+                        newItems[x.idx] = { ...newItems[x.idx], boQty: currentBO };
+                    });
+
+                    let shiftDeduction = 0;
+                    let hasAppliedBuildAchForShift = false;
+                    shiftItems.forEach(x => {
+                        const item = newItems[x.idx];
+                        if (item.isBuildAch) {
+                            if (!hasAppliedBuildAchForShift) {
+                                shiftDeduction += (Number(item.buildAchQty) || 0);
+                                hasAppliedBuildAchForShift = true;
+                            }
+                        } else {
+                            shiftDeduction += (Number(item.qty) || 0);
+                        }
+                    });
+
+                    currentBO -= shiftDeduction;
+                }
             }
         }
 

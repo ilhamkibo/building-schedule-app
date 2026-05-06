@@ -69,9 +69,14 @@ export function useCreateUser(options?: {
             options?.onSuccess?.(data);
         },
         onError: (error) => {
-            const errorMessage =
-                error.response?.data?.message || "Failed to create Role.";
-            toast.error(errorMessage);
+            const responseData = error.response?.data;
+            if (responseData?.errors) {
+                Object.entries(responseData.errors).forEach(([field, messages]) => {
+                    messages.forEach((msg) => toast.error(`${field}: ${msg}`));
+                });
+            } else {
+                toast.error(responseData?.message || "Failed to create User.");
+            }
             options?.onError?.(error);
         },
     });

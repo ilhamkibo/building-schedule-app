@@ -218,20 +218,26 @@ export function SortableRow({
                             <Label className="text-[10px] uppercase text-muted-foreground mb-1">
                                 B.O
                             </Label>
-                            <Input
-                                type="text"
-                                className={`h-8 text-center transition-colors duration-500 ${highlightBo ? 'bg-amber-100 border-amber-500 ring-1 ring-amber-500 font-bold text-amber-900' : 'bg-white'} ${!canEditBO ? 'cursor-not-allowed bg-gray-100 opacity-70' : ''}`}
-                                value={isBoFocused ? (item.boQty ?? "") : (item.boQty === null || item.boQty === undefined || item.boQty === "" ? "" : (Number(item.boQty) <= 10 ? "F" : item.boQty))}
-                                onFocus={() => setIsBoFocused(true)}
-                                onBlur={() => setIsBoFocused(false)}
-                                onChange={(e) => {
-                                    if (!canEditBO) return;
-                                    updateItem(index, {
-                                        boQty: parseInt(e.target.value) || 0,
-                                    })
-                                }}
-                                disabled={!canEditBO}
-                            />
+                            {item.boQty === null ? (
+                                <div className="h-8 flex items-center justify-center bg-muted/30 rounded text-xs text-muted-foreground border">
+                                    {""}
+                                </div>
+                            ) : (
+                                <Input
+                                    type="text"
+                                    className={`h-8 text-center transition-colors duration-500 ${highlightBo ? 'bg-amber-100 border-amber-500 ring-1 ring-amber-500 font-bold text-amber-900' : 'bg-white'} ${!canEditBO ? 'cursor-not-allowed bg-gray-100 opacity-70' : ''}`}
+                                    value={isBoFocused ? (item.boQty ?? "") : (item.boQty === undefined || item.boQty === "" ? "" : (Number(item.boQty) <= 10 ? "F" : item.boQty))}
+                                    onFocus={() => setIsBoFocused(true)}
+                                    onBlur={() => setIsBoFocused(false)}
+                                    onChange={(e) => {
+                                        if (!canEditBO) return;
+                                        updateItem(index, {
+                                            boQty: parseInt(e.target.value) || 0,
+                                        })
+                                    }}
+                                    disabled={!canEditBO}
+                                />
+                            )}
                         </div>
 
                         {/* Quantity */}
