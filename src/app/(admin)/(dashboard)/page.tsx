@@ -5,7 +5,7 @@ import ScheduleBoard from "@/components/pages/dashboard/ScheduleBoard";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useLines } from "@/hooks/use-line";
 import { useTodayLineSchedule, useUpdateTimeline } from "@/hooks/use-schedule";
-import { useRealtimeBO, useRealtimeRCStock, useSizeColors } from "@/hooks/use-product";
+import { useRealtimeRCStock, useSizeColors } from "@/hooks/use-product";
 import { useShiftContext } from "@/context/shift-context";
 import { TodayLineSchedule, ScheduleLineDetailToday, SchedulePhase } from "@/types/schedule";
 import { DashboardFilterBar } from "@/components/pages/dashboard/components/DashboardFilterBar";
@@ -186,9 +186,6 @@ export default function Page() {
     return Array.from(codes);
   }, [baseDashboardData]);
 
-  const { data: realtimeBOData } = useRealtimeBO(uniqueCodes, selectedDate, {
-    enabled: uniqueCodes.length > 0 && !!selectedDate && !isHistoricalDate
-  });
   const { data: realtimeRCStockData } = useRealtimeRCStock(uniqueCodes, {
     enabled: uniqueCodes.length > 0 && !isHistoricalDate
   });
@@ -197,20 +194,17 @@ export default function Page() {
   });
 
   const dashboardData = useMemo(() => {
-    if ((!realtimeBOData || realtimeBOData.length === 0) && (!realtimeRCStockData || realtimeRCStockData.length === 0) && (!sizeColorsData || sizeColorsData.length === 0)) {
+    if ((!realtimeRCStockData || realtimeRCStockData.length === 0) && (!sizeColorsData || sizeColorsData.length === 0)) {
       return baseDashboardData;
     }
 
     return baseDashboardData.map(m => ({
       ...m,
       rows: m.rows.map(r => {
-        const boData = r.balanceOut !== null && r.balanceOut !== undefined ? r.balanceOut : realtimeBOData?.find(bo => bo.sizeCode === r.code)?.realtimeBo
         const rcStockData = realtimeRCStockData?.find(rc => rc.sizeCode === r.code);
         const colorData = sizeColorsData?.find(c => c.sizeCode === r.code);
         return {
           ...r,
-          // balanceOut: boData?.realtimeBo !== null && boData?.realtimeBo !== undefined ? boData.realtimeBo : r.balanceOut,
-          balanceOut: boData !== null && boData !== undefined ? boData : r.balanceOut,
           rcStock: rcStockData?.stockRcQty ?? r.rcStock,
           colors: colorData
             ? { textColor: colorData.textColorHex, bgColor: colorData.backgroundColorHex }
@@ -218,7 +212,7 @@ export default function Page() {
         };
       })
     }));
-  }, [baseDashboardData, realtimeBOData, realtimeRCStockData, sizeColorsData]);
+  }, [baseDashboardData, realtimeRCStockData, sizeColorsData]);
 
   return (
     <div
