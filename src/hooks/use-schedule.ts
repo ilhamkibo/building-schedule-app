@@ -69,9 +69,8 @@ export function useCreateSchedule(options?: {
             options?.onSuccess?.(data);
         },
         onError: (error) => {
-            console.log("🚀 ~ useCreateSchedule ~ error:", error)
             const errorMessage =
-                error.message || "Failed to create schedule.";
+                error.response?.data?.message || "Failed to create schedule.";
             toast.error(errorMessage);
             options?.onError?.(error);
         },
