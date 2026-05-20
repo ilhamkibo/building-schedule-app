@@ -25,6 +25,8 @@ import {
 
 import { MachineCard } from "./components/machine-card";
 import { StaticRow } from "./components/sortable-row";
+import { useLine, useLines } from "@/hooks/use-line";
+import { Line } from "@/types/line";
 
 /**
  * Convert ScheduleBoard (from GET /api/schedules/{id}) into FormItem[] for editing.
@@ -70,12 +72,17 @@ function boardToFormItems(board: ScheduleBoard): FormItem[] {
 interface EditScheduleFormProps {
     board: ScheduleBoard;
     lineNo: number;
+    lineData?: Line;
     onCancel: () => void;
     onSuccess: () => void;
 }
 
-export default function EditScheduleForm({ board, lineNo, onCancel, onSuccess }: EditScheduleFormProps) {
-    console.log("🚀 ~ EditScheduleForm ~ board:", board)
+export default function EditScheduleForm({ board, lineNo, lineData, onCancel, onSuccess }: EditScheduleFormProps) {
+
+    // Fallback to fetch lines if lineData is not provided or undefined
+    const { data: lines = [] } = useLines({ limit: 100 }, { enabled: !lineData });
+    const resolvedLineData = lineData || lines.find(l => Number(l.lineNo) === Number(lineNo));
+
     const [date] = useState(board.date);
 
     const [items, setItems] = useState<FormItem[]>([]);
@@ -86,7 +93,6 @@ export default function EditScheduleForm({ board, lineNo, onCancel, onSuccess }:
 
     const { user } = useAuthContext();
     const canEditBO = user?.role?.toLowerCase() !== "editor";
-
     // Sensors for DND
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -421,7 +427,7 @@ export default function EditScheduleForm({ board, lineNo, onCancel, onSuccess }:
                             <h2 className="text-xl font-bold">Edit Schedule</h2>
                             <p className="text-sm text-muted-foreground">
                                 {new Date(date).toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
-                                {" · "}Line {lineNo}
+                                {" · "}{resolvedLineData?.name || lineNo}
                             </p>
                         </div>
                     </div>

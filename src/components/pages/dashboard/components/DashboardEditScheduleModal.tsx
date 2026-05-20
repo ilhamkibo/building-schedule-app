@@ -9,12 +9,14 @@ import { useSchedules, useSchedule } from "@/hooks/use-schedule";
 import EditScheduleForm from "@/components/pages/schedules/edit-schedule-form";
 import { PencilLine, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Line } from "@/types/line";
 
 interface DashboardEditScheduleModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     lineNo: string;
     date: string;
+    lineData: Line | undefined;
 }
 
 export function DashboardEditScheduleModal({
@@ -22,6 +24,7 @@ export function DashboardEditScheduleModal({
     onOpenChange,
     lineNo,
     date,
+    lineData
 }: DashboardEditScheduleModalProps) {
     const [scheduleId, setScheduleId] = useState<number | null>(null);
 
@@ -70,6 +73,7 @@ export function DashboardEditScheduleModal({
                         <EditScheduleForm
                             board={boardData.data}
                             lineNo={Number(lineNo)}
+                            lineData={lineData || undefined}
                             onCancel={() => onOpenChange(false)}
                             onSuccess={() => {
                                 onOpenChange(false);

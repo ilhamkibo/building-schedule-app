@@ -237,6 +237,7 @@ export default function Page() {
         open={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
         lineNo={selectedLineNo}
+        lineData={linesData.find(l => l.lineNo.toString() === selectedLineNo)}
         date={selectedDate}
       />
 
