@@ -217,7 +217,7 @@ export default function Page() {
   return (
     <div
       className={`p-4 ${open
-        ? "md:max-w-[calc(100vw-19rem)] max-w-full"
+        ? "md:max-w-[calc(100vw-20rem)] max-w-full"
         : "max-w-full"
         }`}
     >

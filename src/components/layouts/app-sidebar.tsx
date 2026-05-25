@@ -305,8 +305,36 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="mb-3">
-        {user && <NavUser user={user} logout={logout} />}
-        {!user && <NavLogin />}
+        {user && (
+          <div className="flex flex-col gap-2">
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActiveRoute("/user-guide")}>
+                  <Link href="/user-guide">
+                    <BookOpen className="h-4 w-4" />
+                    <span>User Guide</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+            <NavUser user={user} logout={logout} />
+          </div>
+        )}
+        {!user && (
+          <div className="flex flex-col gap-2">
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActiveRoute("/user-guide")}>
+                  <Link href="/user-guide">
+                    <BookOpen className="h-4 w-4" />
+                    <span>User Guide</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+            <NavLogin />
+          </div>
+        )}
       </SidebarFooter>
     </Sidebar>
   );
