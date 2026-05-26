@@ -65,11 +65,49 @@ export default async function UserGuidePage() {
 
       <main className="flex-1 w-full p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-8 border-b pb-4 dark:border-slate-800">
-            <h1 className="text-3xl font-bold tracking-tight">User Guide</h1>
-            <p className="text-muted-foreground mt-2">
-              Complete manual and instructions on how to use the application.
-            </p>
+          <div className="mb-8 border-b pb-4 dark:border-slate-800 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">User Guide</h1>
+              <p className="text-muted-foreground mt-2">
+                Complete manual and instructions on how to use the application.
+              </p>
+            </div>
+          </div>
+
+          {/* PDF Viewer Access - Premium Card */}
+          <div className="mb-8">
+            <a
+              href="/files/user-guide.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative flex overflow-hidden rounded-xl border border-rose-500/20 bg-linear-to-br from-rose-50/50 to-white dark:from-rose-950/10 dark:to-slate-900/50 p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-rose-500/10 dark:hover:shadow-rose-950/20"
+            >
+              {/* Decorative Glow */}
+              <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-rose-500/10 blur-xl group-hover:bg-rose-500/20 transition-all duration-300" />
+
+              <div className="flex items-center gap-4 w-full">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-rose-500/10 text-rose-500 dark:bg-rose-500/20 dark:text-rose-400 group-hover:scale-110 transition-transform duration-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg>
+                </div>
+                <div className="space-y-1 pr-4">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-slate-800 dark:text-slate-200 text-sm sm:text-base">
+                      Buka PDF Buku Panduan (User Guide)
+                    </h3>
+                    <span className="inline-flex items-center rounded-full bg-rose-500/10 px-2 py-0.5 text-xs font-medium text-rose-600 dark:bg-rose-500/20 dark:text-rose-300">
+                      PDF Dokumen
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Klik untuk membuka buku panduan dalam format PDF di tab baru. Anda dapat membaca, mencari teks, atau mengunduhnya secara offline.
+                  </p>
+                </div>
+                <div className="ml-auto shrink-0 text-slate-400 group-hover:text-rose-500 group-hover:translate-x-1 transition-all duration-300 flex items-center gap-1.5 font-medium text-xs sm:text-sm">
+                  <span className="hidden sm:inline">Buka di Tab Baru</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-external-link"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg>
+                </div>
+              </div>
+            </a>
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8 items-start">
@@ -83,11 +121,10 @@ export default async function UserGuidePage() {
                   <a
                     key={i}
                     href={`#${h.id}`}
-                    className={`transition-all duration-200 hover:text-primary leading-snug ${
-                      h.isSub
-                        ? "pl-4 text-[11px] text-muted-foreground hover:pl-5"
-                        : "text-xs font-semibold text-slate-800 dark:text-slate-200 mt-2 border-l-2 border-transparent pl-1 hover:border-primary/50"
-                    }`}
+                    className={`transition-all duration-200 hover:text-primary leading-snug ${h.isSub
+                      ? "pl-4 text-[11px] text-muted-foreground hover:pl-5"
+                      : "text-xs font-semibold text-slate-800 dark:text-slate-200 mt-2 border-l-2 border-transparent pl-1 hover:border-primary/50"
+                      }`}
                   >
                     {h.text}
                   </a>

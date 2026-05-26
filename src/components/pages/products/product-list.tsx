@@ -167,8 +167,8 @@ export default function ProductList() {
                             </TableRow>
                         )}
 
-                        {products.map((product) => (
-                            <TableRow key={product.codeNo}>
+                        {products.map((product, index) => (
+                            <TableRow key={product.codeNo + index}>
                                 <TableCell className="font-medium">{product.codeNo}</TableCell>
                                 <TableCell>{product.sizeName}</TableCell>
                                 <TableCell>{product.source}</TableCell>
