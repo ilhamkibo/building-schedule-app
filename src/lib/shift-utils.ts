@@ -82,13 +82,13 @@ export function getNextShiftInfo(shifts: Shift[]): { nextShift: Shift; startTime
             }
         }
     }
-    
+
     // Default to last shift if still not found (meaning it's after all starts)
     if (currentShiftIndex === -1) currentShiftIndex = sortedShifts.length - 1;
 
     const nextShiftIndex = (currentShiftIndex + 1) % sortedShifts.length;
     const nextShift = sortedShifts[nextShiftIndex];
-    
+
     const [nH, nM] = nextShift.startTime.split(':').map(Number);
     const nextStartTime = new Date(now);
     nextStartTime.setHours(nH, nM, 0, 0);
@@ -102,40 +102,57 @@ export function getNextShiftInfo(shifts: Shift[]): { nextShift: Shift; startTime
 }
 
 /**
+ * Gets the target shift for manual refresh based on the active refresh window (T-60 to T+15 of any shift).
+ * If we are in the T-60 to T-0 window before a shift starts, it returns that next shift.
+ * If we are in the T-0 to T+15 window after a shift starts, it returns that current shift.
+ * Otherwise, returns null.
+ * 
+ * @param shifts - Array of shift configurations
+ * @returns The shift number to refresh, or null if outside any refresh window
+ */
+export function getManualRefreshTargetShift(shifts: Shift[]): number | null {
+    if (!shifts || shifts.length === 0) return null;
+    const now = new Date();
+
+    // 1. Check current shift (for T-0 to T+15 window)
+    const currentShiftNo = getCurrentShift(shifts);
+    if (currentShiftNo) {
+        const currentShift = shifts.find(s => s.shiftNo === currentShiftNo);
+        if (currentShift) {
+            const [h, m] = currentShift.startTime.split(':').map(Number);
+            const startTime = new Date(now);
+            startTime.setHours(h, m, 0, 0);
+            // Handle overnight
+            if (startTime > now) {
+                startTime.setDate(startTime.getDate() - 1);
+            }
+            const diffCurrent = (now.getTime() - startTime.getTime()) / (1000 * 60);
+            if (diffCurrent >= 0 && diffCurrent <= 15) {
+                return currentShift.shiftNo;
+            }
+        }
+    }
+
+    // 2. Check next shift (for T-60 to T-0 window)
+    const nextInfo = getNextShiftInfo(shifts);
+    if (nextInfo) {
+        const diffNext = (nextInfo.startTime.getTime() - now.getTime()) / (1000 * 60);
+        if (diffNext <= 60 && diffNext >= 0) {
+            return nextInfo.nextShift.shiftNo;
+        }
+    }
+
+    return null;
+}
+
+/**
  * Checks if the current time is within the manual refresh window (T-60 to T+15 of any shift)
  * 
  * @param shifts - Array of shift configurations
  * @returns boolean
  */
 export function isManualRefreshWindow(shifts: Shift[]): boolean {
-    if (!shifts || shifts.length === 0) return false;
-    const now = new Date();
-    
-    // Check next shift (for T-60 to T-0)
-    const nextInfo = getNextShiftInfo(shifts);
-    if (nextInfo) {
-      const diffNext = (nextInfo.startTime.getTime() - now.getTime()) / (1000 * 60);
-      if (diffNext <= 60 && diffNext >= 0) return true;
-    }
-
-    // Check current shift (for T-0 to T+15)
-    const currentShiftNo = getCurrentShift(shifts);
-    if (currentShiftNo) {
-      const currentShift = shifts.find(s => s.shiftNo === currentShiftNo);
-      if (currentShift) {
-        const [h, m] = currentShift.startTime.split(':').map(Number);
-        const startTime = new Date(now);
-        startTime.setHours(h, m, 0, 0);
-        // Handle overnight
-        if (startTime > now) {
-            startTime.setDate(startTime.getDate() - 1);
-        }
-        const diffCurrent = (now.getTime() - startTime.getTime()) / (1000 * 60);
-        if (diffCurrent >= 0 && diffCurrent <= 15) return true;
-      }
-    }
-
-    return false;
+    return getManualRefreshTargetShift(shifts) !== null;
 }
 
 

@@ -12,7 +12,7 @@ import { DashboardFilterBar } from "@/components/pages/dashboard/components/Dash
 import { DashboardSkeleton } from "@/components/pages/dashboard/components/DashboardSkeleton";
 import { DashboardEditScheduleModal } from "@/components/pages/dashboard/components/DashboardEditScheduleModal";
 import Link from "next/link";
-import { getNextShiftInfo, isManualRefreshWindow } from "@/lib/shift-utils";
+import { getNextShiftInfo, isManualRefreshWindow, getManualRefreshTargetShift } from "@/lib/shift-utils";
 import { useAuthContext } from "@/context/auth-context";
 import { Button } from "@/components/ui/button";
 
@@ -64,8 +64,11 @@ export default function Page() {
 
     let shiftNo = targetShiftNo;
     if (!shiftNo) {
-      const nextInfo = getNextShiftInfo(shiftTime);
-      if (nextInfo) shiftNo = nextInfo.nextShift.shiftNo;
+      shiftNo = getManualRefreshTargetShift(shiftTime) || undefined;
+      if (!shiftNo) {
+        const nextInfo = getNextShiftInfo(shiftTime);
+        if (nextInfo) shiftNo = nextInfo.nextShift.shiftNo;
+      }
     }
 
     if (!shiftNo) return;
