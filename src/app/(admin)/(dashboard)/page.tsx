@@ -15,6 +15,7 @@ import Link from "next/link";
 import { getNextShiftInfo, isManualRefreshWindow, getManualRefreshTargetShift } from "@/lib/shift-utils";
 import { useAuthContext } from "@/context/auth-context";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const STORAGE_KEY = "selected-line-no";
 
@@ -50,7 +51,7 @@ export default function Page() {
     }
   }, [selectedLineNo]);
 
-  const { data: scheduleResponse, isLoading: isLoadingSchedules, refetch: refetchSchedules, isError: scheduleIsError } = useTodayLineSchedule(
+  const { data: scheduleResponse, isLoading: isLoadingSchedules, isFetching: isFetchingSchedules, refetch: refetchSchedules, isError: scheduleIsError } = useTodayLineSchedule(
     parseInt(selectedLineNo),
     selectedDate,
     { enabled: !!selectedLineNo && !!selectedDate }
@@ -73,6 +74,23 @@ export default function Page() {
 
     if (!shiftNo) return;
 
+    // Shift 1 = ganti hari & ganti model produksi (misal Shift 3 → Shift 1).
+    // Tidak perlu update timeline, cukup ambil schedule hari baru.
+    if (shiftNo === 1) {
+      const today = new Date().toLocaleDateString('en-CA');
+      if (selectedDate !== today) {
+        // Sedang lihat kemarin → pindah ke hari ini, query otomatis refetch
+        setSelectedDate(today);
+        toast.success("Tanggal diperbarui ke hari ini.");
+      } else {
+        // Sudah di hari ini → cukup refetch
+        refetchSchedules().then(() => {
+          toast.success("Schedule berhasil diperbarui untuk hari baru.");
+        });
+      }
+      return;
+    }
+
     const scheduleId = scheduleData[0].scheduleId;
 
     updateTimeline(
@@ -83,7 +101,7 @@ export default function Page() {
         }
       }
     );
-  }, [scheduleData, shiftTime, updateTimeline, refetchSchedules]);
+  }, [scheduleData, shiftTime, updateTimeline, refetchSchedules, selectedDate]);
 
   // Only allow auto-refresh when selectedDate is today
   const isSelectedDateToday = useMemo(() => {
@@ -91,8 +109,20 @@ export default function Page() {
     return selectedDate === today;
   }, [selectedDate]);
 
+  // Deteksi kondisi: sedang lihat kemarin & waktu sekarang di window Shift 3 → Shift 1
+  const isYesterdayInDayChangeWindow = useMemo(() => {
+    const today = new Date().toLocaleDateString('en-CA');
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toLocaleDateString('en-CA');
+    if (selectedDate !== yesterdayStr) return false;
+    // Window aktif jika target shift adalah Shift 1 (T-60 s/d T+15)
+    return getManualRefreshTargetShift(shiftTime) === 1;
+  }, [selectedDate, shiftTime]);
+
   useEffect(() => {
-    if (!isSelectedDateToday) return; // Only auto-refresh for today's schedule
+    // Auto-refresh aktif untuk hari ini ATAU kemarin saat window Shift 3→1
+    if (!isSelectedDateToday && !isYesterdayInDayChangeWindow) return;
     if (!shiftTime || shiftTime.length === 0 || !scheduleData || scheduleData.length === 0) return;
 
     const interval = setInterval(() => {
@@ -118,12 +148,15 @@ export default function Page() {
     }, 15000); // Check every 15 seconds for more precision
 
     return () => clearInterval(interval);
-  }, [shiftTime, scheduleData, lastAutoRefresh, handleRefresh, isSelectedDateToday]);
+  }, [shiftTime, scheduleData, lastAutoRefresh, handleRefresh, isSelectedDateToday, isYesterdayInDayChangeWindow]);
 
   const canManualRefresh = useMemo(() => {
-    if (!isSelectedDateToday) return false; // Only allow manual refresh for today's schedule
-    return isManualRefreshWindow(shiftTime);
-  }, [shiftTime, isSelectedDateToday]);
+    // Hari ini: ikuti window normal
+    if (isSelectedDateToday) return isManualRefreshWindow(shiftTime);
+    // Kemarin di window Shift 3→1: izinkan manual refresh
+    if (isYesterdayInDayChangeWindow) return true;
+    return false;
+  }, [shiftTime, isSelectedDateToday, isYesterdayInDayChangeWindow]);
 
   const timeToDecimal = (dateStr: string | null) => {
     if (!dateStr) return 0;
@@ -231,8 +264,8 @@ export default function Page() {
         onDateChange={setSelectedDate}
         lines={linesData}
         onEditClick={!isGuest && dashboardData.length > 0 ? () => setIsEditModalOpen(true) : undefined}
-        onRefreshClick={isSelectedDateToday ? () => handleRefresh() : undefined}
-        isRefreshing={isUpdatingTimeline}
+        onRefreshClick={(isSelectedDateToday || isYesterdayInDayChangeWindow) ? () => handleRefresh() : undefined}
+        isRefreshing={isUpdatingTimeline || isFetchingSchedules}
         canRefresh={canManualRefresh && dashboardData.length > 0}
       />
 
