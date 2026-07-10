@@ -7,12 +7,20 @@ import { useLines } from "@/hooks/use-line";
 import { useTodayLineSchedule, useUpdateTimeline } from "@/hooks/use-schedule";
 import { useRealtimeRCStock, useSizeColors } from "@/hooks/use-product";
 import { useShiftContext } from "@/context/shift-context";
-import { TodayLineSchedule, ScheduleLineDetailToday, SchedulePhase } from "@/types/schedule";
+import {
+  TodayLineSchedule,
+  ScheduleLineDetailToday,
+  SchedulePhase,
+} from "@/types/schedule";
 import { DashboardFilterBar } from "@/components/pages/dashboard/components/DashboardFilterBar";
 import { DashboardSkeleton } from "@/components/pages/dashboard/components/DashboardSkeleton";
 import { DashboardEditScheduleModal } from "@/components/pages/dashboard/components/DashboardEditScheduleModal";
 import Link from "next/link";
-import { getNextShiftInfo, isManualRefreshWindow, getManualRefreshTargetShift } from "@/lib/shift-utils";
+import {
+  getNextShiftInfo,
+  isManualRefreshWindow,
+  getManualRefreshTargetShift,
+} from "@/lib/shift-utils";
 import { useAuthContext } from "@/context/auth-context";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -22,7 +30,7 @@ const STORAGE_KEY = "selected-line-no";
 export default function Page() {
   const [selectedLineNo, setSelectedLineNo] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toLocaleDateString('en-CA')
+    new Date().toLocaleDateString("id-ID"),
   );
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [lastAutoRefresh, setLastAutoRefresh] = useState<string | null>(null);
@@ -31,9 +39,13 @@ export default function Page() {
   const isGuest = !user || user.role?.toLowerCase() === "viewer";
 
   const { open } = useSidebar();
-  const { shifts: shiftTime, isLoading: isLoadingShiftTime } = useShiftContext();
-  const { data: linesData = [], isLoading: isLoadingLines } = useLines({ limit: 100 });
-  const { mutate: updateTimeline, isPending: isUpdatingTimeline } = useUpdateTimeline();
+  const { shifts: shiftTime, isLoading: isLoadingShiftTime } =
+    useShiftContext();
+  const { data: linesData = [], isLoading: isLoadingLines } = useLines({
+    limit: 100,
+  });
+  const { mutate: updateTimeline, isPending: isUpdatingTimeline } =
+    useUpdateTimeline();
 
   useEffect(() => {
     const savedLineNo = localStorage.getItem(STORAGE_KEY);
@@ -51,70 +63,77 @@ export default function Page() {
     }
   }, [selectedLineNo]);
 
-  const { data: scheduleResponse, isLoading: isLoadingSchedules, isFetching: isFetchingSchedules, refetch: refetchSchedules, isError: scheduleIsError } = useTodayLineSchedule(
-    parseInt(selectedLineNo),
-    selectedDate,
-    { enabled: !!selectedLineNo && !!selectedDate }
-  );
+  const {
+    data: scheduleResponse,
+    isLoading: isLoadingSchedules,
+    isFetching: isFetchingSchedules,
+    refetch: refetchSchedules,
+    isError: scheduleIsError,
+  } = useTodayLineSchedule(parseInt(selectedLineNo), selectedDate, {
+    enabled: !!selectedLineNo && !!selectedDate,
+  });
 
   const scheduleData = scheduleResponse?.data;
 
   // Refresh Logic
-  const handleRefresh = useCallback((targetShiftNo?: number) => {
-    if (!scheduleData || scheduleData.length === 0) return;
+  const handleRefresh = useCallback(
+    (targetShiftNo?: number) => {
+      if (!scheduleData || scheduleData.length === 0) return;
 
-    let shiftNo = targetShiftNo;
-    if (!shiftNo) {
-      shiftNo = getManualRefreshTargetShift(shiftTime) || undefined;
+      let shiftNo = targetShiftNo;
       if (!shiftNo) {
-        const nextInfo = getNextShiftInfo(shiftTime);
-        if (nextInfo) shiftNo = nextInfo.nextShift.shiftNo;
-      }
-    }
-
-    if (!shiftNo) return;
-
-    // Shift 1 = ganti hari & ganti model produksi (misal Shift 3 → Shift 1).
-    // Tidak perlu update timeline, cukup ambil schedule hari baru.
-    if (shiftNo === 1) {
-      const today = new Date().toLocaleDateString('en-CA');
-      if (selectedDate !== today) {
-        // Sedang lihat kemarin → pindah ke hari ini, query otomatis refetch
-        setSelectedDate(today);
-        toast.success("Tanggal diperbarui ke hari ini.");
-      } else {
-        // Sudah di hari ini → cukup refetch
-        refetchSchedules().then(() => {
-          toast.success("Schedule berhasil diperbarui untuk hari baru.");
-        });
-      }
-      return;
-    }
-
-    const scheduleId = scheduleData[0].scheduleId;
-
-    updateTimeline(
-      { scheduleId, shiftNo },
-      {
-        onSuccess: () => {
-          refetchSchedules();
+        shiftNo = getManualRefreshTargetShift(shiftTime) || undefined;
+        if (!shiftNo) {
+          const nextInfo = getNextShiftInfo(shiftTime);
+          if (nextInfo) shiftNo = nextInfo.nextShift.shiftNo;
         }
       }
-    );
-  }, [scheduleData, shiftTime, updateTimeline, refetchSchedules, selectedDate]);
+
+      if (!shiftNo) return;
+
+      // Shift 1 = ganti hari & ganti model produksi (misal Shift 3 → Shift 1).
+      // Tidak perlu update timeline, cukup ambil schedule hari baru.
+      if (shiftNo === 1) {
+        const today = new Date().toLocaleDateString("id-ID");
+        if (selectedDate !== today) {
+          // Sedang lihat kemarin → pindah ke hari ini, query otomatis refetch
+          setSelectedDate(today);
+          toast.success("Tanggal diperbarui ke hari ini.");
+        } else {
+          // Sudah di hari ini → cukup refetch
+          refetchSchedules().then(() => {
+            toast.success("Schedule berhasil diperbarui untuk hari baru.");
+          });
+        }
+        return;
+      }
+
+      const scheduleId = scheduleData[0].scheduleId;
+
+      updateTimeline(
+        { scheduleId, shiftNo },
+        {
+          onSuccess: () => {
+            refetchSchedules();
+          },
+        },
+      );
+    },
+    [scheduleData, shiftTime, updateTimeline, refetchSchedules, selectedDate],
+  );
 
   // Only allow auto-refresh when selectedDate is today
   const isSelectedDateToday = useMemo(() => {
-    const today = new Date().toLocaleDateString('en-CA');
+    const today = new Date().toLocaleDateString("id-ID");
     return selectedDate === today;
   }, [selectedDate]);
 
   // Deteksi kondisi: sedang lihat kemarin & waktu sekarang di window Shift 3 → Shift 1
   const isYesterdayInDayChangeWindow = useMemo(() => {
-    const today = new Date().toLocaleDateString('en-CA');
+    const today = new Date().toLocaleDateString("id-ID");
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toLocaleDateString('en-CA');
+    const yesterdayStr = yesterday.toLocaleDateString("id-ID");
     if (selectedDate !== yesterdayStr) return false;
     // Window aktif jika target shift adalah Shift 1 (T-60 s/d T+15)
     return getManualRefreshTargetShift(shiftTime) === 1;
@@ -123,7 +142,13 @@ export default function Page() {
   useEffect(() => {
     // Auto-refresh aktif untuk hari ini ATAU kemarin saat window Shift 3→1
     if (!isSelectedDateToday && !isYesterdayInDayChangeWindow) return;
-    if (!shiftTime || shiftTime.length === 0 || !scheduleData || scheduleData.length === 0) return;
+    if (
+      !shiftTime ||
+      shiftTime.length === 0 ||
+      !scheduleData ||
+      scheduleData.length === 0
+    )
+      return;
 
     const interval = setInterval(() => {
       const now = new Date();
@@ -135,12 +160,16 @@ export default function Page() {
 
       // Auto Refresh Trigger: 15, 30, 45, 60 minutes before shift starts
       const triggerPoints = [15, 30, 45, 60];
-      const matchingPoint = triggerPoints.find(p => Math.abs(diffMinutes - p) < 0.25); // 15 seconds tolerance
+      const matchingPoint = triggerPoints.find(
+        (p) => Math.abs(diffMinutes - p) < 0.25,
+      ); // 15 seconds tolerance
 
       if (matchingPoint) {
         const triggerId = `${nextShift.shiftNo}-${matchingPoint}-${now.getHours()}:${now.getMinutes()}`;
         if (lastAutoRefresh !== triggerId) {
-          console.log(`Auto Refresh Triggered at ${matchingPoint} minutes before Shift ${nextShift.shiftNo}`);
+          console.log(
+            `Auto Refresh Triggered at ${matchingPoint} minutes before Shift ${nextShift.shiftNo}`,
+          );
           handleRefresh(nextShift.shiftNo);
           setLastAutoRefresh(triggerId);
         }
@@ -148,7 +177,14 @@ export default function Page() {
     }, 15000); // Check every 15 seconds for more precision
 
     return () => clearInterval(interval);
-  }, [shiftTime, scheduleData, lastAutoRefresh, handleRefresh, isSelectedDateToday, isYesterdayInDayChangeWindow]);
+  }, [
+    shiftTime,
+    scheduleData,
+    lastAutoRefresh,
+    handleRefresh,
+    isSelectedDateToday,
+    isYesterdayInDayChangeWindow,
+  ]);
 
   const canManualRefresh = useMemo(() => {
     // Hari ini: ikuti window normal
@@ -162,7 +198,7 @@ export default function Page() {
     if (!dateStr) return 0;
     const timeMatch = dateStr.match(/T(\d{2}:\d{2}:\d{2})/);
     if (timeMatch) {
-      const [h, m, s] = timeMatch[1].split(':').map(Number);
+      const [h, m, s] = timeMatch[1].split(":").map(Number);
       return h + m / 60 + s / 3600;
     }
     const date = new Date(dateStr);
@@ -178,44 +214,53 @@ export default function Page() {
     const validStart = new Date(`${selectedDate}T${shift1StartStr}`);
     const validEnd = new Date(validStart.getTime() + 24 * 60 * 60 * 1000);
 
-    return (scheduleData as TodayLineSchedule[]).map((m: TodayLineSchedule) => ({
-      id: m.machine || m.id?.toString(),
-      machine: m.machine,
-      scheduleId: m.scheduleId,
-      scheduleCode: m.scheduleCode,
-      shift: m.shift || "All Shifts",
-      rows: (m.rows || []).map((row: ScheduleLineDetailToday) => {
-        const validPhases = (row.phases || []).filter((p: SchedulePhase) => {
-          if (!p.start || typeof p.start !== "string") return true;
+    return (scheduleData as TodayLineSchedule[]).map(
+      (m: TodayLineSchedule) => ({
+        id: m.machine || m.id?.toString(),
+        machine: m.machine,
+        scheduleId: m.scheduleId,
+        scheduleCode: m.scheduleCode,
+        shift: m.shift || "All Shifts",
+        rows: (m.rows || []).map((row: ScheduleLineDetailToday) => {
+          const validPhases = (row.phases || []).filter((p: SchedulePhase) => {
+            if (!p.start || typeof p.start !== "string") return true;
 
-          const phaseDate = new Date(p.start);
-          if (isNaN(phaseDate.getTime())) return true;
+            const phaseDate = new Date(p.start);
+            if (isNaN(phaseDate.getTime())) return true;
 
-          return phaseDate.getTime() >= validStart.getTime() && phaseDate.getTime() <= validEnd.getTime();
-        });
+            return (
+              phaseDate.getTime() >= validStart.getTime() &&
+              phaseDate.getTime() <= validEnd.getTime()
+            );
+          });
 
-        return {
-          ...row,
-          totalQty: (row.shift1Qty.reduce((a, b) => a + b, 0) || 0) + (row.shift2Qty.reduce((a, b) => a + b, 0) || 0) + (row.shift3Qty.reduce((a, b) => a + b, 0) || 0),
-          phases: validPhases.map((p: SchedulePhase) => ({
-            ...p,
-            start: typeof p.start === "string" ? timeToDecimal(p.start) : p.start,
-            end: typeof p.end === "string" ? timeToDecimal(p.end) : p.end,
-          })),
-        };
+          return {
+            ...row,
+            totalQty:
+              (row.shift1Qty.reduce((a, b) => a + b, 0) || 0) +
+              (row.shift2Qty.reduce((a, b) => a + b, 0) || 0) +
+              (row.shift3Qty.reduce((a, b) => a + b, 0) || 0),
+            phases: validPhases.map((p: SchedulePhase) => ({
+              ...p,
+              start:
+                typeof p.start === "string" ? timeToDecimal(p.start) : p.start,
+              end: typeof p.end === "string" ? timeToDecimal(p.end) : p.end,
+            })),
+          };
+        }),
       }),
-    }));
+    );
   }, [scheduleData, scheduleResponse, selectedDate, shiftTime]);
 
   const isHistoricalDate = useMemo(() => {
-    const today = new Date().toLocaleDateString('en-CA');
+    const today = new Date().toLocaleDateString("id-ID");
     return selectedDate < today;
   }, [selectedDate]);
 
   const uniqueCodes = useMemo(() => {
     const codes = new Set<string>();
-    baseDashboardData.forEach(m => {
-      m.rows.forEach(r => {
+    baseDashboardData.forEach((m) => {
+      m.rows.forEach((r) => {
         if (r.code) codes.add(r.code);
       });
     });
@@ -223,39 +268,46 @@ export default function Page() {
   }, [baseDashboardData]);
 
   const { data: realtimeRCStockData } = useRealtimeRCStock(uniqueCodes, {
-    enabled: uniqueCodes.length > 0 && !isHistoricalDate
+    enabled: uniqueCodes.length > 0 && !isHistoricalDate,
   });
   const { data: sizeColorsData } = useSizeColors(uniqueCodes, {
-    enabled: uniqueCodes.length > 0 && !isHistoricalDate
+    enabled: uniqueCodes.length > 0 && !isHistoricalDate,
   });
 
   const dashboardData = useMemo(() => {
-    if ((!realtimeRCStockData || realtimeRCStockData.length === 0) && (!sizeColorsData || sizeColorsData.length === 0)) {
+    if (
+      (!realtimeRCStockData || realtimeRCStockData.length === 0) &&
+      (!sizeColorsData || sizeColorsData.length === 0)
+    ) {
       return baseDashboardData;
     }
 
-    return baseDashboardData.map(m => ({
+    return baseDashboardData.map((m) => ({
       ...m,
-      rows: m.rows.map(r => {
-        const rcStockData = realtimeRCStockData?.find(rc => rc.sizeCode === r.code);
-        const colorData = sizeColorsData?.find(c => c.sizeCode === r.code);
+      rows: m.rows.map((r) => {
+        const rcStockData = realtimeRCStockData?.find(
+          (rc) => rc.sizeCode === r.code,
+        );
+        const colorData = sizeColorsData?.find((c) => c.sizeCode === r.code);
         return {
           ...r,
           rcStock: rcStockData?.stockRcQty ?? r.rcStock,
           colors: colorData
-            ? { textColor: colorData.textColorHex, bgColor: colorData.backgroundColorHex }
+            ? {
+                textColor: colorData.textColorHex,
+                bgColor: colorData.backgroundColorHex,
+              }
             : { textColor: "#000", bgColor: "#fff" },
         };
-      })
+      }),
     }));
   }, [baseDashboardData, realtimeRCStockData, sizeColorsData]);
 
   return (
     <div
-      className={`p-4 ${open
-        ? "md:max-w-[calc(100vw-20rem)] max-w-full"
-        : "max-w-full"
-        }`}
+      className={`p-4 ${
+        open ? "md:max-w-[calc(100vw-20rem)] max-w-full" : "max-w-full"
+      }`}
     >
       <DashboardFilterBar
         selectedLineNo={selectedLineNo}
@@ -263,8 +315,16 @@ export default function Page() {
         selectedDate={selectedDate}
         onDateChange={setSelectedDate}
         lines={linesData}
-        onEditClick={!isGuest && dashboardData.length > 0 ? () => setIsEditModalOpen(true) : undefined}
-        onRefreshClick={(isSelectedDateToday || isYesterdayInDayChangeWindow) ? () => handleRefresh() : undefined}
+        onEditClick={
+          !isGuest && dashboardData.length > 0
+            ? () => setIsEditModalOpen(true)
+            : undefined
+        }
+        onRefreshClick={
+          isSelectedDateToday || isYesterdayInDayChangeWindow
+            ? () => handleRefresh()
+            : undefined
+        }
         isRefreshing={isUpdatingTimeline || isFetchingSchedules}
         canRefresh={canManualRefresh && dashboardData.length > 0}
       />
@@ -273,26 +333,46 @@ export default function Page() {
         open={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
         lineNo={selectedLineNo}
-        lineData={linesData.find(l => l.lineNo.toString() === selectedLineNo)}
+        lineData={linesData.find((l) => l.lineNo.toString() === selectedLineNo)}
         date={selectedDate}
       />
 
       {/* CONTENT */}
-      {(isLoadingShiftTime || isLoadingLines || isLoadingSchedules) ? (
+      {isLoadingShiftTime || isLoadingLines || isLoadingSchedules ? (
         <DashboardSkeleton />
       ) : dashboardData.length > 0 ? (
         <ScheduleBoard data={dashboardData} shiftTime={shiftTime} />
       ) : (
         selectedLineNo && (
-          <div className={`${scheduleIsError ? "border-red-500" : "border-slate-200 dark:border-slate-800"} flex flex-col items-center justify-center py-20 text-muted-foreground bg-sidebar/50 rounded-lg border-2 border-dashed`}>
-            <p className="text-lg font-medium">{scheduleIsError ? "Gagal memuat schedule" : "Tidak ada schedule untuk line ini"}</p>
-            {!scheduleIsError && <p className="text-sm">Silahkan pilih line lain atau buat schedule baru.</p>}
-            {!scheduleIsError && <Link href="/schedules/adjust" className="mt-2 text-md px-4 py-2 bg-primary text-white dark:text-black rounded-md cursor-pointer">
-              Buat Schedule
-            </Link>}
-            {scheduleIsError && <Button onClick={() => handleRefresh()} className="mt-2 text-md px-4 py-2 bg-primary text-white dark:text-black rounded-md cursor-pointer">
-              Coba Lagi
-            </Button>}
+          <div
+            className={`${scheduleIsError ? "border-red-500" : "border-slate-200 dark:border-slate-800"} flex flex-col items-center justify-center py-20 text-muted-foreground bg-sidebar/50 rounded-lg border-2 border-dashed`}
+          >
+            <p className="text-lg font-medium">
+              {scheduleIsError
+                ? "Gagal memuat schedule"
+                : "Tidak ada schedule untuk line ini"}
+            </p>
+            {!scheduleIsError && (
+              <p className="text-sm">
+                Silahkan pilih line lain atau buat schedule baru.
+              </p>
+            )}
+            {!scheduleIsError && (
+              <Link
+                href="/schedules/adjust"
+                className="mt-2 text-md px-4 py-2 bg-primary text-white dark:text-black rounded-md cursor-pointer"
+              >
+                Buat Schedule
+              </Link>
+            )}
+            {scheduleIsError && (
+              <Button
+                onClick={() => handleRefresh()}
+                className="mt-2 text-md px-4 py-2 bg-primary text-white dark:text-black rounded-md cursor-pointer"
+              >
+                Coba Lagi
+              </Button>
+            )}
           </div>
         )
       )}
