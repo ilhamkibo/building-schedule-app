@@ -25,13 +25,18 @@ import { useAuthContext } from "@/context/auth-context";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
+function toDateString(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
 const STORAGE_KEY = "selected-line-no";
 
 export default function Page() {
   const [selectedLineNo, setSelectedLineNo] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toLocaleDateString("id-ID"),
-  );
+  const [selectedDate, setSelectedDate] = useState<string>(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  });
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [lastAutoRefresh, setLastAutoRefresh] = useState<string | null>(null);
 
@@ -94,7 +99,7 @@ export default function Page() {
       // Shift 1 = ganti hari & ganti model produksi (misal Shift 3 → Shift 1).
       // Tidak perlu update timeline, cukup ambil schedule hari baru.
       if (shiftNo === 1) {
-        const today = new Date().toLocaleDateString("id-ID");
+        const today = toDateString(new Date());
         if (selectedDate !== today) {
           // Sedang lihat kemarin → pindah ke hari ini, query otomatis refetch
           setSelectedDate(today);
@@ -124,16 +129,16 @@ export default function Page() {
 
   // Only allow auto-refresh when selectedDate is today
   const isSelectedDateToday = useMemo(() => {
-    const today = new Date().toLocaleDateString("id-ID");
+    const today = toDateString(new Date());
     return selectedDate === today;
   }, [selectedDate]);
 
   // Deteksi kondisi: sedang lihat kemarin & waktu sekarang di window Shift 3 → Shift 1
   const isYesterdayInDayChangeWindow = useMemo(() => {
-    const today = new Date().toLocaleDateString("id-ID");
+    const today = toDateString(new Date());
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toLocaleDateString("id-ID");
+    const yesterdayStr = toDateString(yesterday);
     if (selectedDate !== yesterdayStr) return false;
     // Window aktif jika target shift adalah Shift 1 (T-60 s/d T+15)
     return getManualRefreshTargetShift(shiftTime) === 1;
@@ -253,7 +258,7 @@ export default function Page() {
   }, [scheduleData, scheduleResponse, selectedDate, shiftTime]);
 
   const isHistoricalDate = useMemo(() => {
-    const today = new Date().toLocaleDateString("id-ID");
+    const today = toDateString(new Date());
     return selectedDate < today;
   }, [selectedDate]);
 
