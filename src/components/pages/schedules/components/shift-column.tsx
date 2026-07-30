@@ -41,7 +41,7 @@ export function ShiftColumn({
     return (
         <div
             ref={setNodeRef}
-            className="flex-1 flex flex-col bg-background rounded-md border border-dashed border-muted-foreground/20 p-2 min-h-[150px]"
+            className="flex-1 flex flex-col bg-background rounded-md border border-dashed border-muted-foreground/20 p-2 min-h-37.5"
         >
             <div className="flex items-center justify-between mb-3 px-1">
                 <div className="flex items-center gap-2">

@@ -9,15 +9,15 @@ import {
 import { AxiosError } from "axios";
 import { ApiError } from "../types/api-response";
 import { toast } from "sonner";
-import { PaginatedResponse, PaginationParams } from "../types/pagination";
+import { PaginatedResponse } from "../types/pagination";
 import { productService } from "@/services/product-service";
-import { Product, CreateProductRequest, UpdateProductRequest, RealtimeBO, RealtimeRCStock, SizeColor } from "@/types/product";
+import { Product, ProductParams, CreateProductRequest, UpdateProductRequest, RealtimeBO, RealtimeRCStock, SizeColor } from "@/types/product";
 
 /**
  * Hook to fetch all Products with pagination
  */
 export function useProducts(
-    params?: PaginationParams,
+    params?: ProductParams,
     options?: Omit<
         UseQueryOptions<PaginatedResponse<Product>, AxiosError<ApiError>>,
         "queryKey" | "queryFn"

@@ -56,6 +56,7 @@ export function SortableRow({
 }: SortableRowProps) {
     const [isBoFocused, setIsBoFocused] = useState(false);
     const [isQtyFocused, setIsQtyFocused] = useState(false);
+    const [isBuildAchQtyFocused, setIsBuildAchQtyFocused] = useState(false);
 
     const [highlightQty, setHighlightQty] = useState(false);
     const [highlightBo, setHighlightBo] = useState(false);
@@ -129,7 +130,7 @@ export function SortableRow({
                 <div className="flex-1 min-w-0">
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 items-end pb-1">
                         {/* Code No */}
-                        <div className="flex flex-col justify-end h-[60px]">
+                        <div className="flex flex-col justify-end h-15">
                             <Label className="text-[10px] uppercase text-muted-foreground mb-1">
                                 Code No
                             </Label>
@@ -178,7 +179,7 @@ export function SortableRow({
                         </div>
 
                         {/* Stock RC */}
-                        <div className="flex flex-col justify-end h-[60px]">
+                        <div className="flex flex-col justify-end h-15">
                             <Label className="text-[10px] uppercase text-muted-foreground mb-1">
                                 Stock RC
                             </Label>
@@ -188,7 +189,7 @@ export function SortableRow({
                         </div>
 
                         {/* PPL Reference */}
-                        <div className="flex flex-col justify-end h-[60px]">
+                        <div className="flex flex-col justify-end h-15">
                             <Label className="text-[10px] uppercase text-muted-foreground mb-1">
                                 PPL Reference Qty
                             </Label>
@@ -198,50 +199,78 @@ export function SortableRow({
                         </div>
 
                         {/* Is Build Ach */}
-                        <div className="flex flex-col justify-end h-[60px]">
+                        <div className="flex flex-col justify-end h-15">
                             <Label className="text-[10px] uppercase text-muted-foreground mb-1">
                                 Is Build Ach
                             </Label>
-                            <div className="h-8 flex items-center justify-center bg-muted/30 rounded text-xs font-medium border">
-                                {item.isBuildAch ?
-                                    (<>
-                                        <CheckCheckIcon className="h-4 w-4 text-green-500" />
-                                        <span className="ml-1">{item.buildAchQty || 0}</span>
-                                    </>) : (<>
-                                        <XIcon className="h-4 w-4 text-red-500" />
-                                    </>)}
+                            <div className={`h-8 flex items-center justify-between px-2 bg-white rounded border ${!canEditBO ? 'cursor-not-allowed bg-gray-100 opacity-70' : ''}`}>
+                                <button
+                                    type="button"
+                                    disabled={!canEditBO}
+                                    onClick={() => {
+                                        if (!canEditBO) return;
+                                        const nextIsBuildAch = !item.isBuildAch;
+                                        updateItem(index, {
+                                            isBuildAch: nextIsBuildAch,
+                                            buildAchQty: nextIsBuildAch ? (item.buildAchQty || item.qty || 0) : 0,
+                                        });
+                                    }}
+                                    className="flex items-center gap-1 focus:outline-none cursor-pointer disabled:cursor-not-allowed"
+                                    title="Toggle Build Ach"
+                                >
+                                    {item.isBuildAch ? (
+                                        <CheckCheckIcon className="h-4 w-4 text-green-600 shrink-0" />
+                                    ) : (
+                                        <XIcon className="h-4 w-4 text-red-500 shrink-0" />
+                                    )}
+                                </button>
+                                {item.isBuildAch ? (
+                                    <Input
+                                        type="number"
+                                        className="h-6 w-16 text-center text-xs p-1 ml-1 bg-white"
+                                        value={isBuildAchQtyFocused ? (item.buildAchQty || "") : (item.buildAchQty ?? 0)}
+                                        onFocus={() => setIsBuildAchQtyFocused(true)}
+                                        onBlur={() => setIsBuildAchQtyFocused(false)}
+                                        onChange={(e) => {
+                                            if (!canEditBO) return;
+                                            const val = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
+                                            updateItem(index, {
+                                                buildAchQty: isNaN(val) ? 0 : val,
+                                            });
+                                        }}
+                                        disabled={!canEditBO}
+                                    />
+                                ) : (
+                                    <span className="text-xs text-muted-foreground ml-1 font-mono">0</span>
+                                )}
                             </div>
                         </div>
 
                         {/* BO Quantity */}
-                        <div className="flex flex-col justify-end h-[60px]">
+                        <div className="flex flex-col justify-end h-15">
                             <Label className="text-[10px] uppercase text-muted-foreground mb-1">
                                 B.O
                             </Label>
-                            {item.boQty === null ? (
-                                <div className="h-8 flex items-center justify-center bg-muted/30 rounded text-xs text-muted-foreground border">
-                                    {""}
-                                </div>
-                            ) : (
-                                <Input
-                                    type="text"
-                                    className={`h-8 text-center transition-colors duration-500 ${highlightBo ? 'bg-amber-100 border-amber-500 ring-1 ring-amber-500 font-bold text-amber-900' : 'bg-white'} ${!canEditBO ? 'cursor-not-allowed bg-gray-100 opacity-70' : ''}`}
-                                    value={isBoFocused ? (item.boQty ?? "") : (item.boQty === undefined || item.boQty === "" ? "" : (Number(item.boQty) <= 10 ? "F" : item.boQty))}
-                                    onFocus={() => setIsBoFocused(true)}
-                                    onBlur={() => setIsBoFocused(false)}
-                                    onChange={(e) => {
-                                        if (!canEditBO) return;
-                                        updateItem(index, {
-                                            boQty: parseInt(e.target.value) || 0,
-                                        })
-                                    }}
-                                    disabled={!canEditBO}
-                                />
-                            )}
+                            <Input
+                                type="text"
+                                className={`h-8 text-center transition-colors duration-500 ${highlightBo ? 'bg-amber-100 border-amber-500 ring-1 ring-amber-500 font-bold text-amber-900' : 'bg-white'} ${!canEditBO ? 'cursor-not-allowed bg-gray-100 opacity-70' : ''}`}
+                                value={isBoFocused ? (item.boQty ?? "") : (item.boQty === null || item.boQty === undefined || item.boQty === "" ? "" : (Number(item.boQty) <= 10 ? "F" : item.boQty))}
+                                onFocus={() => setIsBoFocused(true)}
+                                onBlur={() => setIsBoFocused(false)}
+                                onChange={(e) => {
+                                    if (!canEditBO) return;
+                                    const rawVal = e.target.value;
+                                    const parsed = parseInt(rawVal, 10);
+                                    updateItem(index, {
+                                        boQty: rawVal === "" ? null : (isNaN(parsed) ? 0 : parsed),
+                                    });
+                                }}
+                                disabled={!canEditBO}
+                            />
                         </div>
 
                         {/* Quantity */}
-                        <div className="flex flex-col justify-end h-[60px]">
+                        <div className="flex flex-col justify-end h-15">
                             <Label className="text-[10px] uppercase text-muted-foreground mb-1">
                                 Quantity
                             </Label>
@@ -260,7 +289,7 @@ export function SortableRow({
                         </div>
 
                         {/* Remark */}
-                        <div className="flex flex-col justify-end h-[60px] col-span-2 lg:col-span-1">
+                        <div className="flex flex-col justify-end h-15 col-span-2 lg:col-span-1">
                             <Label className="text-[10px] uppercase text-muted-foreground mb-1">
                                 Remark
                             </Label>

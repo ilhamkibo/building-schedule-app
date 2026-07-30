@@ -1,3 +1,5 @@
+import { PaginationParams } from "./pagination";
+
 export interface Product {
     codeNo: string;
     sizeName: string;
@@ -69,4 +71,8 @@ export interface SizeColor {
     textColorHex: string;
     backgroundColorHex: string;
     typeCode: string;
+}
+
+export interface ProductParams extends PaginationParams {
+    lineNo?: number | string;
 }

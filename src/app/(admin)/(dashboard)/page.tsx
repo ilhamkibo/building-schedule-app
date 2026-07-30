@@ -299,20 +299,20 @@ export default function Page() {
           rcStock: rcStockData?.stockRcQty ?? r.rcStock,
           colors: colorData
             ? {
-                textColor: colorData.textColorHex,
-                bgColor: colorData.backgroundColorHex,
-              }
+              textColor: colorData.textColorHex,
+              bgColor: colorData.backgroundColorHex,
+            }
             : { textColor: "#000", bgColor: "#fff" },
         };
       }),
     }));
   }, [baseDashboardData, realtimeRCStockData, sizeColorsData]);
+  console.log("🚀 ~ Page ~ dashboardData:", dashboardData)
 
   return (
     <div
-      className={`p-4 ${
-        open ? "md:max-w-[calc(100vw-20rem)] max-w-full" : "max-w-full"
-      }`}
+      className={`p-4 ${open ? "md:max-w-[calc(100vw-20rem)] max-w-full" : "max-w-full"
+        }`}
     >
       <DashboardFilterBar
         selectedLineNo={selectedLineNo}

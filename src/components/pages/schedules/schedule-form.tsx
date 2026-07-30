@@ -75,15 +75,16 @@ export default function ScheduleForm({
     return () => clearTimeout(timer);
   }, [search]);
 
-  const { data: products = [], isLoading: isProductsLoading } = useProducts({
-    search: debouncedSearch,
-    limit: 10,
-  });
-
   const selectedLine = lines.find((l) => String(l.id) === selectedLineId);
   const lineNoForFetching = selectedLine?.lineNo
     ? String(selectedLine.lineNo)
     : "";
+
+  const { data: products = [], isLoading: isProductsLoading } = useProducts({
+    search: debouncedSearch,
+    limit: 10,
+    lineNo: lineNoForFetching
+  });
 
   const {
     data: ppcData,
@@ -403,7 +404,7 @@ export default function ScheduleForm({
           item.boQty === null || item.boQty === undefined || item.boQty === ""
             ? null
             : item.boQty === "F" ||
-                (!isNaN(Number(item.boQty)) && Number(item.boQty) <= 10)
+              (!isNaN(Number(item.boQty)) && Number(item.boQty) <= 10)
               ? "F"
               : String(item.boQty),
         remainingBoQty:
@@ -545,7 +546,7 @@ export default function ScheduleForm({
 
       <DragOverlay dropAnimation={null}>
         {activeId ? (
-          <div className="bg-white border-2 border-primary shadow-2xl rounded-lg overflow-hidden opacity-90 scale-105 transition-transform w-[250px]">
+          <div className="bg-white border-2 border-primary shadow-2xl rounded-lg overflow-hidden opacity-90 scale-105 transition-transform w-62.5">
             <StaticRow item={items.find((i) => i.id === activeId)!} />
           </div>
         ) : null}

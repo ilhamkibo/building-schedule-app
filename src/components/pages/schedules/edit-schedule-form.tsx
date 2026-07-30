@@ -25,7 +25,7 @@ import {
 
 import { MachineCard } from "./components/machine-card";
 import { StaticRow } from "./components/sortable-row";
-import { useLine, useLines } from "@/hooks/use-line";
+import { useLines } from "@/hooks/use-line";
 import { Line } from "@/types/line";
 
 /**
@@ -115,6 +115,7 @@ export default function EditScheduleForm({ board, lineNo, lineData, onCancel, on
 
     const { data: products = [], isLoading: isProductsLoading } = useProducts({
         search: debouncedSearch,
+        lineNo,
         limit: 10,
     });
 
