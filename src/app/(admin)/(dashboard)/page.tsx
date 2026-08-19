@@ -85,6 +85,16 @@ export default function Page() {
     (targetShiftNo?: number) => {
       if (!scheduleData || scheduleData.length === 0) return;
 
+      // Jika tanggal yang dipilih adalah tanggal masa depan (besok atau seterusnya),
+      // cukup refetch saja (tanpa perlu hitung shift / update timeline)
+      const today = toDateString(new Date());
+      if (selectedDate > today) {
+        refetchSchedules().then(() => {
+          toast.success("Schedule berhasil diperbarui.");
+        });
+        return;
+      }
+
       let shiftNo = targetShiftNo;
       if (!shiftNo) {
         shiftNo = getManualRefreshTargetShift(shiftTime) || undefined;
@@ -99,7 +109,6 @@ export default function Page() {
       // Shift 1 = ganti hari & ganti model produksi (misal Shift 3 → Shift 1).
       // Tidak perlu update timeline, cukup ambil schedule hari baru.
       if (shiftNo === 1) {
-        const today = toDateString(new Date());
         if (selectedDate !== today) {
           // Sedang lihat kemarin → pindah ke hari ini, query otomatis refetch
           setSelectedDate(today);
@@ -143,6 +152,11 @@ export default function Page() {
     // Window aktif jika target shift adalah Shift 1 (T-60 s/d T+15)
     return getManualRefreshTargetShift(shiftTime) === 1;
   }, [selectedDate, shiftTime]);
+
+  const isFutureDate = useMemo(() => {
+    const today = toDateString(new Date());
+    return selectedDate > today;
+  }, [selectedDate]);
 
   useEffect(() => {
     // Auto-refresh aktif untuk hari ini ATAU kemarin saat window Shift 3→1
